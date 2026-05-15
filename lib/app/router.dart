@@ -9,6 +9,8 @@ import 'package:go_router/go_router.dart';
 import 'package:genesis_kreislauf_des_lebens/presentation/screens/splash_screen.dart';
 import 'package:genesis_kreislauf_des_lebens/presentation/screens/haupt_menue_screen.dart';
 import 'package:genesis_kreislauf_des_lebens/presentation/screens/neues_spiel_screen.dart';
+import 'package:genesis_kreislauf_des_lebens/presentation/screens/bibliothek_screen.dart';
+import 'package:genesis_kreislauf_des_lebens/presentation/screens/einstellungen_screen.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Routen-Pfade als Konstanten
@@ -71,6 +73,9 @@ abstract final class AppRouten {
 
   /// Bibliothek – gesammelte Erkenntnisse und freigeschaltete Inhalte
   static const String bibliothek = '/bibliothek';
+
+  /// Einstellungen – Audio, Steuerung, Sprache, Daten
+  static const String einstellungen = '/einstellungen';
 
   /// Jenseits-Reich – verschiedene Bereiche nach dem Tod (:reich = Parameter)
   static const String jenseitsReich = '/jenseits/:reich';
@@ -1055,7 +1060,14 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: AppRouten.bibliothek,
         name: 'bibliothek',
-        builder: (context, state) => const _BibliothekScreen(),
+        builder: (context, state) => const BibliothekScreen(),
+      ),
+
+      /// Einstellungen – Audio, Steuerung, Sprache, Daten
+      GoRoute(
+        path: AppRouten.einstellungen,
+        name: 'einstellungen',
+        builder: (context, state) => const EinstellungenScreen(),
       ),
 
       /// Jenseits-Reich – atmosphärischer Screen je nach Karma-Urteil

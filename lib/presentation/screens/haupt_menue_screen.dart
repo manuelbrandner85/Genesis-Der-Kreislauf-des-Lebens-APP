@@ -402,9 +402,9 @@ class _MenueButtons extends StatelessWidget {
     );
   }
 
-  /// Öffnet den Einstellungs-Screen als Modal-Sheet.
+  /// Navigiert zum Einstellungs-Screen.
   void _zeigeEinstellungen(BuildContext context) {
-    context.go('/einstellungen');
+    context.go(AppRouten.einstellungen);
   }
 }
 

@@ -3,190 +3,269 @@
     {
       "id": "mittelalter",
       "name": "Das Mittelalter",
-      "zeitraum": "500–1400 n. Chr.",
-      "zeitgeist": "Glaube und göttliche Ordnung bestimmen alles. Der Platz des Einzelnen ist durch Geburt festgelegt. Ritter, Glaube und Tradition sind die Grundpfeiler der Gesellschaft.",
+      "zeitraum": "500 – 1400 n.Chr.",
+      "zeitgeist": "Glaube und Ordnung prägen alles Leben. Die Kirche hält die Gesellschaft zusammen, Feudalherren bestimmen das Schicksal der Bauern, und Ritter reiten für Ehre und Gott. Wissen ist Macht und gehört den Wenigen.",
       "karrierepfade": [
-        "Ritter / Kriegerin",
-        "Priester / Priesterin",
-        "Händler / Händlerin",
-        "Bauer / Bäuerin",
-        "Schmied / Schmiedin",
-        "Mönch / Nonne",
-        "Heiler / Heilerin",
-        "Minnesänger / Minnesängerin",
-        "Lehnsherr / Lehnsherrin",
-        "Zauberer / Zauberin (Volksglaube)"
+        { "id": "ritter", "name": "Ritter", "beschreibung": "Ehre, Mut und Kampfkunst im Dienste des Lehnsherrn", "karma_bonus": { "mut": 5 } },
+        { "id": "priester", "name": "Priester", "beschreibung": "Hüter des Glaubens, Seelsorger und Gelehrter", "karma_bonus": { "weisheit": 5, "mitgefuehl": 3 } },
+        { "id": "haendler", "name": "Händler", "beschreibung": "Kaufmann auf langen Handelsrouten zwischen den Städten", "karma_bonus": { "weisheit": 3 } },
+        { "id": "bauer", "name": "Bauer", "beschreibung": "Das Fundament der Gesellschaft – Erde, Schweiß und Ernte", "karma_bonus": { "grosszuegigkeit": 2 } },
+        { "id": "schmied", "name": "Schmied", "beschreibung": "Handwerker und Schöpfer von Waffen und Werkzeug", "karma_bonus": {} },
+        { "id": "heiler", "name": "Heiler", "beschreibung": "Kräuterkundiger und Arzt in einer Welt ohne Medizin", "karma_bonus": { "mitgefuehl": 6 } },
+        { "id": "moench", "name": "Mönch", "beschreibung": "Zurückgezogenes Leben in Klausur, Gebet und Abschrift", "karma_bonus": { "weisheit": 7, "liebe": 3 } },
+        { "id": "minnesaenger", "name": "Minnesänger", "beschreibung": "Dichter und Sänger an den Höfen der Adeligen", "karma_bonus": { "liebe": 4 } },
+        { "id": "alchemist", "name": "Alchemist", "beschreibung": "Grenzgänger zwischen Wissenschaft und Magie", "karma_bonus": { "weisheit": 4 } },
+        { "id": "leibeigener", "name": "Leibeigener", "beschreibung": "An das Land und den Herrn gebunden – wenig Freiheit, viel Würde", "karma_bonus": { "mut": 3, "mitgefuehl": 3 } }
       ],
       "aufstiegsChance": 0.15,
-      "religioeserEinfluss": 0.95,
-      "bildungszugang": 0.20,
-      "technologieStand": 1,
       "startEreignisse": [
-        "Die Pest bricht aus – wer überlebt, wird geprägt",
-        "Ein Kreuzzug wird ausgerufen",
-        "Eine Heirat sichert die Familie politisch ab",
-        "Eine Dürre bedroht die Ernte"
+        {
+          "id": "pest_1348",
+          "name": "Die Schwarze Pest",
+          "wahrscheinlichkeit": 0.3,
+          "beschreibung": "Die Seuche wütet durch Europa. Millionen sterben. Wer überlebt, trägt das Trauma sein Leben lang.",
+          "karma_effekte": { "mitgefuehl": 5, "weisheit": 3 }
+        },
+        {
+          "id": "kreuzzug",
+          "name": "Ruf zum Kreuzzug",
+          "wahrscheinlichkeit": 0.2,
+          "beschreibung": "Der Papst ruft zum heiligen Krieg. Hast du den Mut zu ziehen – oder die Weisheit zu bleiben?",
+          "karma_effekte": { "mut": 3 }
+        },
+        {
+          "id": "pilgerfahrt",
+          "name": "Pilgerfahrt nach Santiago",
+          "wahrscheinlichkeit": 0.25,
+          "beschreibung": "Der lange Weg ist beschwerlich, aber die Seele findet Frieden.",
+          "karma_effekte": { "weisheit": 4, "liebe": 2 }
+        },
+        {
+          "id": "hexenprozess",
+          "name": "Anschuldigungen der Hexerei",
+          "wahrscheinlichkeit": 0.15,
+          "beschreibung": "Dein Dorf beschuldigt jemanden der Hexerei. Wie verhältst du dich?",
+          "karma_effekte": {}
+        },
+        {
+          "id": "burgerrecht",
+          "name": "Stadtrecht erworben",
+          "wahrscheinlichkeit": 0.1,
+          "beschreibung": "Du erhältst das Bürgerrecht einer Stadt. Neue Freiheiten, neue Pflichten.",
+          "karma_effekte": { "weisheit": 2, "grosszuegigkeit": 2 }
+        }
       ],
-      "besonderheiten": "Pilgerfahrten, Kreuzzüge, Zunftsystem, Kirche als Macht. Aufstieg fast unmöglich ohne Glück oder außerordentliche Tat.",
-      "soziale_klassen": {
-        "adel": "Geburt bestimmt alles. Ritter können zum Adel aufsteigen.",
-        "klerus": "Einziger Weg aus der Armut für intelligente Menschen.",
-        "buerger": "Händler und Handwerker in Städten.",
-        "bauer": "90% der Bevölkerung. Leibeigenschaft möglich."
-      }
+      "besonderheiten": "Pilgerfahrten, Kreuzzüge, die Pest, Feudalsystem, Ritterorden, Klosterleben, Handelsrouten, Gottesurteile, Inquisition",
+      "typischeWerte": ["Frömmigkeit", "Ehre", "Pflicht", "Demut", "Tapferkeit"],
+      "schwierigkeitsgrad": 0.7
     },
     {
       "id": "renaissance",
       "name": "Die Renaissance",
-      "zeitraum": "1400–1600 n. Chr.",
-      "zeitgeist": "Der Mensch steht im Mittelpunkt. Kunst, Wissenschaft und Entdeckung blühen. Humanism ersetzt blinden Glauben. Neue Welten werden entdeckt.",
+      "zeitraum": "1400 – 1600 n.Chr.",
+      "zeitgeist": "Kunst, Wissenschaft und Humanismus erwachen aus dem mittelalterlichen Schlaf. Florenz leuchtet. Michelangelo meißelt. Gutenberg druckt. Die Welt beginnt sich selbst mit neuen Augen zu sehen.",
       "karrierepfade": [
-        "Künstler / Künstlerin",
-        "Wissenschaftler / Wissenschaftlerin",
-        "Händler / Händlerin",
-        "Entdecker / Entdeckerin",
-        "Drucker / Druckerin",
-        "Bankier / Bankierin",
-        "Architekt / Architektin",
-        "Diplomat / Diplomatin",
-        "Arzt / Ärztin",
-        "Philosoph / Philosophin"
+        { "id": "kuenstler", "name": "Künstler", "beschreibung": "Maler, Bildhauer oder Architekt an den Höfen der Mäzene", "karma_bonus": { "liebe": 5 } },
+        { "id": "gelehrter", "name": "Gelehrter", "beschreibung": "Humanistischer Denker, der antikes Wissen neu entdeckt", "karma_bonus": { "weisheit": 7 } },
+        { "id": "kaufmann", "name": "Kaufmann", "beschreibung": "Händler in einer Zeit des aufblühenden Fernhandels", "karma_bonus": { "weisheit": 3 } },
+        { "id": "entdecker", "name": "Seefahrer / Entdecker", "beschreibung": "Wagst dich auf unbekannte Meere und entdeckst neue Welten", "karma_bonus": { "mut": 8 } },
+        { "id": "politiker", "name": "Höfling / Politiker", "beschreibung": "Intrigen und Macht an den Höfen der Fürsten", "karma_bonus": { "weisheit": 4 } },
+        { "id": "wissenschaftler", "name": "Naturphilosoph", "beschreibung": "Forscher an den Grenzen des damaligen Wissens", "karma_bonus": { "weisheit": 8 } },
+        { "id": "drucker", "name": "Buchdrucker", "beschreibung": "Verbreiter von Wissen in einer Zeit revolutionärer Ideen", "karma_bonus": { "grosszuegigkeit": 4, "weisheit": 3 } },
+        { "id": "kondottiere", "name": "Kondottiere", "beschreibung": "Söldnerführer im Dienst der Stadtstaaten", "karma_bonus": { "mut": 6 } },
+        { "id": "apotheker", "name": "Apotheker", "beschreibung": "Wissenschaftlicher Heiler in einer medizinischen Revolution", "karma_bonus": { "mitgefuehl": 5, "weisheit": 4 } },
+        { "id": "reformator", "name": "Reformator", "beschreibung": "Verfechter neuer religiöser oder politischer Ideen", "karma_bonus": { "mut": 7, "ehrlichkeit": 6 } }
       ],
-      "aufstiegsChance": 0.28,
-      "religioeserEinfluss": 0.70,
-      "bildungszugang": 0.40,
-      "technologieStand": 2,
+      "aufstiegsChance": 0.25,
       "startEreignisse": [
-        "Der Buchdruck verbreitet Wissen wie nie zuvor",
-        "Eine neue Route nach Indien wird entdeckt",
-        "Ein reicher Mäzen fördert deine Kunst",
-        "Die Reformation erschüttert die Kirche"
+        {
+          "id": "maezenat",
+          "name": "Mäzen-Förderung",
+          "wahrscheinlichkeit": 0.3,
+          "beschreibung": "Ein reicher Mäzen erkennt dein Talent und bietet dir seine Förderung an.",
+          "karma_effekte": { "liebe": 3, "weisheit": 2 }
+        },
+        {
+          "id": "seuche_florenz",
+          "name": "Seuche in der Stadt",
+          "wahrscheinlichkeit": 0.2,
+          "beschreibung": "Eine Epidemie sucht die Stadt heim. Wer bleibt und wer flieht?",
+          "karma_effekte": { "mut": 4, "mitgefuehl": 4 }
+        },
+        {
+          "id": "entdeckung_neue_welt",
+          "name": "Berichte aus der Neuen Welt",
+          "wahrscheinlichkeit": 0.35,
+          "beschreibung": "Berichte von neuen Kontinenten erschüttern das Weltbild.",
+          "karma_effekte": { "weisheit": 3 }
+        },
+        {
+          "id": "inquisition_buch",
+          "name": "Verbotenes Buch",
+          "wahrscheinlichkeit": 0.15,
+          "beschreibung": "Du erhältst Zugang zu einem verbotenen Werk. Lesen bedeutet Gefahr.",
+          "karma_effekte": { "mut": 3, "weisheit": 5 }
+        }
       ],
-      "besonderheiten": "Mäzenatentum, Humanismus, Entdeckungen. Talent kann den Stand überwinden. Bildung öffnet Türen.",
-      "soziale_klassen": {
-        "adel": "Noch immer dominant, aber Bildung und Geld öffnen Türen.",
-        "kaufmannschaft": "Neue Macht durch Handel. Florenz und Venedig als Zentren.",
-        "handwerk": "Zunftmeister können zu Ansehen gelangen.",
-        "armut": "Städtische Armut wächst mit Urbanisierung."
-      }
+      "besonderheiten": "Perspektivmalerei, Buchdruck, Humanismus, Entdeckungsreisen, Mäzenatentum, Reformation, Naturphilosophie",
+      "typischeWerte": ["Humanismus", "Neugier", "Schönheit", "Ruhm", "Wissen"],
+      "schwierigkeitsgrad": 0.5
     },
     {
       "id": "industriezeitalter",
       "name": "Das Industriezeitalter",
-      "zeitraum": "1760–1900 n. Chr.",
-      "zeitgeist": "Arbeit und Fortschritt bestimmen den Wert eines Menschen. Dampfmaschinen, Fabriken und Eisenbahnen verändern die Welt. Die Arbeiterbewegung erhebt sich.",
+      "zeitraum": "1760 – 1900 n.Chr.",
+      "zeitgeist": "Dampfmaschinen verändern die Welt in Jahrzehnten. Arbeiter strömen in Fabriken. Kapitalisten häufen beispiellosen Reichtum an. Fortschritt hat seinen Preis – und der zahlt ihn nicht, der davon profitiert.",
       "karrierepfade": [
-        "Fabrikarbeiter / Fabrikarbeiterin",
-        "Ingenieur / Ingenieurin",
-        "Unternehmer / Unternehmerin",
-        "Arzt / Ärztin",
-        "Journalist / Journalistin",
-        "Lehrer / Lehrerin",
-        "Forscher / Forscherin",
-        "Politiker / Politikerin",
-        "Bergarbeiter / Bergarbeiterin",
-        "Kaufmann / Kauffrau"
+        { "id": "fabrikarbeiter", "name": "Fabrikarbeiter", "beschreibung": "Endlose Schichten in einer neuen industriellen Welt", "karma_bonus": { "mitgefuehl": 4 } },
+        { "id": "ingenieur", "name": "Ingenieur", "beschreibung": "Erbauer der neuen Infrastruktur aus Stahl und Dampf", "karma_bonus": { "weisheit": 6 } },
+        { "id": "unternehmer", "name": "Unternehmer", "beschreibung": "Besitzer einer aufstrebenden Fabrik oder eines Handelshauses", "karma_bonus": { "weisheit": 4 } },
+        { "id": "gewerkschafter", "name": "Gewerkschafter", "beschreibung": "Kämpfer für die Rechte der Arbeiterklasse", "karma_bonus": { "mitgefuehl": 7, "mut": 6 } },
+        { "id": "journalist", "name": "Journalist", "beschreibung": "Schreibt für die aufkeimende freie Presse", "karma_bonus": { "ehrlichkeit": 6 } },
+        { "id": "arzt", "name": "Arzt", "beschreibung": "Medizin in einer Zeit der ersten modernen Wissenschaft", "karma_bonus": { "mitgefuehl": 7, "weisheit": 5 } },
+        { "id": "sozialreformerin", "name": "Sozialreformerin", "beschreibung": "Kämpft gegen Kinderarbeit und soziale Missstände", "karma_bonus": { "mitgefuehl": 9, "mut": 7 } },
+        { "id": "eisenbahnbauer", "name": "Eisenbahn-Pionier", "beschreibung": "Baut die Gleise des neuen Zeitalters quer durch Kontinente", "karma_bonus": { "mut": 5 } },
+        { "id": "parlamentarier", "name": "Parlamentarier", "beschreibung": "Vertritt die Interessen von Arbeitern oder Bürgertum", "karma_bonus": { "weisheit": 5, "mut": 4 } },
+        { "id": "auswanderer", "name": "Auswanderer", "beschreibung": "Verlässt Europa in Richtung Amerika oder Australien", "karma_bonus": { "mut": 8 } }
       ],
-      "aufstiegsChance": 0.35,
-      "religioeserEinfluss": 0.45,
-      "bildungszugang": 0.60,
-      "technologieStand": 4,
+      "aufstiegsChance": 0.20,
       "startEreignisse": [
-        "Eine neue Erfindung verändert deine Branche",
-        "Ein Streik bricht aus – du musst Stellung beziehen",
-        "Krieg bricht aus – eine ganze Generation wird mobilisiert",
-        "Eine Wirtschaftskrise vernichtet Ersparnisse"
+        {
+          "id": "revolution_1848",
+          "name": "Revolutionsjahr 1848",
+          "wahrscheinlichkeit": 0.25,
+          "beschreibung": "Ganz Europa in Aufruhr. Barrikaden in den Städten. Wo stehst du?",
+          "karma_effekte": { "mut": 5, "ehrlichkeit": 3 }
+        },
+        {
+          "id": "fabrik_unfall",
+          "name": "Fabrikunfall",
+          "wahrscheinlichkeit": 0.3,
+          "beschreibung": "Eine Explosion in der Fabrik. Kameraden brauchen Hilfe.",
+          "karma_effekte": { "mitgefuehl": 6, "mut": 4 }
+        },
+        {
+          "id": "kolonisation",
+          "name": "Kolonialreise angeboten",
+          "wahrscheinlichkeit": 0.2,
+          "beschreibung": "Eine Stelle in den Kolonien wird angeboten. Glanz und Elend warten.",
+          "karma_effekte": {}
+        },
+        {
+          "id": "weltausstellung",
+          "name": "Besuch der Weltausstellung",
+          "wahrscheinlichkeit": 0.25,
+          "beschreibung": "Die neuesten Erfindungen der Welt an einem Ort. Die Zukunft hautnah.",
+          "karma_effekte": { "weisheit": 4 }
+        }
       ],
-      "besonderheiten": "Industriekapitalismus, Klassenkampf, Kolonialismus. Aufstieg möglich aber hart erkämpft. Kinderarbeit ist Realität.",
-      "soziale_klassen": {
-        "grossbuergertum": "Industrielle und Bankiers dominieren neu.",
-        "mittelschicht": "Verwaltung, Bildung, freie Berufe.",
-        "proletariat": "Fabrikarbeiter – Klassenkampf beginnt.",
-        "landbevoelkerung": "Landwirtschaft verliert an Bedeutung."
-      }
+      "besonderheiten": "Dampfmaschine, Eisenbahn, Kinderarbeit, Arbeiterbewegung, Kolonialismus, Urbanisierung, erste Frauenrechtsbewegung",
+      "typischeWerte": ["Fortschritt", "Pflicht", "Familie", "Klassensolidarität", "Fleißigkeit"],
+      "schwierigkeitsgrad": 0.55
     },
     {
       "id": "moderne",
       "name": "Die Moderne",
-      "zeitraum": "1950–2025 n. Chr.",
-      "zeitgeist": "Individualismus, Technologie und Globalisierung. Die Welt ist vernetzt. Identität ist wählbar. Mehr Freiheit und mehr Einsamkeit als je zuvor.",
+      "zeitraum": "1900 – 2000 n.Chr.",
+      "zeitgeist": "Weltkriege, Ideologien und technologischer Wandel in rasanter Geschwindigkeit. Das Individuum sucht seinen Platz in einer zerrissenen Welt zwischen Tradition und Revolution.",
       "karrierepfade": [
-        "Softwareentwickler / Softwareentwicklerin",
-        "Arzt / Ärztin",
-        "Lehrer / Lehrerin",
-        "Unternehmer / Unternehmerin",
-        "Künstler / Künstlerin",
-        "Sozialarbeiter / Sozialarbeiterin",
-        "Journalist / Journalistin",
-        "Wissenschaftler / Wissenschaftlerin",
-        "Politiker / Politikerin",
-        "Handwerker / Handwerkerin",
-        "Manager / Managerin",
-        "Umweltaktivist / Umweltaktivistin",
-        "Content Creator",
-        "Therapeut / Therapeutin",
-        "Forscher / Forscherin",
-        "Pilot / Pilotin",
-        "Koch / Köchin",
-        "Sportler / Sportlerin",
-        "Musiker / Musikerin",
-        "Psychologe / Psychologin"
+        { "id": "soldat", "name": "Soldat", "beschreibung": "Im Dienst des Vaterlandes – zwischen Pflicht und Trauma", "karma_bonus": { "mut": 5 } },
+        { "id": "wissenschaftler_mod", "name": "Wissenschaftler", "beschreibung": "Forscher an den Grenzen von Physik, Biologie oder Psychologie", "karma_bonus": { "weisheit": 8 } },
+        { "id": "politiker_mod", "name": "Politiker", "beschreibung": "In einer Zeit großer ideologischer Konflikte", "karma_bonus": { "weisheit": 4, "mut": 4 } },
+        { "id": "journalist_mod", "name": "Kriegskorrespondent", "beschreibung": "Berichterstattet aus Kriegsgebieten und Krisenregionen", "karma_bonus": { "ehrlichkeit": 8, "mut": 7 } },
+        { "id": "arzt_mod", "name": "Arzt / Chirurg", "beschreibung": "Medizin in einer Zeit revolutionärer Behandlungsmethoden", "karma_bonus": { "mitgefuehl": 8, "weisheit": 6 } },
+        { "id": "kuenstler_mod", "name": "Avantgarde-Künstler", "beschreibung": "Maler, Schriftsteller oder Filmemacher in einer kulturellen Explosion", "karma_bonus": { "liebe": 6, "mut": 4 } },
+        { "id": "widerstandskaempfer", "name": "Widerstandskämpfer", "beschreibung": "Kämpft gegen Unterdrückung und für Gerechtigkeit", "karma_bonus": { "mut": 10, "ehrlichkeit": 7, "mitgefuehl": 6 } },
+        { "id": "unternehmer_mod", "name": "Unternehmer", "beschreibung": "Baut in einer Zeit des wirtschaftlichen Auf und Ab", "karma_bonus": { "weisheit": 5 } },
+        { "id": "aktivist", "name": "Bürgerrechtsaktivist", "beschreibung": "Kämpft für Gleichberechtigung und Menschenrechte", "karma_bonus": { "mut": 8, "mitgefuehl": 8, "ehrlichkeit": 6 } },
+        { "id": "lehrer_mod", "name": "Lehrer", "beschreibung": "Bildet die nächste Generation in bewegten Zeiten", "karma_bonus": { "weisheit": 6, "mitgefuehl": 5, "liebe": 4 } }
       ],
-      "aufstiegsChance": 0.48,
-      "religioeserEinfluss": 0.30,
-      "bildungszugang": 0.90,
-      "technologieStand": 7,
+      "aufstiegsChance": 0.30,
       "startEreignisse": [
-        "Das Internet verändert alles",
-        "Eine globale Krise erschüttert die Wirtschaft",
-        "Soziale Medien machen dich für einen Moment berühmt",
-        "Ein Unfall zwingt dich zum Neuanfang",
-        "Eine Erfindung macht dich reich",
-        "Klimawandel-Ereignis verändert deinen Wohnort"
+        {
+          "id": "weltkrieg_1",
+          "name": "Ausbruch des Ersten Weltkriegs",
+          "wahrscheinlichkeit": 0.25,
+          "beschreibung": "Europa zieht in den Krieg. Einziehung oder Verweigerung?",
+          "karma_effekte": { "mut": 5 }
+        },
+        {
+          "id": "weltkrieg_2",
+          "name": "Zeit des Zweiten Weltkriegs",
+          "wahrscheinlichkeit": 0.25,
+          "beschreibung": "Die dunkelste Stunde Europas. Wie verhältst du dich?",
+          "karma_effekte": {}
+        },
+        {
+          "id": "wirtschaftswunder",
+          "name": "Wirtschaftswunder",
+          "wahrscheinlichkeit": 0.3,
+          "beschreibung": "Aufbruchsstimmung nach dem Krieg. Alles scheint möglich.",
+          "karma_effekte": { "grosszuegigkeit": 3, "weisheit": 2 }
+        },
+        {
+          "id": "68er",
+          "name": "Die 68er-Bewegung",
+          "wahrscheinlichkeit": 0.2,
+          "beschreibung": "Jugend rebelliert gegen das Establishment. Bist du dabei?",
+          "karma_effekte": { "mut": 4, "ehrlichkeit": 3 }
+        }
       ],
-      "besonderheiten": "Globalisierung, digitale Revolution, Identitätspolitik. Aufstieg zugänglicher aber Konkurrenz global. Burn-out als Zeitkrankheit.",
-      "soziale_klassen": {
-        "oberschicht": "Kapital arbeitet für sie. Tech-Milliardäre entstehen.",
-        "mittelschicht": "Unter Druck durch Inflation und Automatisierung.",
-        "unterschicht": "Arbeitslos oder prekär beschäftigt.",
-        "digital_nomads": "Neue Klasse ohne geografische Bindung."
-      }
+      "besonderheiten": "Weltkriege, Holocaust, Kalter Krieg, Mondlandung, Feminismus, Bürgerrechtsbewegung, Atombombe, Rock 'n' Roll",
+      "typischeWerte": ["Freiheit", "Gerechtigkeit", "Fortschritt", "Sicherheit", "Individualität"],
+      "schwierigkeitsgrad": 0.65
     },
     {
       "id": "zukunft",
       "name": "Die Zukunft",
-      "zeitraum": "2100–2300 n. Chr.",
-      "zeitgeist": "Technologie gegen Menschlichkeit. KI ist allgegenwärtig. Menschen suchen nach dem was sie von Maschinen unterscheidet. Erste interstellare Siedlungen entstehen.",
+      "zeitraum": "2100 – 2300 n.Chr.",
+      "zeitgeist": "Künstliche Intelligenz übernimmt die meisten Berufe. Menschen kolonisieren den Weltraum. Genetische Modifikation ist Alltag. Die fundamentale Frage lautet: Was bedeutet es noch, Mensch zu sein?",
       "karrierepfade": [
-        "KI-Ethiker / KI-Ethikerin",
-        "Terraforming-Ingenieur / Ingenieurin",
-        "Bewusstseinsforscher / Bewusstseinsforscherin",
-        "Seelenpilot / Seelenpilotin (Raumfahrt)",
-        "Biogendesigner / Biogendesignerin",
-        "Kulturbewahrer / Kulturbewahrerin",
-        "Synthetische Empathiker / Empathikerin",
-        "Weltenbauer / Weltenbauerin (digitale Welten)",
-        "Quantenheiler / Quantenheilerin",
-        "Friedensstifter / Friedensstifterin (interstellar)"
+        { "id": "ki_ethiker", "name": "KI-Ethiker", "beschreibung": "Bestimmt die moralischen Grenzen künstlicher Intelligenz", "karma_bonus": { "weisheit": 9, "ehrlichkeit": 7 } },
+        { "id": "raumfahrer", "name": "Raumfahrtpionier", "beschreibung": "Lebt und arbeitet in Kolonien auf Mars oder dem Mond", "karma_bonus": { "mut": 9 } },
+        { "id": "bioingenieur", "name": "Bioingenieur", "beschreibung": "Modifiziert Genome zur Heilung – und zur Verbesserung", "karma_bonus": { "weisheit": 7, "mitgefuehl": 5 } },
+        { "id": "digital_philosoph", "name": "Digitaler Philosoph", "beschreibung": "Denkt über das Wesen des Bewusstseins in der digitalen Welt nach", "karma_bonus": { "weisheit": 10 } },
+        { "id": "klimarestaurator", "name": "Klimarestaurator", "beschreibung": "Heilt die Wunden, die frühere Generationen hinterlassen haben", "karma_bonus": { "mitgefuehl": 8, "grosszuegigkeit": 6 } },
+        { "id": "transhumanist", "name": "Transhumanist", "beschreibung": "Überschreitet die Grenzen des menschlichen Körpers durch Technologie", "karma_bonus": { "mut": 6, "weisheit": 5 } },
+        { "id": "neo_spiritueller", "name": "Neo-Spiritueller", "beschreibung": "Hüter neuer spiritueller Traditionen in einer posthumanen Welt", "karma_bonus": { "liebe": 7, "weisheit": 6, "mitgefuehl": 5 } },
+        { "id": "virtual_kuenstler", "name": "Holokünstler", "beschreibung": "Schafft immersive Realitäten und virtuelle Welten", "karma_bonus": { "liebe": 6 } },
+        { "id": "synthempathist", "name": "Synthempathist", "beschreibung": "Vermittelt zwischen künstlichen Intelligenzen und Menschen", "karma_bonus": { "mitgefuehl": 9, "weisheit": 7 } },
+        { "id": "chronist", "name": "Gedächtnis-Chronist", "beschreibung": "Bewahrt menschliche Erinnerungen und Kulturen vor dem Vergessen", "karma_bonus": { "liebe": 8, "weisheit": 6, "grosszuegigkeit": 4 } }
       ],
-      "aufstiegsChance": 0.50,
-      "religioeserEinfluss": 0.20,
-      "bildungszugang": 0.99,
-      "technologieStand": 10,
+      "aufstiegsChance": 0.45,
       "startEreignisse": [
-        "Der erste Kontakt mit außerirdischer Intelligenz",
-        "Ein KI übernimmt temporär die Regierung einer Stadt",
-        "Unsterblichkeit wird für wenige möglich – du musst entscheiden",
-        "Ein neuer Planet wird kolonisiert – Auswanderer gesucht",
-        "Die Erinnerungen der Toten werden digital archiviert"
+        {
+          "id": "ki_erwachen",
+          "name": "Das Erwachen der ersten starken KI",
+          "wahrscheinlichkeit": 0.35,
+          "beschreibung": "Die erste echte KI mit Selbstbewusstsein erwacht. Freund oder Feind?",
+          "karma_effekte": { "weisheit": 5, "mut": 3 }
+        },
+        {
+          "id": "mars_kolonie",
+          "name": "Erste Marskolonie gegründet",
+          "wahrscheinlichkeit": 0.30,
+          "beschreibung": "Die Menschheit lebt auf zwei Planeten. Neue Gesellschaft, neue Konflikte.",
+          "karma_effekte": { "weisheit": 4 }
+        },
+        {
+          "id": "gen_modifikation",
+          "name": "Genetische Modifikation legalisiert",
+          "wahrscheinlichkeit": 0.25,
+          "beschreibung": "Kinder können nun geplant 'verbessert' werden. Was bist du noch?",
+          "karma_effekte": { "weisheit": 6, "ehrlichkeit": 3 }
+        },
+        {
+          "id": "klimakrise_final",
+          "name": "Klimakrise: Letzte Chance",
+          "wahrscheinlichkeit": 0.10,
+          "beschreibung": "Die Erde hat ihre letzte Warnung gegeben. Kollektives Handeln oder Kollaps.",
+          "karma_effekte": { "mitgefuehl": 7, "weisheit": 5, "grosszuegigkeit": 5 }
+        }
       ],
-      "besonderheiten": "Post-Humanismus, KI-Ethik, interstellare Zivilisation. Die Frage was es bedeutet Mensch zu sein bestimmt alles.",
-      "soziale_klassen": {
-        "transhuman": "Haben biologische Grenzen überwunden.",
-        "naturmensch": "Lehnen Augmentierungen ab – werden eine Minderheit.",
-        "digital_existenz": "Leben als Bewusstsein in digitalen Welten.",
-        "kolonisten": "Erste Generationen auf anderen Planeten."
-      }
+      "besonderheiten": "Starke KI, Weltraumkolonien, Gentechnik, Transhumanismus, Virtual Reality als Lebenswelt, Postgeldgesellschaft, Klimarestaurierung",
+      "typischeWerte": ["Authentizität", "Verbundenheit", "Sinn", "Würde", "Verantwortung"],
+      "schwierigkeitsgrad": 0.40
     }
   ]
 }

@@ -1,10 +1,9 @@
 {
   "app": {
     "titel": "GENESIS: Der Kreislauf des Lebens",
-    "kurzname": "GENESIS",
     "untertitel": "Jedes Leben ist eine Reise. Jede Entscheidung ein Schritt.",
     "version": "0.1.0",
-    "ladetext": "Das Universum bereitet sich vor..."
+    "entwickler": "GENESIS Studio"
   },
   "hauptmenue": {
     "neues_leben": "Neues Leben beginnen",
@@ -12,234 +11,213 @@
     "bibliothek": "Seelenbibliothek",
     "einstellungen": "Einstellungen",
     "zyklus_anzeige": "Zyklus {n} | {reich}",
-    "keine_gespeicherten": "Kein gespeichertes Leben gefunden",
-    "willkommen": "Willkommen zurück, {name}"
+    "seele_beginnt": "Deine Seele beginnt ihre erste Reise",
+    "zitat": "Jedes Leben ist eine Reise. Jede Entscheidung ein Schritt."
+  },
+  "neues_spiel": {
+    "titel": "Neues Leben",
+    "schritt_von": "{schritt} / 3",
+    "schritt1_titel": "Wer bist du?",
+    "schritt1_beschreibung": "Gib deiner Seele einen Namen. Dieser Name begleitet dich durch alle Zyklen.",
+    "name_label": "DEIN NAME",
+    "name_platzhalter": "z.B. Maximilian",
+    "name_hinweis": "Dieser Name wird in der Seelenbibliothek gespeichert und begleitet alle deine zukünftigen Inkarnationen.",
+    "schritt2_titel": "Wähle dein Zeitalter",
+    "schritt2_beschreibung": "Das Zeitalter bestimmt deine Welt, deine Möglichkeiten und die Herausforderungen deines Lebens.",
+    "schritt3_titel": "Deine Seele ist bereit",
+    "schritt3_beschreibung": "Überprüfe deine Auswahl und beginne dein Leben.",
+    "seelen_code_label": "SEELEN-CODE",
+    "seelen_code_hinweis": "Einzigartiger Identifikator deiner Seele",
+    "weiter": "Weiter",
+    "zurueck": "Zurück",
+    "start": "Das Leben beginnt...",
+    "fehler_name": "Bitte gib einen Namen ein.",
+    "fehler_zeitalter": "Bitte wähle ein Zeitalter.",
+    "zitat_end": "Jedes Leben ist eine einzigartige Chance,\ndie Seele zu formen."
   },
   "phasen": {
-    "entstehung": {
-      "name": "Die Entstehung",
-      "untertitel": "Das Rennen um das Leben",
-      "beschreibung": "Millionen von dir rasen durch die Unendlichkeit. Deine Route bestimmt dein Fundament."
-    },
-    "formung": {
-      "name": "Die Formung",
-      "untertitel": "Der Körper erwacht",
-      "beschreibung": "Stück für Stück entsteht das Gefäß für deine Seele."
-    },
-    "kindheit": {
-      "name": "Die Kindheit",
-      "untertitel": "Alter 0–12",
-      "beschreibung": "Die Welt beginnt verschwommen. Langsam wird sie schärfer."
-    },
-    "jugend": {
-      "name": "Die Jugend",
-      "untertitel": "Alter 13–18",
-      "beschreibung": "Wer bist du? Zwischen dem wer du warst und wer du werden wirst."
-    },
-    "erwachsen": {
-      "name": "Das Erwachsenenalter",
-      "untertitel": "Alter 19–50",
-      "beschreibung": "Das volle Leben mit all seiner Komplexität und all seinen Chancen."
-    },
-    "reife": {
-      "name": "Die Reife",
-      "untertitel": "Alter 51–Tod",
-      "beschreibung": "Was bleibt? Was gibst du weiter? Die letzten großen Fragen."
-    },
-    "jenseits": {
-      "name": "Das Jenseits",
-      "untertitel": "Der Übergang",
-      "beschreibung": "Das Leben endet. Eine neue Dimension beginnt."
-    },
-    "kosmisch": {
-      "name": "Kosmisches Bewusstsein",
-      "untertitel": "Nach vielen Leben",
-      "beschreibung": "Du erkennst das Muster. Du siehst den Kreislauf."
-    },
-    "schoepfung": {
-      "name": "Die Schöpfung",
-      "untertitel": "Das geheime Endgame",
-      "beschreibung": "Erschaffe deine eigene Welt. Werde zum Schöpfer."
+    "entstehung": "Die Entstehung",
+    "formung": "Die Formung",
+    "kindheit": "Die Kindheit",
+    "jugend": "Die Jugend",
+    "erwachsen": "Das Erwachsenenleben",
+    "reife": "Die Reife",
+    "jenseits_vorbereitung": "Die Jenseits-Vorbereitung",
+    "kosmisch": "Die Kosmische Reise",
+    "schoepfung": "Die Schöpfung",
+    "phase": "Phase",
+    "phase_uebergang": "Phase {n} – {name}",
+    "beschreibungen": {
+      "entstehung": "Der Wettlauf ums Leben beginnt. Millionen von Seelen streben nach der Eizelle. Nur eine wird geboren.",
+      "formung": "Neun Monate der Stille. Ein Körper entsteht aus dem Nichts. Das Bewusstsein erwacht langsam.",
+      "kindheit": "Die Welt ist neu und voller Wunder. Jede Entscheidung formt den Charakter. Das Karma beginnt zu wachsen.",
+      "jugend": "Zwischen Kind und Erwachsenem. Wer bin ich? Wo gehöre ich hin? Die ersten großen Entscheidungen.",
+      "erwachsen": "Die Welt erwartet deine Beiträge. Liebe, Arbeit, Verantwortung – alles auf einmal. Welches Erbe willst du hinterlassen?",
+      "reife": "Die Früchte des Lebens reifen. Weisheit ersetzt Impulsivität. Was bleibt von dem, was du aufgebaut hast?",
+      "jenseits_vorbereitung": "Das Ende nähert sich. Alles wird klar in der Stille des Alters. Frieden oder Reue – du entscheidest.",
+      "kosmisch": "Zwischen den Welten. Das Leben erscheint wie ein Traum. Die kosmische Wahrheit offenbart sich.",
+      "schoepfung": "Der Kreislauf schließt sich. Du kannst nun das nächste Leben formen. Was gibst du der nächsten Seele mit?"
     }
   },
   "karma": {
-    "dimensionen": {
-      "mitgefuehl": "Mitgefühl",
-      "grausamkeit": "Grausamkeit",
-      "ehrlichkeit": "Ehrlichkeit",
-      "taeuschung": "Täuschung",
-      "mut": "Mut",
-      "feigheit": "Feigheit",
-      "grosszuegigkeit": "Großzügigkeit",
-      "gier": "Gier",
-      "weisheit": "Weisheit",
-      "ignoranz": "Ignoranz",
-      "liebe": "Liebe",
-      "gleichgueltigkeit": "Gleichgültigkeit"
-    },
-    "kategorien": {
-      "tugendhaft": "Tugendhaft",
-      "gut": "Gut",
-      "ausgeglichen": "Ausgeglichen",
-      "dunkel": "Dunkel",
-      "verdorben": "Verdorben"
-    },
-    "aenderungen": {
-      "positiv": "+{wert} {dimension}",
-      "negativ": "{wert} {dimension}",
-      "hinweis": "Karma-Auswirkung"
-    }
+    "mitgefuehl": "Mitgefühl",
+    "grausamkeit": "Grausamkeit",
+    "ehrlichkeit": "Ehrlichkeit",
+    "taeuschung": "Täuschung",
+    "mut": "Mut",
+    "feigheit": "Feigheit",
+    "grosszuegigkeit": "Großzügigkeit",
+    "gier": "Gier",
+    "weisheit": "Weisheit",
+    "ignoranz": "Ignoranz",
+    "liebe": "Liebe",
+    "gleichgueltigkeit": "Gleichgültigkeit",
+    "karma_positiv": "Positives Karma",
+    "karma_negativ": "Negatives Karma",
+    "karma_neutral": "Neutrales Karma",
+    "karma_aenderung": "{vorzeichen}{wert} Karma",
+    "karma_gesamt": "Gesamtkarma",
+    "karma_durchschnitt": "Karma-Durchschnitt"
   },
-  "jenseits_reiche": {
+  "jenseits": {
     "elysium": {
       "name": "Elysium",
-      "beschreibung": "Das Reich des ewigen Lichts. Für Seelen die gelebt, geliebt und vergeben haben.",
-      "mechanik": "Aufbau-Strategie in paradiesischer Umgebung",
-      "eintritt_text": "Das Licht ist warm. Du kennst es.",
-      "schwelle": "Durchschnitt über 60"
+      "artikel": "Das Elysium",
+      "beschreibung": "Das Reich ewiger Harmonie. Nur reinste Seelen ruhen hier in vollkommener Erleuchtung. Ewiger Frieden und Licht umgeben dich.",
+      "karma_schwelle": "Durchschnitt ≥ 60"
     },
     "harmonia": {
       "name": "Harmonia",
-      "beschreibung": "Das Reich der ausgewogenen Seelen. Weder Heilige noch Sünder – Menschen.",
-      "mechanik": "Diplomatie-Simulation unter Gleichgesinnten",
-      "eintritt_text": "Ein ruhiger Ort. Ausgeglichen wie du.",
-      "schwelle": "Durchschnitt 20 bis 60"
+      "artikel": "Das Harmonia",
+      "beschreibung": "Das Reich der Ausgeglichenen. Gute Seelen finden hier Ruhe, natürliche Schönheit und wohlverdiente Freude. Du hast gut gelebt.",
+      "karma_schwelle": "Durchschnitt ≥ 20"
     },
     "limbus": {
       "name": "Limbus",
-      "beschreibung": "Das Zwischenreich. Für Seelen die noch nicht wissen wer sie sind.",
-      "mechanik": "Puzzle und Mysterium – die Wahrheit finden",
-      "eintritt_text": "Grau. Aber Grau hat viele Schattierungen.",
-      "schwelle": "Durchschnitt -20 bis 20"
+      "artikel": "Der Limbus",
+      "beschreibung": "Das Reich des Übergangs. Unentschiedene Seelen verweilen hier im ewigen Grau zwischen den Welten. Noch ist nichts entschieden.",
+      "karma_schwelle": "Durchschnitt zwischen -20 und 20"
     },
     "shadowlands": {
       "name": "Shadowlands",
-      "beschreibung": "Das Reich der Schatten. Für Seelen mit zu viel Dunkelheit.",
-      "mechanik": "Exploration in düsterer Umgebung – Erlösung möglich",
-      "eintritt_text": "Dunkel. Aber Dunkel ist nicht das Ende.",
-      "schwelle": "Durchschnitt -60 bis -20"
+      "artikel": "Die Shadowlands",
+      "beschreibung": "Das Reich der Schatten. Seelen mit negativem Karma büßen hier ihre Taten in ewiger Dunkelheit. Das Licht scheint fern.",
+      "karma_schwelle": "Durchschnitt ≤ -20"
     },
     "abyssus": {
       "name": "Abyssus",
-      "beschreibung": "Der Abgrund. Das tiefste Reich. Roguelike-Survival mit Chance auf Erlösung.",
-      "mechanik": "Roguelike-Survival – jeder Zug könnte der letzte sein",
-      "eintritt_text": "Tief. Sehr tief. Aber: kein Weg ist ohne Rückkehr.",
-      "schwelle": "Durchschnitt unter -60"
+      "artikel": "Der Abyssus",
+      "beschreibung": "Der tiefste Abgrund. Nur die schwärzesten Seelen werden hier in ewiger Qual gefangen. Die Dunkelheit ist absolut.",
+      "karma_schwelle": "Durchschnitt ≤ -60"
     }
-  },
-  "entscheidungen": {
-    "zeitlimit": "Du hast {sekunden} Sekunden",
-    "ohne_limit": "Nimm dir die Zeit",
-    "konsequenz_sofort": "Sofortige Auswirkung:",
-    "konsequenz_spaeter": "Wird sich zeigen...",
-    "karma_auswirkung": "Karma-Auswirkung",
-    "parallelvision_hinweis": "Eine verschwommene Vision anderer Möglichkeiten...",
-    "mikro_entscheidung": "Ein kleiner Moment"
-  },
-  "gedanken": {
-    "typen": {
-      "ueberzeugung": "Überzeugung",
-      "erinnerung": "Erinnerung",
-      "trauma": "Trauma",
-      "weisheit": "Weisheit",
-      "wunsch": "Wunsch",
-      "angst": "Angst",
-      "indoktrination": "Geerbter Gedanke",
-      "geerbterGedanke": "Aus früheren Leben"
-    },
-    "giftig": "Dieser Gedanke schadet dir",
-    "loslassen": "Loslassen",
-    "abschliessen": "Abschließen",
-    "mitgenommen": "Du nimmst ihn mit"
-  },
-  "beziehungen": {
-    "typen": {
-      "elternteil": "Elternteil",
-      "geschwister": "Geschwister",
-      "freund": "Freund / Freundin",
-      "partner": "Partner / Partnerin",
-      "kind": "Kind",
-      "kollege": "Kollege / Kollegin",
-      "mentor": "Mentor / Mentorin",
-      "rivale": "Rivale / Rivalin",
-      "feind": "Feind / Feindin"
-    },
-    "staerken": {
-      "sehr_stark": "Tiefste Verbundenheit",
-      "stark": "Enge Vertrauensperson",
-      "mittel": "Guter Bekannter",
-      "schwach": "Flüchtige Bekanntschaft",
-      "negativ": "Angespannte Beziehung",
-      "feindlich": "Feindschaft"
-    }
-  },
-  "karma_gericht": {
-    "ankunft": "Das Gericht der Seele",
-    "ankunft_sub": "Was du warst, wird gewogen. Nicht von anderen. Von dir.",
-    "sortierung": "Dein Leben wird sortiert...",
-    "sortierung_info": "Abgeschlossenes wird zur Stärke.\nOffenes wird zur Narbe.\nBeides trägst du mit.",
-    "mitgenommen": "Du nimmst mit:",
-    "grund": "Weil es dich nicht losgelassen hat.",
-    "staerke": "wird zur Stärke",
-    "narbe": "wird zur Narbe"
-  },
-  "emotionen": {
-    "wetter": {
-      "sonnenschein": "Glück und Freude",
-      "regen": "Melancholie",
-      "gewitter": "Wut oder Angst",
-      "warmes_leuchten": "Verliebt",
-      "kosmisch": "Spirituelle Klarheit",
-      "nebel": "Unsicherheit",
-      "sturm": "Innerer Sturm",
-      "klar": "Frieden"
-    }
-  },
-  "zeitalter": {
-    "mittelalter": "Das Mittelalter",
-    "renaissance": "Die Renaissance",
-    "industriezeitalter": "Das Industriezeitalter",
-    "moderne": "Die Moderne",
-    "zukunft": "Die Zukunft",
-    "wechsel_text": "Eine neue Ära beginnt. Die Welt hat sich verändert."
-  },
-  "fehler": {
-    "kein_profil": "Kein Spielerprofil gefunden",
-    "kein_zyklus": "Kein aktiver Lebenszyklus",
-    "speichern_fehlgeschlagen": "Speichern fehlgeschlagen",
-    "laden_fehlgeschlagen": "Laden fehlgeschlagen",
-    "allgemein": "Ein Fehler ist aufgetreten"
-  },
-  "bestaetigung": {
-    "daten_loeschen": "Alle gespeicherten Daten löschen?",
-    "daten_loeschen_info": "Diese Aktion kann nicht rückgängig gemacht werden. Alle Leben, Erinnerungen und dein Karma-Profil werden gelöscht.",
-    "ja": "Ja",
-    "nein": "Nein",
-    "abbrechen": "Abbrechen",
-    "bestaetigen": "Bestätigen"
   },
   "einstellungen": {
-    "musik_lautstaerke": "Musik-Lautstärke",
-    "effekte_lautstaerke": "Effekte-Lautstärke",
-    "haptisch": "Haptisches Feedback",
+    "titel": "Einstellungen",
+    "audio": "Audio",
+    "musik": "Musik",
+    "effekte": "Effekte",
+    "stumm": "Stumm",
+    "mittel": "Mittel",
+    "laut": "Laut",
+    "steuerung": "Steuerung",
+    "haptisch_feedback": "Haptisches Feedback",
+    "haptisch_beschreibung": "Vibration bei Entscheidungen und Ereignissen",
     "sprache": "Sprache",
-    "ueber": "Über GENESIS",
-    "version": "Version {v}",
-    "daten_loeschen": "Gespeicherte Daten löschen"
+    "sprache_aktuell": "Deutsch",
+    "sprache_hinweis": "Weitere Sprachen folgen in späteren Versionen",
+    "ueber": "Über das Spiel",
+    "version": "Version",
+    "entwickler": "Entwickler",
+    "daten": "Daten",
+    "daten_loeschen": "Gespeicherte Daten löschen",
+    "daten_loeschen_beschreibung": "Alle Leben, Karma-Daten und Fortschritte werden gelöscht",
+    "daten_loeschen_dialog_titel": "Daten löschen",
+    "daten_loeschen_dialog_text": "Möchtest du wirklich alle gespeicherten Daten löschen?\n\nDiese Aktion kann nicht rückgängig gemacht werden. Alle Leben, Karma-Profile und die Seelenbibliothek werden unwiederbringlich gelöscht.",
+    "abbrechen": "Abbrechen",
+    "loeschen": "Löschen",
+    "daten_geloescht": "Alle Daten wurden gelöscht."
   },
   "bibliothek": {
     "titel": "Seelenbibliothek",
-    "tabs": {
-      "leben": "Leben",
-      "gedanken": "Gedanken",
-      "weisheiten": "Weisheiten",
-      "ahnenreihe": "Ahnenreihe"
-    },
-    "leer": {
-      "leben": "Deine Geschichte beginnt erst. Lebe dein erstes Leben.",
-      "gedanken": "Noch keine Gedanken mitgenommen.",
-      "weisheiten": "Weisheiten entstehen durch besondere Erlebnisse.",
-      "ahnenreihe": "Der Stammbaum deiner Seele wächst mit jedem Leben."
-    }
+    "tab_leben": "Leben",
+    "tab_gedanken": "Gedanken",
+    "tab_weisheiten": "Weisheiten",
+    "tab_ahnenreihe": "Ahnenreihe",
+    "leer_leben_titel": "Kein Leben gelebt",
+    "leer_leben_text": "Deine Geschichte beginnt erst...\n\nSchließe dein erstes Leben ab, um es hier zu sehen. Jeder Zyklus hinterlässt eine einzigartige Spur in der Seelenbibliothek.",
+    "leer_gedanken_titel": "Keine Gedanken gesammelt",
+    "leer_gedanken_text": "Besondere Erkenntnisse aus deinen Leben erscheinen hier.\n\nManche Gedanken sind so tief, dass sie den Tod überleben und in die nächste Inkarnation mitgenommen werden.",
+    "leer_weisheiten_titel": "Noch keine Weisheiten",
+    "leer_weisheiten_text": "Weisheiten werden durch besondere Entscheidungen und das Erreichen von Meilensteinen freigeschaltet.\n\nLebe mehrere Zyklen, um die tiefsten Geheimnisse der Existenz zu entdecken.",
+    "leer_ahnenreihe_titel": "Ahnenreihe noch nicht zugänglich",
+    "leer_ahnenreihe_text": "Der Stammbaum deiner Seele entfaltet sich über viele Inkarnationen.\n\nMit jedem vollendeten Leben wächst dein Stammbaum um einen neuen Ast. Drei abgeschlossene Zyklen sind notwendig, um die Ahnenreihe freizuschalten.",
+    "ahnenreihe_schwelle": "Starte 3 Zyklen um deinen Stammbaum zu enthüllen"
+  },
+  "buttons": {
+    "weiter": "Weiter",
+    "zurueck": "Zurück",
+    "abbrechen": "Abbrechen",
+    "bestaetigen": "Bestätigen",
+    "loeschen": "Löschen",
+    "spielen": "Spielen",
+    "neues_leben": "Neues Leben beginnen",
+    "fortfahren": "Fortfahren",
+    "urteil_empfangen": "Urteil empfangen",
+    "neu_geboren": "Neu geboren werden",
+    "vor_gericht": "Vor das Karma-Gericht",
+    "das_leben_beginnt": "Das Leben beginnt...",
+    "weiter_kurzform": "Weiter"
+  },
+  "fehler": {
+    "allgemein": "Ein unerwarteter Fehler ist aufgetreten.",
+    "laden": "Fehler beim Laden der Daten.",
+    "speichern": "Fehler beim Speichern der Daten.",
+    "netzwerk": "Keine Netzwerkverbindung.",
+    "datei_nicht_gefunden": "Die Datei konnte nicht gefunden werden.",
+    "ungueltige_eingabe": "Ungültige Eingabe. Bitte prüfe deine Angaben.",
+    "route_nicht_gefunden": "Route nicht gefunden",
+    "zurueck_hauptmenue": "Zurück zum Hauptmenü"
+  },
+  "bestaetigung": {
+    "sicher": "Bist du sicher?",
+    "daten_loeschen": "Möchtest du wirklich alle Daten unwiderruflich löschen?",
+    "neues_spiel": "Möchtest du wirklich ein neues Leben beginnen? Der aktuelle Fortschritt geht verloren.",
+    "beenden": "Möchtest du das Spiel wirklich beenden?"
+  },
+  "spielhud": {
+    "alter": "Alter: {alter}",
+    "zyklus": "Zyklus {n}",
+    "karma": "Karma",
+    "phase": "Phase {n}",
+    "zeitalter": "{zeitalter}"
+  },
+  "entscheidung": {
+    "frage_prefix": "Was tust du?",
+    "option_a": "A",
+    "option_b": "B",
+    "option_c": "C",
+    "konsequenz_sofort": "Sofortige Wirkung:",
+    "konsequenz_spaeter": "Langfristige Wirkung",
+    "karma_gewinn": "+{wert} {dimension}",
+    "karma_verlust": "{wert} {dimension}"
+  },
+  "sterbe_sequenz": {
+    "das_leben_endet": "Das Leben endet.",
+    "bewusstsein_bleibt": "Das Bewusstsein bleibt.",
+    "seele_traegt": "Die Seele trägt alles, was sie gelernt hat,\nin die Ewigkeit.",
+    "vor_gericht_button": "Vor das Karma-Gericht"
+  },
+  "karma_gericht": {
+    "titel": "KARMA-GERICHT",
+    "untertitel": "Die Waage der Seele",
+    "text": "Dein Leben wird gewogen.\nJede Entscheidung zählt.\nJede Tat hinterlässt eine Spur in der Ewigkeit.",
+    "urteil_button": "Urteil empfangen"
+  },
+  "zeitalter_auswahl": {
+    "mittelalter": "Mittelalter",
+    "renaissance": "Renaissance",
+    "industriezeitalter": "Industriezeitalter",
+    "moderne": "Moderne",
+    "zukunft": "Zukunft"
   }
 }
