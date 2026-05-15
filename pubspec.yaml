@@ -1,0 +1,109 @@
+name: genesis_kreislauf_des_lebens
+description: >
+  GENESIS: Der Kreislauf des Lebens – Ein episches Lebenssimulations-RPG,
+  in dem der Spieler mehrere Leben durch verschiedene Zeitalter erlebt,
+  Karma ansammelt und seine ewige Seele weiterentwickelt.
+publish_to: 'none'
+version: 0.1.0+1
+
+environment:
+  sdk: '>=3.3.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # ── Spiel-Engine ─────────────────────────────────────────────────────────
+  flame: ^1.18.0                    # Hauptspiel-Engine für 2-D-Rendering
+
+  # ── State-Management ─────────────────────────────────────────────────────
+  flutter_riverpod: ^2.5.1          # Reaktives State-Management
+  riverpod_annotation: ^2.3.5       # Code-Generierung für Riverpod-Provider
+
+  # ── Lokale Datenbank ─────────────────────────────────────────────────────
+  hive: ^2.2.3                      # Schnelle, leichtgewichtige Key-Value-DB
+  hive_flutter: ^1.1.0              # Flutter-Integration für Hive
+
+  # ── Navigation ───────────────────────────────────────────────────────────
+  go_router: ^13.2.0                # Deklaratives URL-basiertes Routing
+
+  # ── Code-Generierung / Serialisierung ────────────────────────────────────
+  freezed_annotation: ^2.4.4        # Annotationen für unveränderliche Klassen
+  json_annotation: ^4.9.0           # JSON-Serialisierungsannotationen
+
+  # ── Audio ─────────────────────────────────────────────────────────────────
+  audioplayers: ^6.0.0              # Kurzton-Effekte und Ereignisklänge
+  just_audio: ^0.9.39               # Hochqualitatives Streaming / Hintergrundmusik
+
+  # ── Animationen ───────────────────────────────────────────────────────────
+  rive: ^0.13.14                    # Interaktive Vektoranimationen (Charaktere, UI)
+  lottie: ^3.1.0                    # After-Effects-Animationen als JSON
+  flutter_animate: ^4.5.0           # Deklaratives Animation-API für Widgets
+
+  # ── Hilfspakete ───────────────────────────────────────────────────────────
+  uuid: ^4.4.0                      # UUID-Generierung für eindeutige IDs
+  equatable: ^2.0.5                 # Wertegleichheit ohne Boilerplate
+  shared_preferences: ^2.2.3        # Einfache persistente Einstellungen
+
+  # ── Dependency-Injection ──────────────────────────────────────────────────
+  get_it: ^7.6.7                    # Service-Locator für DI
+  injectable: ^2.4.1                # Annotationsbasierte Dependency-Injection
+
+  # ── UI / UX ───────────────────────────────────────────────────────────────
+  google_fonts: ^6.2.1              # Cinzel & Lato über Google Fonts
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^4.0.0
+
+  # ── Code-Generierung (Build) ──────────────────────────────────────────────
+  build_runner: ^2.4.9              # Führt Code-Generatoren aus
+  freezed: ^2.5.2                   # Generiert unveränderliche Datenklassen
+  json_serializable: ^6.8.0         # Generiert fromJson/toJson-Methoden
+  riverpod_generator: ^2.4.0        # Generiert Riverpod-Provider
+  hive_generator: ^2.0.1            # Generiert Hive-TypeAdapter
+  injectable_generator: ^2.6.1      # Generiert DI-Registrierungscode
+
+flutter:
+  uses-material-design: true
+
+  # ── Asset-Verzeichnisse ───────────────────────────────────────────────────
+  assets:
+    # Spielinhalts-Daten (JSON)
+    - assets/data/
+
+    # Grafiken, Sprites, Hintergründe
+    - assets/images/
+
+    # Hintergrundmusik, Soundeffekte, Ambient-Klänge
+    - assets/audio/
+
+    # GLSL-Shader für visuelle Effekte (Aura, Karma-Glow, Wetter)
+    - assets/shaders/
+
+    # Rive- und Lottie-Animationsdateien
+    - assets/animations/
+
+  # ── Schriftarten ─────────────────────────────────────────────────────────
+  fonts:
+    - family: Cinzel
+      fonts:
+        - asset: assets/fonts/Cinzel-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/Cinzel-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/Cinzel-Bold.ttf
+          weight: 700
+    - family: Lato
+      fonts:
+        - asset: assets/fonts/Lato-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/Lato-Italic.ttf
+          weight: 400
+          style: italic
+        - asset: assets/fonts/Lato-Bold.ttf
+          weight: 700
+        - asset: assets/fonts/Lato-BoldItalic.ttf
+          weight: 700
+          style: italic
