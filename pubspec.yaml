@@ -51,6 +51,7 @@ dependencies:
 
   # ── UI / UX ───────────────────────────────────────────────────────────────
   google_fonts: ^6.2.1              # Cinzel & Lato über Google Fonts
+  flutter_svg: ^2.0.10+1            # SVG-Rendering für Vektorgrafiken
 
 dev_dependencies:
   flutter_test:
@@ -64,6 +65,28 @@ dev_dependencies:
   riverpod_generator: ^2.4.0        # Generiert Riverpod-Provider
   hive_generator: ^2.0.1            # Generiert Hive-TypeAdapter
   injectable_generator: ^2.6.1      # Generiert DI-Registrierungscode
+  flutter_gen_runner: ^5.4.0        # Generiert typsichere Asset-Referenzen
+
+# ── flutter_gen-Konfiguration ─────────────────────────────────────────────────
+flutter_gen:
+  output: lib/gen/                  # Zielverzeichnis für generierte Asset-Klassen
+  line_length: 100                  # Zeilenlänge für generierten Code
+
+  integrations:
+    flutter_svg: true               # SVG-Assets als typsichere Klassen
+    lottie: true                    # Lottie-Animationen als typsichere Klassen
+    rive: true                      # Rive-Animationen als typsichere Klassen
+
+  assets:
+    enabled: true
+    # Paketname für die generierte Assets-Klasse
+    package_parameter_enabled: false
+
+  fonts:
+    enabled: true                   # Schriftarten als typsichere Konstanten
+
+  colors:
+    enabled: false                  # Farben werden manuell in app_farben.dart gepflegt
 
 flutter:
   uses-material-design: true
