@@ -6,9 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import 'package:genesis_spiel/presentation/screens/splash_screen.dart';
-import 'package:genesis_spiel/presentation/screens/haupt_menue_screen.dart';
-import 'package:genesis_spiel/presentation/screens/neues_spiel_screen.dart';
+import 'package:genesis_kreislauf_des_lebens/presentation/screens/splash_screen.dart';
+import 'package:genesis_kreislauf_des_lebens/presentation/screens/haupt_menue_screen.dart';
+import 'package:genesis_kreislauf_des_lebens/presentation/screens/neues_spiel_screen.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Routen-Pfade als Konstanten

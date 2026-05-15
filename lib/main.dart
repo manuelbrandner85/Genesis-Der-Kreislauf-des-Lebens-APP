@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
-import 'package:genesis_spiel/app/genesis_app.dart';
+import 'package:genesis_kreislauf_des_lebens/app/genesis_app.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Hive-Box-Namen als Konstanten – verhindert Tippfehler bei Zugriffen

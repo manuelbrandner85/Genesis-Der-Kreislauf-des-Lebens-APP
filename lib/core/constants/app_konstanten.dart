@@ -185,141 +185,142 @@ const double kKarmaBarHoehe = 8.0;
 
 /// Die neun Phasen eines Lebens in GENESIS.
 ///
-/// Jede Phase repräsentiert einen Lebensabschnitt mit eigener Mechanik,
-/// verfügbaren Entscheidungen und Karma-Multiplikatoren. Die Phasen
-/// durchläuft der Charakter chronologisch – von der Geburt bis zum Tod.
+/// Jede Phase repräsentiert einen Lebensabschnitt mit eigener Spielmechanik.
+/// Phase 1-6: Das Leben (Spielphasen), Phase 7: Jenseits, 8-9: Meta-Phasen.
 enum GamePhase {
-  // ── Phase 1: Die Geburt ──────────────────────────────────────────────────
-  /// Ankunft in der Welt. Familie, Zeitalter und erste Talente werden bestimmt.
-  /// Keine aktiven Entscheidungen – rein erzählerisch mit Karma-Startwert.
-  geburt(
+  // ── Phase 1: Die Entstehung ──────────────────────────────────────────────
+  /// Spermium-Rennen mit Arcade-Mechanik in der Flame Engine.
+  /// Die gewählte Route bestimmt die Basis-Attribute des gesamten Lebens.
+  entstehung(
     nummer: 1,
-    anzeigeName: 'Die Geburt',
+    anzeigeName: 'Die Entstehung',
     beschreibung:
-        'Eine neue Seele erblickt das Licht der Welt. Familie, '
-        'Zeitalter und die ersten Talente werden vom Schicksal bestimmt.',
-    karmaMultiplikator: 0.5,
+        'Das Rennen um das Leben. Millionen Konkurrenten – nur einer erreicht das Ziel. '
+        'Deine Route bestimmt deine Basis-Attribute für dieses Leben.',
+    karmaMultiplikator: 0.3,
     minAlter: 0,
     maxAlter: 0,
     istEntscheidungsPhase: false,
   ),
 
-  // ── Phase 2: Die Kindheit ────────────────────────────────────────────────
-  /// Erste Prägungen. Spielerische Entscheidungen formen Grundcharakter.
-  /// Karma-Auswirkungen sind gedämpft (Kinder handeln aus Unwissenheit).
-  kindheit(
+  // ── Phase 2: Die Formung ─────────────────────────────────────────────────
+  /// Embryo-Phase mit Puzzle-Aufbau-Mechanik.
+  /// Organe platzieren, Verbindungen herstellen, Herzschlag-Rhythmus.
+  formung(
     nummer: 2,
+    anzeigeName: 'Die Formung',
+    beschreibung:
+        'Der Körper entsteht. Puzzle für Puzzle, Organ für Organ. '
+        'Die Geburt als cinematischer Moment ins Licht.',
+    karmaMultiplikator: 0.4,
+    minAlter: 0,
+    maxAlter: 0,
+    istEntscheidungsPhase: false,
+  ),
+
+  // ── Phase 3: Die Kindheit ────────────────────────────────────────────────
+  /// Discovery-Exploration. Krabbeln → Laufen → Rennen.
+  /// Erste moralische Entscheidungen mit gedämpftem Karma-Effekt.
+  kindheit(
+    nummer: 3,
     anzeigeName: 'Die Kindheit',
     beschreibung:
-        'Die ersten Jahre formen den Charakter. Spielerische Neugier, '
-        'erste Freundschaften und unschuldige Entscheidungen.',
-    karmaMultiplikator: 0.7,
-    minAlter: 1,
+        'Die Welt beginnt verschwommen und wird langsam schärfer. '
+        'Erste Freundschaften, Sprache und moralische Weichenstellungen.',
+    karmaMultiplikator: 0.6,
+    minAlter: 0,
     maxAlter: 12,
     istEntscheidungsPhase: true,
   ),
 
-  // ── Phase 3: Die Jugend ──────────────────────────────────────────────────
-  /// Identitätsfindung, erste Liebe, Lehrzeit oder Schule.
-  /// Mittlerer Karma-Multiplikator – Bewusstsein wächst.
+  // ── Phase 4: Die Jugend ──────────────────────────────────────────────────
+  /// Social-Simulation mit Strategie. Cliquen, erste Liebe, Identität.
+  /// Skill-Tree für Bildung, Sport, Kunst und Soziales.
   jugend(
-    nummer: 3,
+    nummer: 4,
     anzeigeName: 'Die Jugend',
     beschreibung:
-        'Zwischen Kindheit und Erwachsensein. Erste große Entscheidungen '
-        'über Werte, Freundschaft und den eigenen Weg.',
+        'Schule, Freundschaft, erste Liebe und Identitätsfindung. '
+        'Das Cliquen-System und schwieriger werdende Entscheidungen.',
     karmaMultiplikator: 0.9,
     minAlter: 13,
-    maxAlter: 17,
+    maxAlter: 18,
     istEntscheidungsPhase: true,
   ),
 
-  // ── Phase 4: Der Aufbruch ────────────────────────────────────────────────
-  /// Berufswahl, Auszug, erste Eigenverantwortung. Hohe Karma-Aktivität.
-  aufbruch(
-    nummer: 4,
-    anzeigeName: 'Der Aufbruch',
-    beschreibung:
-        'Die Welt öffnet sich. Karriere, Reisen, neue Beziehungen – '
-        'der erste große Schritt in die Eigenverantwortung.',
-    karmaMultiplikator: 1.0,
-    minAlter: 18,
-    maxAlter: 25,
-    istEntscheidungsPhase: true,
-  ),
-
-  // ── Phase 5: Die Blüte ───────────────────────────────────────────────────
-  /// Hochphase des Lebens. Familie, Karriere-Gipfel, tiefe Beziehungen.
-  /// Höchster Karma-Multiplikator – voll verantwortliche Entscheidungen.
-  bluetePunkt(
+  // ── Phase 5: Das Erwachsenenalter ────────────────────────────────────────
+  /// Vollständige Lebenssimulation. 50+ Karrierepfade, Beziehungen,
+  /// Familiengründung, Finanzen, mentale Gesundheit, Zufallsereignisse.
+  erwachsen(
     nummer: 5,
-    anzeigeName: 'Die Blüte',
+    anzeigeName: 'Das Erwachsenenalter',
     beschreibung:
-        'Die goldene Zeit des Lebens. Liebe, Familie, Beruf und '
-        'gesellschaftliche Verantwortung verlangen alles.',
+        'Die volle Komplexität des Lebens: Karriere, Familie, Finanzen, '
+        'Reisen, Krankheit, Lottogewinn und die großen Krisen.',
     karmaMultiplikator: 1.2,
-    minAlter: 26,
-    maxAlter: 45,
+    minAlter: 19,
+    maxAlter: 50,
     istEntscheidungsPhase: true,
   ),
 
-  // ── Phase 6: Die Prüfung ─────────────────────────────────────────────────
-  /// Krise, Verlust, Wendepunkt. Bewährt sich der Charakter im Dunkel?
-  pruefung(
+  // ── Phase 6: Die Reife ───────────────────────────────────────────────────
+  /// Legacy-Strategie. Gesundheit als zentrale Ressource.
+  /// Wissen weitergeben, Flashbacks, Tod auf dem Sterbebett.
+  reife(
     nummer: 6,
-    anzeigeName: 'Die Prüfung',
+    anzeigeName: 'Die Reife',
     beschreibung:
-        'Das Leben stellt auf die Probe. Verlust, Scheitern oder Versuchung – '
-        'wie reagiert die Seele, wenn alles wackelt?',
-    karmaMultiplikator: 1.3,
-    minAlter: 30,
-    maxAlter: 55,
-    istEntscheidungsPhase: true,
-  ),
-
-  // ── Phase 7: Die Weisheit ────────────────────────────────────────────────
-  /// Rückblick, Weitergabe, Vermächtnis. Karma-Auswirkungen stark durch
-  /// Weisheit und Reflexion – sowohl positiv als auch negativ möglich.
-  weisheit(
-    nummer: 7,
-    anzeigeName: 'Die Weisheit',
-    beschreibung:
-        'Die Jahre bringen Klarheit. Was hat das Leben gelehrt? '
-        'Wissen und Erfahrung werden weitergegeben.',
+        'Wissen weitergeben, Loslassen lernen. Gesundheit wird zur '
+        'wichtigsten Ressource. Die letzte Entscheidung auf dem Sterbebett.',
     karmaMultiplikator: 1.1,
-    minAlter: 50,
-    maxAlter: 70,
-    istEntscheidungsPhase: true,
-  ),
-
-  // ── Phase 8: Das Vermächtnis ─────────────────────────────────────────────
-  /// Letzte große Entscheidungen: Wie soll man erinnert werden?
-  /// Was hinterlässt man der Welt?
-  vermaechtnis(
-    nummer: 8,
-    anzeigeName: 'Das Vermächtnis',
-    beschreibung:
-        'Was bleibt? Die letzte Gelegenheit, den eigenen Fußabdruck '
-        'in der Welt zu hinterlassen – oder zu tilgen.',
-    karmaMultiplikator: 1.0,
-    minAlter: 65,
-    maxAlter: 85,
-    istEntscheidungsPhase: true,
-  ),
-
-  // ── Phase 9: Der Tod ─────────────────────────────────────────────────────
-  /// Abschluss des Lebenszyklus. Letzter innerer Monolog, Karma-Abrechnung,
-  /// Übergang ins Jenseits. Keine Entscheidungen mehr möglich.
-  tod(
-    nummer: 9,
-    anzeigeName: 'Der Tod',
-    beschreibung:
-        'Der Vorhang fällt. Das Leben wird zur Erinnerung. '
-        'Die Seele tritt vor das kosmische Gericht des Karma.',
-    karmaMultiplikator: 0.0,
-    minAlter: 1,
+    minAlter: 51,
     maxAlter: 120,
+    istEntscheidungsPhase: true,
+  ),
+
+  // ── Phase 7: Das Jenseits ────────────────────────────────────────────────
+  /// 5 Reiche basierend auf dem Karma-Profil. Geister-Modus, Karma-Gericht,
+  /// Verlorene Seelen helfen, Wettkampf der Seelen.
+  jenseits(
+    nummer: 7,
+    anzeigeName: 'Das Jenseits',
+    beschreibung:
+        'Fünf Reiche warten. Elysium, Harmonia, Limbus, Shadowlands oder Abyssus – '
+        'dein Karma entscheidet wohin. Das ist kein Ende.',
+    karmaMultiplikator: 0.5,
+    minAlter: 0,
+    maxAlter: 0,
+    istEntscheidungsPhase: true,
+  ),
+
+  // ── Phase 8: Das Kosmische Bewusstsein ───────────────────────────────────
+  /// Nach genug Zyklen erreichbar. Die Bibliothek offenbart sich vollständig.
+  /// Vorbereitung für den Schöpfungsmodus.
+  kosmisch(
+    nummer: 8,
+    anzeigeName: 'Kosmisches Bewusstsein',
+    beschreibung:
+        'Nach vielen Leben: Die Muster werden sichtbar. Die Seele erkennt '
+        'den Kreislauf. Die Schöpfung wartet.',
+    karmaMultiplikator: 0.0,
+    minAlter: 0,
+    maxAlter: 0,
     istEntscheidungsPhase: false,
+  ),
+
+  // ── Phase 9: Die Schöpfung ───────────────────────────────────────────────
+  /// Geheimes Endgame. Eigene Welten erschaffen in denen andere leben können.
+  /// Regeln, Zeitalter und Herausforderungen selbst designen.
+  schoepfung(
+    nummer: 9,
+    anzeigeName: 'Die Schöpfung',
+    beschreibung:
+        'Das geheime Endgame. Erschaffe eigene Welten, setze Regeln '
+        'und werde selbst zum Schöpfer des nächsten Kreislaufs.',
+    karmaMultiplikator: 0.0,
+    minAlter: 0,
+    maxAlter: 0,
+    istEntscheidungsPhase: true,
   );
 
   // ── Konstruktor ────────────────────────────────────────────────────────────
@@ -368,17 +369,17 @@ enum GamePhase {
   }
 
   /// Gibt zurück, ob dies die letzte Phase des Lebens ist.
-  bool get istLetztPhase => this == GamePhase.tod;
+  bool get istLetztPhase => this == GamePhase.jenseits;
 
   /// Gibt zurück, ob dies die erste Phase des Lebens ist.
-  bool get istErstePhase => this == GamePhase.geburt;
+  bool get istErstePhase => this == GamePhase.entstehung;
 
   /// Findet eine Phase anhand ihrer Nummer (1–9).
   /// Gibt [geburt] zurück, wenn keine Übereinstimmung gefunden.
   static GamePhase vonNummer(int nummer) {
     return GamePhase.values.firstWhere(
       (p) => p.nummer == nummer,
-      orElse: () => GamePhase.geburt,
+      orElse: () => GamePhase.entstehung,
     );
   }
 

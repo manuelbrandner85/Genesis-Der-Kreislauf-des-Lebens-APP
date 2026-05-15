@@ -1,0 +1,245 @@
+{
+  "app": {
+    "titel": "GENESIS: Der Kreislauf des Lebens",
+    "kurzname": "GENESIS",
+    "untertitel": "Jedes Leben ist eine Reise. Jede Entscheidung ein Schritt.",
+    "version": "0.1.0",
+    "ladetext": "Das Universum bereitet sich vor..."
+  },
+  "hauptmenue": {
+    "neues_leben": "Neues Leben beginnen",
+    "fortfahren": "Fortfahren",
+    "bibliothek": "Seelenbibliothek",
+    "einstellungen": "Einstellungen",
+    "zyklus_anzeige": "Zyklus {n} | {reich}",
+    "keine_gespeicherten": "Kein gespeichertes Leben gefunden",
+    "willkommen": "Willkommen zurück, {name}"
+  },
+  "phasen": {
+    "entstehung": {
+      "name": "Die Entstehung",
+      "untertitel": "Das Rennen um das Leben",
+      "beschreibung": "Millionen von dir rasen durch die Unendlichkeit. Deine Route bestimmt dein Fundament."
+    },
+    "formung": {
+      "name": "Die Formung",
+      "untertitel": "Der Körper erwacht",
+      "beschreibung": "Stück für Stück entsteht das Gefäß für deine Seele."
+    },
+    "kindheit": {
+      "name": "Die Kindheit",
+      "untertitel": "Alter 0–12",
+      "beschreibung": "Die Welt beginnt verschwommen. Langsam wird sie schärfer."
+    },
+    "jugend": {
+      "name": "Die Jugend",
+      "untertitel": "Alter 13–18",
+      "beschreibung": "Wer bist du? Zwischen dem wer du warst und wer du werden wirst."
+    },
+    "erwachsen": {
+      "name": "Das Erwachsenenalter",
+      "untertitel": "Alter 19–50",
+      "beschreibung": "Das volle Leben mit all seiner Komplexität und all seinen Chancen."
+    },
+    "reife": {
+      "name": "Die Reife",
+      "untertitel": "Alter 51–Tod",
+      "beschreibung": "Was bleibt? Was gibst du weiter? Die letzten großen Fragen."
+    },
+    "jenseits": {
+      "name": "Das Jenseits",
+      "untertitel": "Der Übergang",
+      "beschreibung": "Das Leben endet. Eine neue Dimension beginnt."
+    },
+    "kosmisch": {
+      "name": "Kosmisches Bewusstsein",
+      "untertitel": "Nach vielen Leben",
+      "beschreibung": "Du erkennst das Muster. Du siehst den Kreislauf."
+    },
+    "schoepfung": {
+      "name": "Die Schöpfung",
+      "untertitel": "Das geheime Endgame",
+      "beschreibung": "Erschaffe deine eigene Welt. Werde zum Schöpfer."
+    }
+  },
+  "karma": {
+    "dimensionen": {
+      "mitgefuehl": "Mitgefühl",
+      "grausamkeit": "Grausamkeit",
+      "ehrlichkeit": "Ehrlichkeit",
+      "taeuschung": "Täuschung",
+      "mut": "Mut",
+      "feigheit": "Feigheit",
+      "grosszuegigkeit": "Großzügigkeit",
+      "gier": "Gier",
+      "weisheit": "Weisheit",
+      "ignoranz": "Ignoranz",
+      "liebe": "Liebe",
+      "gleichgueltigkeit": "Gleichgültigkeit"
+    },
+    "kategorien": {
+      "tugendhaft": "Tugendhaft",
+      "gut": "Gut",
+      "ausgeglichen": "Ausgeglichen",
+      "dunkel": "Dunkel",
+      "verdorben": "Verdorben"
+    },
+    "aenderungen": {
+      "positiv": "+{wert} {dimension}",
+      "negativ": "{wert} {dimension}",
+      "hinweis": "Karma-Auswirkung"
+    }
+  },
+  "jenseits_reiche": {
+    "elysium": {
+      "name": "Elysium",
+      "beschreibung": "Das Reich des ewigen Lichts. Für Seelen die gelebt, geliebt und vergeben haben.",
+      "mechanik": "Aufbau-Strategie in paradiesischer Umgebung",
+      "eintritt_text": "Das Licht ist warm. Du kennst es.",
+      "schwelle": "Durchschnitt über 60"
+    },
+    "harmonia": {
+      "name": "Harmonia",
+      "beschreibung": "Das Reich der ausgewogenen Seelen. Weder Heilige noch Sünder – Menschen.",
+      "mechanik": "Diplomatie-Simulation unter Gleichgesinnten",
+      "eintritt_text": "Ein ruhiger Ort. Ausgeglichen wie du.",
+      "schwelle": "Durchschnitt 20 bis 60"
+    },
+    "limbus": {
+      "name": "Limbus",
+      "beschreibung": "Das Zwischenreich. Für Seelen die noch nicht wissen wer sie sind.",
+      "mechanik": "Puzzle und Mysterium – die Wahrheit finden",
+      "eintritt_text": "Grau. Aber Grau hat viele Schattierungen.",
+      "schwelle": "Durchschnitt -20 bis 20"
+    },
+    "shadowlands": {
+      "name": "Shadowlands",
+      "beschreibung": "Das Reich der Schatten. Für Seelen mit zu viel Dunkelheit.",
+      "mechanik": "Exploration in düsterer Umgebung – Erlösung möglich",
+      "eintritt_text": "Dunkel. Aber Dunkel ist nicht das Ende.",
+      "schwelle": "Durchschnitt -60 bis -20"
+    },
+    "abyssus": {
+      "name": "Abyssus",
+      "beschreibung": "Der Abgrund. Das tiefste Reich. Roguelike-Survival mit Chance auf Erlösung.",
+      "mechanik": "Roguelike-Survival – jeder Zug könnte der letzte sein",
+      "eintritt_text": "Tief. Sehr tief. Aber: kein Weg ist ohne Rückkehr.",
+      "schwelle": "Durchschnitt unter -60"
+    }
+  },
+  "entscheidungen": {
+    "zeitlimit": "Du hast {sekunden} Sekunden",
+    "ohne_limit": "Nimm dir die Zeit",
+    "konsequenz_sofort": "Sofortige Auswirkung:",
+    "konsequenz_spaeter": "Wird sich zeigen...",
+    "karma_auswirkung": "Karma-Auswirkung",
+    "parallelvision_hinweis": "Eine verschwommene Vision anderer Möglichkeiten...",
+    "mikro_entscheidung": "Ein kleiner Moment"
+  },
+  "gedanken": {
+    "typen": {
+      "ueberzeugung": "Überzeugung",
+      "erinnerung": "Erinnerung",
+      "trauma": "Trauma",
+      "weisheit": "Weisheit",
+      "wunsch": "Wunsch",
+      "angst": "Angst",
+      "indoktrination": "Geerbter Gedanke",
+      "geerbterGedanke": "Aus früheren Leben"
+    },
+    "giftig": "Dieser Gedanke schadet dir",
+    "loslassen": "Loslassen",
+    "abschliessen": "Abschließen",
+    "mitgenommen": "Du nimmst ihn mit"
+  },
+  "beziehungen": {
+    "typen": {
+      "elternteil": "Elternteil",
+      "geschwister": "Geschwister",
+      "freund": "Freund / Freundin",
+      "partner": "Partner / Partnerin",
+      "kind": "Kind",
+      "kollege": "Kollege / Kollegin",
+      "mentor": "Mentor / Mentorin",
+      "rivale": "Rivale / Rivalin",
+      "feind": "Feind / Feindin"
+    },
+    "staerken": {
+      "sehr_stark": "Tiefste Verbundenheit",
+      "stark": "Enge Vertrauensperson",
+      "mittel": "Guter Bekannter",
+      "schwach": "Flüchtige Bekanntschaft",
+      "negativ": "Angespannte Beziehung",
+      "feindlich": "Feindschaft"
+    }
+  },
+  "karma_gericht": {
+    "ankunft": "Das Gericht der Seele",
+    "ankunft_sub": "Was du warst, wird gewogen. Nicht von anderen. Von dir.",
+    "sortierung": "Dein Leben wird sortiert...",
+    "sortierung_info": "Abgeschlossenes wird zur Stärke.\nOffenes wird zur Narbe.\nBeides trägst du mit.",
+    "mitgenommen": "Du nimmst mit:",
+    "grund": "Weil es dich nicht losgelassen hat.",
+    "staerke": "wird zur Stärke",
+    "narbe": "wird zur Narbe"
+  },
+  "emotionen": {
+    "wetter": {
+      "sonnenschein": "Glück und Freude",
+      "regen": "Melancholie",
+      "gewitter": "Wut oder Angst",
+      "warmes_leuchten": "Verliebt",
+      "kosmisch": "Spirituelle Klarheit",
+      "nebel": "Unsicherheit",
+      "sturm": "Innerer Sturm",
+      "klar": "Frieden"
+    }
+  },
+  "zeitalter": {
+    "mittelalter": "Das Mittelalter",
+    "renaissance": "Die Renaissance",
+    "industriezeitalter": "Das Industriezeitalter",
+    "moderne": "Die Moderne",
+    "zukunft": "Die Zukunft",
+    "wechsel_text": "Eine neue Ära beginnt. Die Welt hat sich verändert."
+  },
+  "fehler": {
+    "kein_profil": "Kein Spielerprofil gefunden",
+    "kein_zyklus": "Kein aktiver Lebenszyklus",
+    "speichern_fehlgeschlagen": "Speichern fehlgeschlagen",
+    "laden_fehlgeschlagen": "Laden fehlgeschlagen",
+    "allgemein": "Ein Fehler ist aufgetreten"
+  },
+  "bestaetigung": {
+    "daten_loeschen": "Alle gespeicherten Daten löschen?",
+    "daten_loeschen_info": "Diese Aktion kann nicht rückgängig gemacht werden. Alle Leben, Erinnerungen und dein Karma-Profil werden gelöscht.",
+    "ja": "Ja",
+    "nein": "Nein",
+    "abbrechen": "Abbrechen",
+    "bestaetigen": "Bestätigen"
+  },
+  "einstellungen": {
+    "musik_lautstaerke": "Musik-Lautstärke",
+    "effekte_lautstaerke": "Effekte-Lautstärke",
+    "haptisch": "Haptisches Feedback",
+    "sprache": "Sprache",
+    "ueber": "Über GENESIS",
+    "version": "Version {v}",
+    "daten_loeschen": "Gespeicherte Daten löschen"
+  },
+  "bibliothek": {
+    "titel": "Seelenbibliothek",
+    "tabs": {
+      "leben": "Leben",
+      "gedanken": "Gedanken",
+      "weisheiten": "Weisheiten",
+      "ahnenreihe": "Ahnenreihe"
+    },
+    "leer": {
+      "leben": "Deine Geschichte beginnt erst. Lebe dein erstes Leben.",
+      "gedanken": "Noch keine Gedanken mitgenommen.",
+      "weisheiten": "Weisheiten entstehen durch besondere Erlebnisse.",
+      "ahnenreihe": "Der Stammbaum deiner Seele wächst mit jedem Leben."
+    }
+  }
+}

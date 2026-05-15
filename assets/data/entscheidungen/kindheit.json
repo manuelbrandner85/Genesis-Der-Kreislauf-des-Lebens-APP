@@ -1,0 +1,664 @@
+{
+  "entscheidungen": [
+    {
+      "id": "kind_001",
+      "alter": 5,
+      "kontext": "Dein Freund Leon hat sein Lieblingsspielzeug verloren und weint.",
+      "frage": "Was tust du?",
+      "typ": "standard",
+      "optionen": [
+        {
+          "id": "kind_001_a",
+          "text": "Du gibst ihm dein eigenes Lieblingsspielzeug.",
+          "karma": { "mitgefuehl": 8, "grosszuegigkeit": 6 },
+          "sofortigeKonsequenzen": ["Leon strahlt und wird dein bester Freund"],
+          "verzoegerteKonsequenzen": ["kind_freundschaft_leon_stark"],
+          "egoistischAltruistisch": 0.85
+        },
+        {
+          "id": "kind_001_b",
+          "text": "Du hilfst ihm suchen, aber gibst nichts her.",
+          "karma": { "mitgefuehl": 3 },
+          "sofortigeKonsequenzen": ["Leon ist etwas weniger traurig"],
+          "verzoegerteKonsequenzen": ["kind_freundschaft_leon_mittel"],
+          "egoistischAltruistisch": 0.5
+        },
+        {
+          "id": "kind_001_c",
+          "text": "Du schaust zu und spielst weiter.",
+          "karma": { "mitgefuehl": -4 },
+          "sofortigeKonsequenzen": ["Leon weint weiter, schaut dich kurz an"],
+          "verzoegerteKonsequenzen": ["kind_freundschaft_leon_schwach"],
+          "egoistischAltruistisch": 0.1
+        }
+      ]
+    },
+    {
+      "id": "kind_002",
+      "alter": 6,
+      "kontext": "In der Schule hat jemand eine Vase zerbrochen. Die Lehrerin fragt, wer es war. Du hast alles gesehen.",
+      "frage": "Was sagst du?",
+      "typ": "ehrlichkeit",
+      "optionen": [
+        {
+          "id": "kind_002_a",
+          "text": "Du sagst der Wahrheit entsprechend, wer es war.",
+          "karma": { "ehrlichkeit": 7, "mut": 4 },
+          "sofortigeKonsequenzen": ["Das verantwortliche Kind wird bestraft, sieht dich böse an"],
+          "verzoegerteKonsequenzen": ["kind_ehrlichkeit_ruf_positiv"],
+          "egoistischAltruistisch": 0.4
+        },
+        {
+          "id": "kind_002_b",
+          "text": "Du sagst, du hast nichts gesehen.",
+          "karma": { "ehrlichkeit": -5 },
+          "sofortigeKonsequenzen": ["Das Kind bleibt ungestraft, nickt dir heimlich zu"],
+          "verzoegerteKonsequenzen": ["kind_luege_einfach"],
+          "egoistischAltruistisch": 0.5
+        },
+        {
+          "id": "kind_002_c",
+          "text": "Du meldest dich und behauptest, es selbst gewesen zu sein.",
+          "karma": { "mitgefuehl": 6, "ehrlichkeit": -3, "mut": 5 },
+          "sofortigeKonsequenzen": ["Du wirst bestraft, aber das andere Kind ist dir für immer dankbar"],
+          "verzoegerteKonsequenzen": ["kind_opfer_fuer_andere"],
+          "egoistischAltruistisch": 0.9
+        }
+      ]
+    },
+    {
+      "id": "kind_003",
+      "alter": 7,
+      "kontext": "Ein älteres Kind drangsaliert einen kleineren Jungen auf dem Schulhof.",
+      "frage": "Was tust du?",
+      "typ": "mut",
+      "optionen": [
+        {
+          "id": "kind_003_a",
+          "text": "Du gehst dazwischen und verteidigst den Kleinen.",
+          "karma": { "mut": 9, "mitgefuehl": 7 },
+          "sofortigeKonsequenzen": ["Das große Kind weicht zurück, der Kleine ist gerettet"],
+          "verzoegerteKonsequenzen": ["kind_mut_ruf", "kind_moeglicher_konflikt_gross"],
+          "egoistischAltruistisch": 0.9
+        },
+        {
+          "id": "kind_003_b",
+          "text": "Du holst eine Lehrerin.",
+          "karma": { "mut": 3, "mitgefuehl": 5 },
+          "sofortigeKonsequenzen": ["Die Lehrerin löst die Situation auf"],
+          "verzoegerteKonsequenzen": ["kind_hilfe_holen_muster"],
+          "egoistischAltruistisch": 0.7
+        },
+        {
+          "id": "kind_003_c",
+          "text": "Du gehst weiter, als ob du es nicht gesehen hättest.",
+          "karma": { "mut": -5, "mitgefuehl": -4 },
+          "sofortigeKonsequenzen": ["Der Kleine bleibt allein, schaut dir hinterher"],
+          "verzoegerteKonsequenzen": ["kind_passivitaet_muster"],
+          "egoistischAltruistisch": 0.1
+        }
+      ]
+    },
+    {
+      "id": "kind_004",
+      "alter": 5,
+      "kontext": "Du hast beim Naschen aus dem Süßigkeitenvorrat der Eltern erwischt zu werden. Mama fragt, ob du genascht hast.",
+      "frage": "Was antwortest du?",
+      "typ": "ehrlichkeit",
+      "optionen": [
+        {
+          "id": "kind_004_a",
+          "text": "Du gestehst und entschuldigst dich.",
+          "karma": { "ehrlichkeit": 6, "mut": 3 },
+          "sofortigeKonsequenzen": ["Mama ist enttäuscht, aber lobt deine Ehrlichkeit"],
+          "verzoegerteKonsequenzen": ["kind_vertrauen_eltern_stark"],
+          "egoistischAltruistisch": 0.6
+        },
+        {
+          "id": "kind_004_b",
+          "text": "Du leugnest es und lenkst auf deine Schwester ab.",
+          "karma": { "ehrlichkeit": -7, "grosszuegigkeit": -4 },
+          "sofortigeKonsequenzen": ["Deine Schwester wird zu Unrecht bestraft"],
+          "verzoegerteKonsequenzen": ["kind_schwester_vertrauensbruch"],
+          "egoistischAltruistisch": 0.0
+        },
+        {
+          "id": "kind_004_c",
+          "text": "Du sagst, du weißt es nicht mehr genau.",
+          "karma": { "ehrlichkeit": -3 },
+          "sofortigeKonsequenzen": ["Mama ist skeptisch aber sagt nichts"],
+          "verzoegerteKonsequenzen": ["kind_halbluege_muster"],
+          "egoistischAltruistisch": 0.3
+        }
+      ]
+    },
+    {
+      "id": "kind_005",
+      "alter": 8,
+      "kontext": "Deine Klasse sammelt Geld für ein armes Kind in einem anderen Land. Du hast dein gesamtes Taschengeld der Woche dabei.",
+      "frage": "Wie viel gibst du?",
+      "typ": "grosszuegigkeit",
+      "optionen": [
+        {
+          "id": "kind_005_a",
+          "text": "Alles. Das Kind braucht es mehr als du.",
+          "karma": { "grosszuegigkeit": 10, "mitgefuehl": 8 },
+          "sofortigeKonsequenzen": ["Deine Lehrerin ist sichtlich bewegt"],
+          "verzoegerteKonsequenzen": ["kind_grosszuegigkeit_stark"],
+          "egoistischAltruistisch": 1.0
+        },
+        {
+          "id": "kind_005_b",
+          "text": "Die Hälfte. Du willst auch noch etwas für dich.",
+          "karma": { "grosszuegigkeit": 4, "mitgefuehl": 3 },
+          "sofortigeKonsequenzen": ["Du wirst gelobt und kaufst dir noch ein Eis"],
+          "verzoegerteKonsequenzen": ["kind_ausgewogenheit_muster"],
+          "egoistischAltruistisch": 0.55
+        },
+        {
+          "id": "kind_005_c",
+          "text": "Einen kleinen Betrag, gerade genug um nicht aufzufallen.",
+          "karma": { "grosszuegigkeit": -2 },
+          "sofortigeKonsequenzen": ["Niemand bemerkt etwas Besonderes"],
+          "verzoegerteKonsequenzen": ["kind_sparsamkeit_muster"],
+          "egoistischAltruistisch": 0.2
+        }
+      ]
+    },
+    {
+      "id": "kind_006",
+      "alter": 9,
+      "kontext": "Du findest auf dem Schulweg einen Geldbeutel mit viel Geld und einem Ausweis.",
+      "frage": "Was machst du damit?",
+      "typ": "ehrlichkeit",
+      "optionen": [
+        {
+          "id": "kind_006_a",
+          "text": "Du bringst ihn zur Polizei.",
+          "karma": { "ehrlichkeit": 9, "mut": 4 },
+          "sofortigeKonsequenzen": ["Der Besitzer meldet sich und dankt dir herzlich"],
+          "verzoegerteKonsequenzen": ["kind_ehrenamt_ruf"],
+          "egoistischAltruistisch": 0.85
+        },
+        {
+          "id": "kind_006_b",
+          "text": "Du behältst das Geld und wirfst den Rest weg.",
+          "karma": { "ehrlichkeit": -9, "grosszuegigkeit": -6 },
+          "sofortigeKonsequenzen": ["Du kaufst dir Süßigkeiten, doch ein schlechtes Gefühl bleibt"],
+          "verzoegerteKonsequenzen": ["kind_diebstahl_last"],
+          "egoistischAltruistisch": 0.0
+        },
+        {
+          "id": "kind_006_c",
+          "text": "Du gibst ihn deiner Mutter, damit sie entscheidet.",
+          "karma": { "ehrlichkeit": 5 },
+          "sofortigeKonsequenzen": ["Mama lobt dich und bringt ihn zur Polizei"],
+          "verzoegerteKonsequenzen": ["kind_verantwortung_abgeben"],
+          "egoistischAltruistisch": 0.65
+        }
+      ]
+    },
+    {
+      "id": "kind_007",
+      "alter": 10,
+      "kontext": "Dein bester Freund Klaus hat einen Test abgeschrieben und fragt dich, ob du es verrätst.",
+      "frage": "Was tust du?",
+      "typ": "dilemma",
+      "optionen": [
+        {
+          "id": "kind_007_a",
+          "text": "Du sagst es der Lehrerin.",
+          "karma": { "ehrlichkeit": 7, "mut": 5, "mitgefuehl": -4 },
+          "sofortigeKonsequenzen": ["Klaus wird bestraft und bricht die Freundschaft ab"],
+          "verzoegerteKonsequenzen": ["kind_freundschaft_verloren", "kind_ehrlichkeit_kompromisslos"],
+          "egoistischAltruistisch": 0.35
+        },
+        {
+          "id": "kind_007_b",
+          "text": "Du schweigst und hältst zur Freundschaft.",
+          "karma": { "ehrlichkeit": -4, "liebe": 5 },
+          "sofortigeKonsequenzen": ["Klaus ist erleichtert und sehr dankbar"],
+          "verzoegerteKonsequenzen": ["kind_freundschaft_stark_ungaluecklich"],
+          "egoistischAltruistisch": 0.5
+        },
+        {
+          "id": "kind_007_c",
+          "text": "Du redest mit Klaus und überzeugst ihn, es selbst zu gestehen.",
+          "karma": { "ehrlichkeit": 6, "mut": 6, "weisheit": 5, "liebe": 4 },
+          "sofortigeKonsequenzen": ["Klaus gesteht, bekommt eine zweite Chance"],
+          "verzoegerteKonsequenzen": ["kind_moralkompas_stark", "kind_freundschaft_gefestigt"],
+          "egoistischAltruistisch": 0.75
+        }
+      ]
+    },
+    {
+      "id": "kind_008",
+      "alter": 6,
+      "kontext": "Im Kindergarten darf nur eine Person zuerst auf der neuen Rutsche rutschen. Du warst als erstes da.",
+      "frage": "Was tust du?",
+      "typ": "grosszuegigkeit",
+      "optionen": [
+        {
+          "id": "kind_008_a",
+          "text": "Du rutschst zuerst – du warst auch zuerst da.",
+          "karma": {},
+          "sofortigeKonsequenzen": ["Du genießt dein Vorrecht"],
+          "verzoegerteKonsequenzen": ["kind_fairness_neutral"],
+          "egoistischAltruistisch": 0.45
+        },
+        {
+          "id": "kind_008_b",
+          "text": "Du lässt das jüngste Kind zuerst.",
+          "karma": { "grosszuegigkeit": 5, "mitgefuehl": 4 },
+          "sofortigeKonsequenzen": ["Das kleine Kind strahlt, die Erzieherin nickt zufrieden"],
+          "verzoegerteKonsequenzen": ["kind_ruecksicht_muster"],
+          "egoistischAltruistisch": 0.8
+        },
+        {
+          "id": "kind_008_c",
+          "text": "Du organisierst, dass alle eine faire Reihenfolge bestimmen.",
+          "karma": { "weisheit": 6, "grosszuegigkeit": 3, "mut": 2 },
+          "sofortigeKonsequenzen": ["Alle Kinder sind zufrieden, du bekommst trotzdem nicht zuerst"],
+          "verzoegerteKonsequenzen": ["kind_fuehrerschaft_frueh"],
+          "egoistischAltruistisch": 0.7
+        }
+      ]
+    },
+    {
+      "id": "kind_009",
+      "alter": 11,
+      "kontext": "Eine Mitschülerin wird wegen ihrer Kleidung ausgelacht. Die coole Gruppe will, dass du auch lachst.",
+      "frage": "Was tust du?",
+      "typ": "dilemma",
+      "optionen": [
+        {
+          "id": "kind_009_a",
+          "text": "Du lachst mit, um dazuzugehören.",
+          "karma": { "mitgefuehl": -8, "ehrlichkeit": -5 },
+          "sofortigeKonsequenzen": ["Die Gruppe akzeptiert dich, das Mädchen weint"],
+          "verzoegerteKonsequenzen": ["kind_gruppenzwang_nachgegeben", "kind_mobbingkontext"],
+          "egoistischAltruistisch": 0.1
+        },
+        {
+          "id": "kind_009_b",
+          "text": "Du sagst nichts und schaust weg.",
+          "karma": { "mitgefuehl": -3, "mut": -4 },
+          "sofortigeKonsequenzen": ["Das Lachen geht weiter, du bist ein stiller Beobachter"],
+          "verzoegerteKonsequenzen": ["kind_zuschauen_muster"],
+          "egoistischAltruistisch": 0.3
+        },
+        {
+          "id": "kind_009_c",
+          "text": "Du verteidigst das Mädchen öffentlich.",
+          "karma": { "mut": 9, "mitgefuehl": 9, "ehrlichkeit": 5 },
+          "sofortigeKonsequenzen": ["Die Gruppe ist überrascht, das Mädchen ist gerührt"],
+          "verzoegerteKonsequenzen": ["kind_mut_sozial", "kind_freundschaft_maedchen_neu"],
+          "egoistischAltruistisch": 0.95
+        }
+      ]
+    },
+    {
+      "id": "kind_010",
+      "alter": 8,
+      "kontext": "Du bemerkst, dass dein Bruder dein Lieblingsspielzeug kaputt gemacht hat, aber es nicht sagt.",
+      "frage": "Was tust du?",
+      "typ": "standard",
+      "optionen": [
+        {
+          "id": "kind_010_a",
+          "text": "Du wirst wütend und beschimpfst ihn laut.",
+          "karma": { "mitgefuehl": -4, "ehrlichkeit": 2 },
+          "sofortigeKonsequenzen": ["Eltern greifen ein, Streit eskaliert"],
+          "verzoegerteKonsequenzen": ["kind_wut_reaktion"],
+          "egoistischAltruistisch": 0.3
+        },
+        {
+          "id": "kind_010_b",
+          "text": "Du redest ruhig mit ihm und fragst warum.",
+          "karma": { "weisheit": 5, "mitgefuehl": 4 },
+          "sofortigeKonsequenzen": ["Bruder entschuldigt sich, Eltern sind stolz"],
+          "verzoegerteKonsequenzen": ["kind_konfliktlosung_reif"],
+          "egoistischAltruistisch": 0.6
+        },
+        {
+          "id": "kind_010_c",
+          "text": "Du sagst nichts und machst heimlich eins seiner Sachen kaputt.",
+          "karma": { "ehrlichkeit": -6, "mitgefuehl": -5 },
+          "sofortigeKonsequenzen": ["Kurzfristige Befriedigung, dann Schuldgefühle"],
+          "verzoegerteKonsequenzen": ["kind_rache_muster"],
+          "egoistischAltruistisch": 0.05
+        }
+      ]
+    },
+    {
+      "id": "kind_011",
+      "alter": 9,
+      "kontext": "Deine Lehrerin hat dir eine Aufgabe gegeben, die du einfach nicht verstehst. Du bist frustriert.",
+      "frage": "Was tust du?",
+      "typ": "standard",
+      "optionen": [
+        {
+          "id": "kind_011_a",
+          "text": "Du fragst die Lehrerin um Hilfe.",
+          "karma": { "mut": 4, "weisheit": 3 },
+          "sofortigeKonsequenzen": ["Lehrerin erklärt es dir – es klick!"],
+          "verzoegerteKonsequenzen": ["kind_hilfe_suchen_muster"],
+          "egoistischAltruistisch": 0.5
+        },
+        {
+          "id": "kind_011_b",
+          "text": "Du schreibst beim Sitznachbar ab.",
+          "karma": { "ehrlichkeit": -6 },
+          "sofortigeKonsequenzen": ["Du hast die Aufgabe fertig, weißt aber nichts"],
+          "verzoegerteKonsequenzen": ["kind_abschreiben_gewohnheit"],
+          "egoistischAltruistisch": 0.2
+        },
+        {
+          "id": "kind_011_c",
+          "text": "Du gibst auf und lässt die Aufgabe leer.",
+          "karma": { "mut": -3 },
+          "sofortigeKonsequenzen": ["Du gibst eine unvollständige Arbeit ab"],
+          "verzoegerteKonsequenzen": ["kind_aufgeben_frueh"],
+          "egoistischAltruistisch": 0.3
+        }
+      ]
+    },
+    {
+      "id": "kind_012",
+      "alter": 7,
+      "kontext": "Im Park triffst du einen weinenden alten Mann, der seinen Hund verloren hat.",
+      "frage": "Was tust du?",
+      "typ": "mitgefuehl",
+      "optionen": [
+        {
+          "id": "kind_012_a",
+          "text": "Du hilfst ihm beim Suchen, so lange du kannst.",
+          "karma": { "mitgefuehl": 8, "grosszuegigkeit": 5 },
+          "sofortigeKonsequenzen": ["Der Hund wird gefunden, der alte Mann umarmt dich gerührt"],
+          "verzoegerteKonsequenzen": ["kind_mitgefuehl_alter_ruf"],
+          "egoistischAltruistisch": 0.9
+        },
+        {
+          "id": "kind_012_b",
+          "text": "Du rufst deinen Eltern und fragst was du tun sollst.",
+          "karma": { "mitgefuehl": 3 },
+          "sofortigeKonsequenzen": ["Eltern kommen und helfen dem Mann"],
+          "verzoegerteKonsequenzen": ["kind_hilfe_delegieren"],
+          "egoistischAltruistisch": 0.55
+        },
+        {
+          "id": "kind_012_c",
+          "text": "Du gehst weiter, du kennst den Mann ja nicht.",
+          "karma": { "mitgefuehl": -5 },
+          "sofortigeKonsequenzen": ["Der alte Mann bleibt allein"],
+          "verzoegerteKonsequenzen": ["kind_fremde_ignorieren"],
+          "egoistischAltruistisch": 0.1
+        }
+      ]
+    },
+    {
+      "id": "kind_013",
+      "alter": 10,
+      "kontext": "Deine Schulklasse wählt einen Klassensprecher. Dein guter Freund kandidiert, aber du denkst, ein anderes Kind wäre besser geeignet.",
+      "frage": "Für wen stimmst du?",
+      "typ": "dilemma",
+      "optionen": [
+        {
+          "id": "kind_013_a",
+          "text": "Du stimmst für deinen Freund aus Loyalität.",
+          "karma": { "liebe": 4, "ehrlichkeit": -3, "weisheit": -2 },
+          "sofortigeKonsequenzen": ["Dein Freund gewinnt knapp und ist überglücklich"],
+          "verzoegerteKonsequenzen": ["kind_loyalitaet_ueber_qualitaet"],
+          "egoistischAltruistisch": 0.45
+        },
+        {
+          "id": "kind_013_b",
+          "text": "Du stimmst für den besseren Kandidaten.",
+          "karma": { "ehrlichkeit": 6, "weisheit": 5, "liebe": -2 },
+          "sofortigeKonsequenzen": ["Dein Freund verliert und ist kurz enttäuscht"],
+          "verzoegerteKonsequenzen": ["kind_ehrlichkeit_schmerzhaft"],
+          "egoistischAltruistisch": 0.4
+        },
+        {
+          "id": "kind_013_c",
+          "text": "Du enthältst dich der Stimme.",
+          "karma": { "mut": -3 },
+          "sofortigeKonsequenzen": ["Niemand bemerkt deine Enthaltung"],
+          "verzoegerteKonsequenzen": ["kind_entscheidung_vermeiden"],
+          "egoistischAltruistisch": 0.5
+        }
+      ]
+    },
+    {
+      "id": "kind_014",
+      "alter": 11,
+      "kontext": "Du findest im Wald ein verletztes Tier. Es braucht Hilfe, aber du müsstest zu Hause Bescheid sagen.",
+      "frage": "Was tust du?",
+      "typ": "mitgefuehl",
+      "optionen": [
+        {
+          "id": "kind_014_a",
+          "text": "Du nimmst das Tier mit nach Hause und pflegst es.",
+          "karma": { "mitgefuehl": 9, "mut": 3 },
+          "sofortigeKonsequenzen": ["Das Tier erholt sich langsam in deiner Obhut"],
+          "verzoegerteKonsequenzen": ["kind_tierpflege_muster", "kind_verantwortung_uebernommen"],
+          "egoistischAltruistisch": 0.85
+        },
+        {
+          "id": "kind_014_b",
+          "text": "Du rufst eine Tierrettung.",
+          "karma": { "mitgefuehl": 6, "weisheit": 5 },
+          "sofortigeKonsequenzen": ["Profis kümmern sich um das Tier"],
+          "verzoegerteKonsequenzen": ["kind_systeme_nutzen"],
+          "egoistischAltruistisch": 0.75
+        },
+        {
+          "id": "kind_014_c",
+          "text": "Du gehst weiter – du kannst ja nichts dafür.",
+          "karma": { "mitgefuehl": -6 },
+          "sofortigeKonsequenzen": ["Das Tier bleibt hilflos zurück"],
+          "verzoegerteKonsequenzen": ["kind_gleichgueltigkeit_natur"],
+          "egoistischAltruistisch": 0.1
+        }
+      ]
+    },
+    {
+      "id": "kind_015",
+      "alter": 12,
+      "kontext": "Du hast die Chance, einem neuen Mitschüler zu zeigen, wie die Schule funktioniert. Aber das kostet Zeit.",
+      "frage": "Was tust du?",
+      "typ": "hilfsbereitschaft",
+      "optionen": [
+        {
+          "id": "kind_015_a",
+          "text": "Du zeigst ihm alles ausführlich und stellt ihn deinen Freunden vor.",
+          "karma": { "mitgefuehl": 7, "grosszuegigkeit": 6, "liebe": 4 },
+          "sofortigeKonsequenzen": ["Der neue Mitschüler ist sichtlich erleichtert und dankbar"],
+          "verzoegerteKonsequenzen": ["kind_neue_freundschaft_stark"],
+          "egoistischAltruistisch": 0.9
+        },
+        {
+          "id": "kind_015_b",
+          "text": "Du zeigst ihm kurz das Wichtigste.",
+          "karma": { "mitgefuehl": 3 },
+          "sofortigeKonsequenzen": ["Er kommt zurecht, bleibt aber eher für sich"],
+          "verzoegerteKonsequenzen": ["kind_helfen_minimal"],
+          "egoistischAltruistisch": 0.5
+        },
+        {
+          "id": "kind_015_c",
+          "text": "Du hast keine Lust und lässt ihn selbst herausfinden.",
+          "karma": { "mitgefuehl": -3 },
+          "sofortigeKonsequenzen": ["Er wirkt verloren und allein"],
+          "verzoegerteKonsequenzen": ["kind_neue_ignoriert"],
+          "egoistischAltruistisch": 0.15
+        }
+      ]
+    },
+    {
+      "id": "kind_016",
+      "alter": 8,
+      "kontext": "Beim Spielen hast du versehentlich das Blumenbeet der Nachbarin zertrampelt.",
+      "frage": "Was tust du?",
+      "typ": "ehrlichkeit",
+      "optionen": [
+        {
+          "id": "kind_016_a",
+          "text": "Du klingelst und entschuldigst dich bei der Nachbarin.",
+          "karma": { "ehrlichkeit": 8, "mut": 6 },
+          "sofortigeKonsequenzen": ["Nachbarin ist anfangs verärgert, dankt dir dann für die Ehrlichkeit"],
+          "verzoegerteKonsequenzen": ["kind_nachbar_vertrauen_gewonnen"],
+          "egoistischAltruistisch": 0.7
+        },
+        {
+          "id": "kind_016_b",
+          "text": "Du läufst schnell weg und sagst nichts.",
+          "karma": { "ehrlichkeit": -6, "mut": -4 },
+          "sofortigeKonsequenzen": ["Kurzfristige Erleichterung, schlechtes Gewissen bleibt"],
+          "verzoegerteKonsequenzen": ["kind_feigheit_bei_fehler"],
+          "egoistischAltruistisch": 0.1
+        },
+        {
+          "id": "kind_016_c",
+          "text": "Du erzählst es deinen Eltern und bittest sie zu helfen.",
+          "karma": { "ehrlichkeit": 5, "mut": 3 },
+          "sofortigeKonsequenzen": ["Eltern begleiten dich zur Nachbarin, alles wird gut gelöst"],
+          "verzoegerteKonsequenzen": ["kind_eltern_als_stuetze"],
+          "egoistischAltruistisch": 0.6
+        }
+      ]
+    },
+    {
+      "id": "kind_017",
+      "alter": 10,
+      "kontext": "Dein Team verliert ein wichtiges Fußballspiel, weil ein Mitspieler mehrere Tore verschossen hat.",
+      "frage": "Wie gehst du damit um?",
+      "typ": "mitgefuehl",
+      "optionen": [
+        {
+          "id": "kind_017_a",
+          "text": "Du beschimpfst den Spieler öffentlich.",
+          "karma": { "mitgefuehl": -8, "ehrlichkeit": 2 },
+          "sofortigeKonsequenzen": ["Der Mitspieler bricht in Tränen aus, Atmosphäre wird toxisch"],
+          "verzoegerteKonsequenzen": ["kind_teamgift_muster"],
+          "egoistischAltruistisch": 0.05
+        },
+        {
+          "id": "kind_017_b",
+          "text": "Du tröstest ihn und sagst, es sei kein großes Ding.",
+          "karma": { "mitgefuehl": 8, "liebe": 6 },
+          "sofortigeKonsequenzen": ["Er schaut dankbar auf, die Stimmung erhellt sich"],
+          "verzoegerteKonsequenzen": ["kind_teamgeist_stark"],
+          "egoistischAltruistisch": 0.85
+        },
+        {
+          "id": "kind_017_c",
+          "text": "Du schweigst und gehst nach Hause.",
+          "karma": { "mitgefuehl": -2 },
+          "sofortigeKonsequenzen": ["Er bleibt allein mit seiner Enttäuschung"],
+          "verzoegerteKonsequenzen": ["kind_emotionale_distanz"],
+          "egoistischAltruistisch": 0.35
+        }
+      ]
+    },
+    {
+      "id": "kind_018",
+      "alter": 6,
+      "kontext": "Deine Oma hat dir einen hässlichen Pullover gestrickt und fragt, ob er dir gefällt.",
+      "frage": "Was sagst du?",
+      "typ": "ehrlichkeit",
+      "optionen": [
+        {
+          "id": "kind_018_a",
+          "text": "Du sagst, er ist wunderschön, und trägst ihn auch.",
+          "karma": { "liebe": 7, "ehrlichkeit": -2 },
+          "sofortigeKonsequenzen": ["Oma strahlt vor Freude"],
+          "verzoegerteKonsequenzen": ["kind_oma_verbindung_stark"],
+          "egoistischAltruistisch": 0.8
+        },
+        {
+          "id": "kind_018_b",
+          "text": "Du sagst ehrlich, er ist nicht so dein Stil.",
+          "karma": { "ehrlichkeit": 5, "liebe": -3 },
+          "sofortigeKonsequenzen": ["Oma ist kurz still, sagt aber, sie versteht das"],
+          "verzoegerteKonsequenzen": ["kind_ehrlichkeit_familiaer"],
+          "egoistischAltruistisch": 0.4
+        },
+        {
+          "id": "kind_018_c",
+          "text": "Du sagst danke, trägst ihn aber nie.",
+          "karma": { "ehrlichkeit": -1, "liebe": 3 },
+          "sofortigeKonsequenzen": ["Niemand ist richtig enttäuscht, aber auch nicht begeistert"],
+          "verzoegerteKonsequenzen": ["kind_social_lie_muster"],
+          "egoistischAltruistisch": 0.6
+        }
+      ]
+    },
+    {
+      "id": "kind_019",
+      "alter": 11,
+      "kontext": "Du siehst, wie jemand in einem Geschäft stiehlt. Der Besitzer bemerkt es nicht.",
+      "frage": "Was tust du?",
+      "typ": "mut",
+      "optionen": [
+        {
+          "id": "kind_019_a",
+          "text": "Du sagst es dem Besitzer.",
+          "karma": { "ehrlichkeit": 7, "mut": 6 },
+          "sofortigeKonsequenzen": ["Der Dieb wird gestellt, der Besitzer dankt dir"],
+          "verzoegerteKonsequenzen": ["kind_zivilcourage_stark"],
+          "egoistischAltruistisch": 0.7
+        },
+        {
+          "id": "kind_019_b",
+          "text": "Du schweigst – es geht dich nichts an.",
+          "karma": { "ehrlichkeit": -3, "mut": -3 },
+          "sofortigeKonsequenzen": ["Der Dieb kommt davon"],
+          "verzoegerteKonsequenzen": ["kind_wegschauen_muster"],
+          "egoistischAltruistisch": 0.2
+        },
+        {
+          "id": "kind_019_c",
+          "text": "Du fragst den Dieb leise, ob er Hilfe braucht.",
+          "karma": { "mitgefuehl": 5, "weisheit": 4 },
+          "sofortigeKonsequenzen": ["Der Dieb ist verblüfft, gibt das Gestohlene zurück"],
+          "verzoegerteKonsequenzen": ["kind_empathie_statt_bestrafung"],
+          "egoistischAltruistisch": 0.75
+        }
+      ]
+    },
+    {
+      "id": "kind_020",
+      "alter": 12,
+      "kontext": "Deine Eltern streiten sich laut. Dein kleines Geschwisterkind ist verängstigt.",
+      "frage": "Was tust du?",
+      "typ": "mitgefuehl",
+      "optionen": [
+        {
+          "id": "kind_020_a",
+          "text": "Du nimmst das Geschwisterkind in dein Zimmer und spielst mit ihm.",
+          "karma": { "mitgefuehl": 10, "liebe": 8 },
+          "sofortigeKonsequenzen": ["Das Kind beruhigt sich in deiner Nähe"],
+          "verzoegerteKonsequenzen": ["kind_geschwister_verbindung_stark", "kind_schutzinstinkt"],
+          "egoistischAltruistisch": 0.95
+        },
+        {
+          "id": "kind_020_b",
+          "text": "Du gehst zwischen die Eltern und bittest sie aufzuhören.",
+          "karma": { "mut": 8, "mitgefuehl": 6 },
+          "sofortigeKonsequenzen": ["Eltern stoppen kurz, sind erstaunt über deinen Mut"],
+          "verzoegerteKonsequenzen": ["kind_eltern_konflikt_intervension"],
+          "egoistischAltruistisch": 0.8
+        },
+        {
+          "id": "kind_020_c",
+          "text": "Du ziehst dich in dein Zimmer zurück und wartest.",
+          "karma": { "mitgefuehl": -3 },
+          "sofortigeKonsequenzen": ["Das Geschwisterkind bleibt allein im Streitgeschehen"],
+          "verzoegerteKonsequenzen": ["kind_rueckzug_konflikt"],
+          "egoistischAltruistisch": 0.2
+        }
+      ]
+    }
+  ]
+}

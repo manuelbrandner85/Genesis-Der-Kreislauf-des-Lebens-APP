@@ -93,14 +93,14 @@ extension StringSpielErweiterungen on String {
   /// Konvertiert einen String zum passenden [GamePhase]-Enum-Wert.
   ///
   /// Vergleich ist case-insensitiv auf [GamePhase.anzeigeName].
-  /// Gibt [GamePhase.geburt] zurück, wenn keine Übereinstimmung gefunden.
+  /// Gibt [GamePhase.entstehung] zurück, wenn keine Übereinstimmung gefunden.
   GamePhase zuGamePhase() {
     final gesucht = toLowerCase().trim();
     return GamePhase.values.firstWhere(
       (phase) =>
           phase.anzeigeName.toLowerCase() == gesucht ||
           phase.name.toLowerCase() == gesucht,
-      orElse: () => GamePhase.geburt,
+      orElse: () => GamePhase.entstehung,
     );
   }
 

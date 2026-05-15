@@ -8,26 +8,32 @@ import 'package:hive_flutter/hive_flutter.dart';
 // Box-Namen als Konstanten
 // ─────────────────────────────────────────────────────────────────────────────
 
-/// Box-Name für das Spielerprofil (Seelen-Ebene).
+/// Box-Name für das Spielerprofil (Seelen-Ebene). [HiveDienst.spielstandBox]
 const String kSpielerProfilBox = 'spielerProfil';
 
-/// Box-Name für alle Lebenszyklen.
+/// Box-Name für alle Lebenszyklen. [HiveDienst.zyklenBox]
 const String kZyklenBox = 'zyklen';
 
-/// Box-Name für emotionale Erinnerungen.
+/// Box-Name für emotionale Erinnerungen. [HiveDienst.erinnerungenBox]
 const String kErinnerungenBox = 'erinnerungen';
 
-/// Box-Name für innere Gedanken des Charakters.
+/// Box-Name für innere Gedanken des Charakters. [HiveDienst.gedankenBox]
 const String kGedankenBox = 'gedanken';
 
-/// Box-Name für soziale Beziehungen.
+/// Box-Name für soziale Beziehungen. [HiveDienst.beziehungenBox]
 const String kBeziehungenBox = 'beziehungen';
 
-/// Box-Name für getroffene Entscheidungen.
+/// Box-Name für getroffene Entscheidungen. [HiveDienst.entscheidungenBox]
 const String kEntscheidungenBox = 'entscheidungen';
 
-/// Box-Name für Konsequenzen aus Entscheidungen.
+/// Box-Name für Konsequenzen aus Entscheidungen. [HiveDienst.konsequenzenBox]
 const String kKonsequenzenBox = 'konsequenzen';
+
+/// Box-Name für Spieleinstellungen.
+const String kEinstellungenBox = 'einstellungen';
+
+/// Box-Name für Bibliotheks-Einträge.
+const String kBibliothekBox = 'bibliothek';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // HiveDienst
@@ -37,12 +43,29 @@ const String kKonsequenzenBox = 'konsequenzen';
 ///
 /// Alle CRUD-Operationen arbeiten mit [Map<String, dynamic>] als
 /// serialisiertes Format – die Modellklassen übernehmen die Konvertierung.
+///
+/// Zugriff entweder über [HiveDienst.instanz] oder über den
+/// factory-Konstruktor [HiveDienst()].
 class HiveDienst {
   // Privater Konstruktor – Singleton-Muster
-  HiveDienst._();
+  HiveDienst._intern();
 
-  /// Die einzige Instanz dieses Dienstes.
-  static final HiveDienst instanz = HiveDienst._();
+  /// Die einzige Instanz dieses Dienstes (über factory-Konstruktor erreichbar).
+  static final HiveDienst _instanz = HiveDienst._intern();
+
+  /// Die einzige Instanz dieses Dienstes (benannter Zugriff).
+  static HiveDienst get instanz => _instanz;
+
+  /// Factory-Konstruktor für den Singleton-Zugriff via [HiveDienst()].
+  factory HiveDienst() => _instanz;
+
+  // ── Box-Namen als statische Konstanten ────────────────────────────────────
+  static const String spielstandBox = kSpielerProfilBox;
+  static const String zyklenBox = kZyklenBox;
+  static const String gedankenBox = kGedankenBox;
+  static const String erinnerungenBox = kErinnerungenBox;
+  static const String einstellungenBox = kEinstellungenBox;
+  static const String bibliothekBox = kBibliothekBox;
 
   // Interne Box-Referenzen (werden in [initialisieren] geöffnet)
   static late Box<Map> _spielerProfilBox;
@@ -52,6 +75,8 @@ class HiveDienst {
   static late Box<Map> _beziehungenBox;
   static late Box<Map> _entscheidungenBox;
   static late Box<Map> _konsequenzenBox;
+  static late Box<dynamic> _einstellungenBox;
+  static late Box<Map> _bibliothekBox;
 
   // ───────────────────────────────────────────────────────────────────────────
   // Initialisierung
@@ -73,6 +98,8 @@ class HiveDienst {
       Hive.openBox<Map>(kBeziehungenBox),
       Hive.openBox<Map>(kEntscheidungenBox),
       Hive.openBox<Map>(kKonsequenzenBox),
+      Hive.openBox(kEinstellungenBox),
+      Hive.openBox<Map>(kBibliothekBox),
     ]);
 
     _spielerProfilBox = ergebnisse[0] as Box<Map>;
@@ -82,6 +109,8 @@ class HiveDienst {
     _beziehungenBox = ergebnisse[4] as Box<Map>;
     _entscheidungenBox = ergebnisse[5] as Box<Map>;
     _konsequenzenBox = ergebnisse[6] as Box<Map>;
+    _einstellungenBox = ergebnisse[7] as Box<dynamic>;
+    _bibliothekBox = ergebnisse[8] as Box<Map>;
   }
 
   // ───────────────────────────────────────────────────────────────────────────
@@ -299,6 +328,52 @@ class HiveDienst {
   }
 
   // ───────────────────────────────────────────────────────────────────────────
+  // Einstellungen CRUD
+  // ───────────────────────────────────────────────────────────────────────────
+
+  /// Speichert einen Einstellungswert unter dem angegebenen Schlüssel.
+  Future<void> einstellungSetzen(String schluessel, dynamic wert) async {
+    await _einstellungenBox.put(schluessel, wert);
+  }
+
+  /// Lädt einen Einstellungswert. Gibt [standard] zurück wenn nicht vorhanden.
+  T? einstellungLaden<T>(String schluessel, {T? standard}) {
+    final wert = _einstellungenBox.get(schluessel);
+    if (wert == null) return standard;
+    return wert as T?;
+  }
+
+  /// Löscht einen einzelnen Einstellungswert.
+  Future<void> einstellungEntfernen(String schluessel) async {
+    await _einstellungenBox.delete(schluessel);
+  }
+
+  // ───────────────────────────────────────────────────────────────────────────
+  // Bibliothek CRUD
+  // ───────────────────────────────────────────────────────────────────────────
+
+  /// Speichert einen Bibliotheks-Eintrag (freigeschaltete Weisheiten, Texte, etc.).
+  Future<void> bibliotheksEintragSpeichern(
+      String schluessel, Map<String, dynamic> daten) async {
+    await _bibliothekBox.put(schluessel, daten);
+  }
+
+  /// Lädt einen einzelnen Bibliotheks-Eintrag anhand seines Schlüssels.
+  Map<String, dynamic>? bibliotheksEintragLaden(String schluessel) {
+    final rohdaten = _bibliothekBox.get(schluessel);
+    if (rohdaten == null) return null;
+    return Map<String, dynamic>.from(rohdaten);
+  }
+
+  /// Lädt alle gespeicherten Bibliotheks-Einträge.
+  Map<String, Map<String, dynamic>> alleBibliotheksEintraegeLaden() {
+    return {
+      for (final eintrag in _bibliothekBox.toMap().entries)
+        eintrag.key as String: Map<String, dynamic>.from(eintrag.value as Map),
+    };
+  }
+
+  // ───────────────────────────────────────────────────────────────────────────
   // Verwaltung & Wartung
   // ───────────────────────────────────────────────────────────────────────────
 
@@ -314,13 +389,22 @@ class HiveDienst {
       _beziehungenBox.clear(),
       _entscheidungenBox.clear(),
       _konsequenzenBox.clear(),
+      _einstellungenBox.clear(),
+      _bibliothekBox.clear(),
     ]);
   }
+
+  /// Alias für [allesDatenLoeschen] – für "Gespeicherte Daten löschen"-Funktion
+  /// in den Einstellungen verwendet.
+  Future<void> allesLoeschen() => allesDatenLoeschen();
 
   /// Schließt alle Hive-Boxen sauber (für App-Beendigung).
   Future<void> allesSchliessen() async {
     await Hive.close();
   }
+
+  /// Alias für [allesSchliessen].
+  Future<void> schliessen() => allesSchliessen();
 
   /// Gibt die Gesamtanzahl gespeicherter Einträge aller Boxen zurück.
   /// Nützlich für Debug-Ausgaben und Statistiken.

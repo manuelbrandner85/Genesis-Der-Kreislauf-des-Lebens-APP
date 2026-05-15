@@ -2,13 +2,13 @@
 // Abstraktes Repository-Interface für alle Spielzustand-Datenzugriffe.
 // Definiert den Vertrag zwischen Domain- und Datenschicht.
 
-import 'package:genesis_spiel/data/models/beziehung_model.dart';
-import 'package:genesis_spiel/data/models/erinnerung_model.dart';
-import 'package:genesis_spiel/data/models/entscheidung_model.dart';
-import 'package:genesis_spiel/data/models/gedanke_model.dart';
-import 'package:genesis_spiel/data/models/konsequenz_model.dart';
-import 'package:genesis_spiel/data/models/spieler_profil_model.dart';
-import 'package:genesis_spiel/data/models/zyklus_model.dart';
+import 'package:genesis_kreislauf_des_lebens/data/models/beziehung_model.dart';
+import 'package:genesis_kreislauf_des_lebens/data/models/erinnerung_model.dart';
+import 'package:genesis_kreislauf_des_lebens/data/models/entscheidung_model.dart';
+import 'package:genesis_kreislauf_des_lebens/data/models/gedanke_model.dart';
+import 'package:genesis_kreislauf_des_lebens/data/models/konsequenz_model.dart';
+import 'package:genesis_kreislauf_des_lebens/data/models/spieler_profil_model.dart';
+import 'package:genesis_kreislauf_des_lebens/data/models/zyklus_model.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // SpielRepository – abstrakte Schnittstelle
@@ -109,4 +109,11 @@ abstract class SpielRepository {
 
   /// Lädt alle Beziehungen eines bestimmten Lebenszyklus.
   Future<List<BeziehungModel>> beziehungenLaden(String zyklusId);
+
+  // ───────────────────────────────────────────────────────────────────────────
+  // Verwaltung
+  // ───────────────────────────────────────────────────────────────────────────
+
+  /// Löscht alle gespeicherten Spielstände (für "Neues Spiel" / Reset).
+  Future<void> allesZuruecksetzen();
 }

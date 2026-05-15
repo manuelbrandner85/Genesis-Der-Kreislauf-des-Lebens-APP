@@ -1,0 +1,192 @@
+{
+  "zeitalter": [
+    {
+      "id": "mittelalter",
+      "name": "Das Mittelalter",
+      "zeitraum": "500–1400 n. Chr.",
+      "zeitgeist": "Glaube und göttliche Ordnung bestimmen alles. Der Platz des Einzelnen ist durch Geburt festgelegt. Ritter, Glaube und Tradition sind die Grundpfeiler der Gesellschaft.",
+      "karrierepfade": [
+        "Ritter / Kriegerin",
+        "Priester / Priesterin",
+        "Händler / Händlerin",
+        "Bauer / Bäuerin",
+        "Schmied / Schmiedin",
+        "Mönch / Nonne",
+        "Heiler / Heilerin",
+        "Minnesänger / Minnesängerin",
+        "Lehnsherr / Lehnsherrin",
+        "Zauberer / Zauberin (Volksglaube)"
+      ],
+      "aufstiegsChance": 0.15,
+      "religioeserEinfluss": 0.95,
+      "bildungszugang": 0.20,
+      "technologieStand": 1,
+      "startEreignisse": [
+        "Die Pest bricht aus – wer überlebt, wird geprägt",
+        "Ein Kreuzzug wird ausgerufen",
+        "Eine Heirat sichert die Familie politisch ab",
+        "Eine Dürre bedroht die Ernte"
+      ],
+      "besonderheiten": "Pilgerfahrten, Kreuzzüge, Zunftsystem, Kirche als Macht. Aufstieg fast unmöglich ohne Glück oder außerordentliche Tat.",
+      "soziale_klassen": {
+        "adel": "Geburt bestimmt alles. Ritter können zum Adel aufsteigen.",
+        "klerus": "Einziger Weg aus der Armut für intelligente Menschen.",
+        "buerger": "Händler und Handwerker in Städten.",
+        "bauer": "90% der Bevölkerung. Leibeigenschaft möglich."
+      }
+    },
+    {
+      "id": "renaissance",
+      "name": "Die Renaissance",
+      "zeitraum": "1400–1600 n. Chr.",
+      "zeitgeist": "Der Mensch steht im Mittelpunkt. Kunst, Wissenschaft und Entdeckung blühen. Humanism ersetzt blinden Glauben. Neue Welten werden entdeckt.",
+      "karrierepfade": [
+        "Künstler / Künstlerin",
+        "Wissenschaftler / Wissenschaftlerin",
+        "Händler / Händlerin",
+        "Entdecker / Entdeckerin",
+        "Drucker / Druckerin",
+        "Bankier / Bankierin",
+        "Architekt / Architektin",
+        "Diplomat / Diplomatin",
+        "Arzt / Ärztin",
+        "Philosoph / Philosophin"
+      ],
+      "aufstiegsChance": 0.28,
+      "religioeserEinfluss": 0.70,
+      "bildungszugang": 0.40,
+      "technologieStand": 2,
+      "startEreignisse": [
+        "Der Buchdruck verbreitet Wissen wie nie zuvor",
+        "Eine neue Route nach Indien wird entdeckt",
+        "Ein reicher Mäzen fördert deine Kunst",
+        "Die Reformation erschüttert die Kirche"
+      ],
+      "besonderheiten": "Mäzenatentum, Humanismus, Entdeckungen. Talent kann den Stand überwinden. Bildung öffnet Türen.",
+      "soziale_klassen": {
+        "adel": "Noch immer dominant, aber Bildung und Geld öffnen Türen.",
+        "kaufmannschaft": "Neue Macht durch Handel. Florenz und Venedig als Zentren.",
+        "handwerk": "Zunftmeister können zu Ansehen gelangen.",
+        "armut": "Städtische Armut wächst mit Urbanisierung."
+      }
+    },
+    {
+      "id": "industriezeitalter",
+      "name": "Das Industriezeitalter",
+      "zeitraum": "1760–1900 n. Chr.",
+      "zeitgeist": "Arbeit und Fortschritt bestimmen den Wert eines Menschen. Dampfmaschinen, Fabriken und Eisenbahnen verändern die Welt. Die Arbeiterbewegung erhebt sich.",
+      "karrierepfade": [
+        "Fabrikarbeiter / Fabrikarbeiterin",
+        "Ingenieur / Ingenieurin",
+        "Unternehmer / Unternehmerin",
+        "Arzt / Ärztin",
+        "Journalist / Journalistin",
+        "Lehrer / Lehrerin",
+        "Forscher / Forscherin",
+        "Politiker / Politikerin",
+        "Bergarbeiter / Bergarbeiterin",
+        "Kaufmann / Kauffrau"
+      ],
+      "aufstiegsChance": 0.35,
+      "religioeserEinfluss": 0.45,
+      "bildungszugang": 0.60,
+      "technologieStand": 4,
+      "startEreignisse": [
+        "Eine neue Erfindung verändert deine Branche",
+        "Ein Streik bricht aus – du musst Stellung beziehen",
+        "Krieg bricht aus – eine ganze Generation wird mobilisiert",
+        "Eine Wirtschaftskrise vernichtet Ersparnisse"
+      ],
+      "besonderheiten": "Industriekapitalismus, Klassenkampf, Kolonialismus. Aufstieg möglich aber hart erkämpft. Kinderarbeit ist Realität.",
+      "soziale_klassen": {
+        "grossbuergertum": "Industrielle und Bankiers dominieren neu.",
+        "mittelschicht": "Verwaltung, Bildung, freie Berufe.",
+        "proletariat": "Fabrikarbeiter – Klassenkampf beginnt.",
+        "landbevoelkerung": "Landwirtschaft verliert an Bedeutung."
+      }
+    },
+    {
+      "id": "moderne",
+      "name": "Die Moderne",
+      "zeitraum": "1950–2025 n. Chr.",
+      "zeitgeist": "Individualismus, Technologie und Globalisierung. Die Welt ist vernetzt. Identität ist wählbar. Mehr Freiheit und mehr Einsamkeit als je zuvor.",
+      "karrierepfade": [
+        "Softwareentwickler / Softwareentwicklerin",
+        "Arzt / Ärztin",
+        "Lehrer / Lehrerin",
+        "Unternehmer / Unternehmerin",
+        "Künstler / Künstlerin",
+        "Sozialarbeiter / Sozialarbeiterin",
+        "Journalist / Journalistin",
+        "Wissenschaftler / Wissenschaftlerin",
+        "Politiker / Politikerin",
+        "Handwerker / Handwerkerin",
+        "Manager / Managerin",
+        "Umweltaktivist / Umweltaktivistin",
+        "Content Creator",
+        "Therapeut / Therapeutin",
+        "Forscher / Forscherin",
+        "Pilot / Pilotin",
+        "Koch / Köchin",
+        "Sportler / Sportlerin",
+        "Musiker / Musikerin",
+        "Psychologe / Psychologin"
+      ],
+      "aufstiegsChance": 0.48,
+      "religioeserEinfluss": 0.30,
+      "bildungszugang": 0.90,
+      "technologieStand": 7,
+      "startEreignisse": [
+        "Das Internet verändert alles",
+        "Eine globale Krise erschüttert die Wirtschaft",
+        "Soziale Medien machen dich für einen Moment berühmt",
+        "Ein Unfall zwingt dich zum Neuanfang",
+        "Eine Erfindung macht dich reich",
+        "Klimawandel-Ereignis verändert deinen Wohnort"
+      ],
+      "besonderheiten": "Globalisierung, digitale Revolution, Identitätspolitik. Aufstieg zugänglicher aber Konkurrenz global. Burn-out als Zeitkrankheit.",
+      "soziale_klassen": {
+        "oberschicht": "Kapital arbeitet für sie. Tech-Milliardäre entstehen.",
+        "mittelschicht": "Unter Druck durch Inflation und Automatisierung.",
+        "unterschicht": "Arbeitslos oder prekär beschäftigt.",
+        "digital_nomads": "Neue Klasse ohne geografische Bindung."
+      }
+    },
+    {
+      "id": "zukunft",
+      "name": "Die Zukunft",
+      "zeitraum": "2100–2300 n. Chr.",
+      "zeitgeist": "Technologie gegen Menschlichkeit. KI ist allgegenwärtig. Menschen suchen nach dem was sie von Maschinen unterscheidet. Erste interstellare Siedlungen entstehen.",
+      "karrierepfade": [
+        "KI-Ethiker / KI-Ethikerin",
+        "Terraforming-Ingenieur / Ingenieurin",
+        "Bewusstseinsforscher / Bewusstseinsforscherin",
+        "Seelenpilot / Seelenpilotin (Raumfahrt)",
+        "Biogendesigner / Biogendesignerin",
+        "Kulturbewahrer / Kulturbewahrerin",
+        "Synthetische Empathiker / Empathikerin",
+        "Weltenbauer / Weltenbauerin (digitale Welten)",
+        "Quantenheiler / Quantenheilerin",
+        "Friedensstifter / Friedensstifterin (interstellar)"
+      ],
+      "aufstiegsChance": 0.50,
+      "religioeserEinfluss": 0.20,
+      "bildungszugang": 0.99,
+      "technologieStand": 10,
+      "startEreignisse": [
+        "Der erste Kontakt mit außerirdischer Intelligenz",
+        "Ein KI übernimmt temporär die Regierung einer Stadt",
+        "Unsterblichkeit wird für wenige möglich – du musst entscheiden",
+        "Ein neuer Planet wird kolonisiert – Auswanderer gesucht",
+        "Die Erinnerungen der Toten werden digital archiviert"
+      ],
+      "besonderheiten": "Post-Humanismus, KI-Ethik, interstellare Zivilisation. Die Frage was es bedeutet Mensch zu sein bestimmt alles.",
+      "soziale_klassen": {
+        "transhuman": "Haben biologische Grenzen überwunden.",
+        "naturmensch": "Lehnen Augmentierungen ab – werden eine Minderheit.",
+        "digital_existenz": "Leben als Bewusstsein in digitalen Welten.",
+        "kolonisten": "Erste Generationen auf anderen Planeten."
+      }
+    }
+  ]
+}

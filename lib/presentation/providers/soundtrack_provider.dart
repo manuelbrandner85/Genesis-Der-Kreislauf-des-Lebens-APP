@@ -1,95 +1,88 @@
 // soundtrack_provider.dart
-// Layered-Audio-System mit Riverpod für GENESIS: Der Kreislauf des Lebens.
-// Der SoundtrackNotifier erstellt einen einzigartigen, dynamischen Soundtrack,
-// der sich an Karma-Profil, Spielphase und emotionalen Zustand anpasst.
+// Layered-Audio-System mit just_audio und Riverpod für GENESIS: Der Kreislauf des Lebens.
+// Unterstützt mehrere Audio-Schichten (Basis, Emotion, Spannung, Ambiente),
+// die sich dynamisch an Spielphase und emotionalen Zustand anpassen.
+
+import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:genesis_spiel/data/models/karma_profil_model.dart';
-import 'package:genesis_spiel/data/models/emotions_wetter_model.dart';
-import 'package:genesis_spiel/core/constants/app_konstanten.dart';
+import 'package:just_audio/just_audio.dart';
+
+import 'package:genesis_kreislauf_des_lebens/core/constants/app_konstanten.dart';
+import 'package:genesis_kreislauf_des_lebens/data/models/emotions_wetter_model.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Enum: SoundtrackSchicht – die verschiedenen Audio-Layer des Soundsystems
+// Enum: SoundtrackSchicht – die vier Audio-Layer des Layered-Audio-Systems
 // ─────────────────────────────────────────────────────────────────────────────
 enum SoundtrackSchicht {
-  /// Basis-Layer – immer aktiv, unabhängig vom Spielzustand
+  /// Basis-Layer – phasenspezifische Grundmusik, immer aktiv
   basis,
 
-  /// Karma-positiver Layer – bei positivem Gesamt-Karma aktiv
-  karma_positiv,
+  /// Emotions-Layer – dynamisch basierend auf Emotionswetter
+  emotion,
 
-  /// Karma-negativer Layer – bei negativem Gesamt-Karma aktiv
-  karma_negativ,
-
-  /// Freude-Layer – bei hohem Glückswert aktiv
-  emotion_freude,
-
-  /// Trauer-Layer – bei Melancholie oder Verlustzuständen aktiv
-  emotion_trauer,
-
-  /// Spannungs-Layer – bei Entscheidungsmomenten oder Krisen aktiv
+  /// Spannungs-Layer – bei Entscheidungsmomenten und Krisen
   spannung,
 
-  /// Stille-Layer – für kontemplative Momente und Pausen
-  stille,
-
-  /// Kosmischer Layer – für Phase 8 (Vermächtnis) und Phase 9 (Tod)
-  kosmisch,
+  /// Ambiente-Layer – atmosphärische Hintergrundklänge
+  ambiente,
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
 // SoundtrackZustand – unveränderlicher Zustand des Audio-Systems
 // ─────────────────────────────────────────────────────────────────────────────
+
+/// Repräsentiert den vollständigen Zustand des Soundtrack-Systems.
 class SoundtrackZustand {
-  /// Liste aller aktuell abgespielten Musik-Layer (Dateinamen)
-  final List<String> aktiveTracks;
+  /// Gibt an, ob das Soundtrack-System gerade aktiv abspielt
+  final bool laeuft;
 
   /// Globale Lautstärke (0.0 = stumm, 1.0 = volle Lautstärke)
   final double lautstaerke;
 
-  /// Name des aktuell dominanten Musik-Themas
-  final String aktuellesThema;
-
-  /// Gibt an, ob das gesamte Audiosystem stummgeschaltet ist
-  final bool istStumm;
-
-  /// Individuelle Lautstärke pro Musik-Layer (Schlüssel: Schicht-Name, Wert: 0.0–1.0)
-  final Map<String, double> schichtLautstaerken;
-
-  /// Aktuelle Spielphase, die den Soundtrack beeinflusst
+  /// Die aktuelle Spielphase (bestimmt den Basis-Track)
   final GamePhase aktuellePhase;
 
-  /// Gibt an, ob eine Überblendung zwischen Tracks läuft
+  /// Der aktuelle emotionale Wettertyp (bestimmt den Emotions-Layer)
+  final EmotionsWetterTyp aktuellesWetter;
+
+  /// Individuelle Lautstärken pro Schicht (ermöglicht dynamisches Einblenden)
+  final Map<SoundtrackSchicht, double> schichtLautstaerken;
+
+  /// Gibt an, ob das System stummgeschaltet ist
+  final bool istStumm;
+
+  /// Gibt an, ob gerade eine Überblendung stattfindet
   final bool istInUeberblendung;
 
-  /// Dauer der aktuellen Überblendung in Millisekunden
-  final int ueberblendungsDauerMs;
-
   const SoundtrackZustand({
-    required this.aktiveTracks,
+    required this.laeuft,
     required this.lautstaerke,
-    required this.aktuellesThema,
-    required this.istStumm,
-    required this.schichtLautstaerken,
     required this.aktuellePhase,
+    required this.aktuellesWetter,
+    required this.schichtLautstaerken,
+    required this.istStumm,
     required this.istInUeberblendung,
-    required this.ueberblendungsDauerMs,
   });
 
   // ───────────────────────────────────────────────────────────────────────────
   // Standard-Startzustand
   // ───────────────────────────────────────────────────────────────────────────
 
-  /// Erstellt den initialen Soundtrack-Zustand beim Spielstart
+  /// Erstellt den initialen Soundtrack-Zustand beim Spielstart.
   static SoundtrackZustand initial() => const SoundtrackZustand(
-        aktiveTracks: [],
+        laeuft: false,
         lautstaerke: 0.8,
-        aktuellesThema: 'basis',
+        aktuellePhase: GamePhase.entstehung,
+        aktuellesWetter: EmotionsWetterTyp.klar,
+        schichtLautstaerken: {
+          SoundtrackSchicht.basis: 1.0,
+          SoundtrackSchicht.emotion: 0.0,
+          SoundtrackSchicht.spannung: 0.0,
+          SoundtrackSchicht.ambiente: 0.3,
+        },
         istStumm: false,
-        schichtLautstaerken: {},
-        aktuellePhase: GamePhase.geburt,
         istInUeberblendung: false,
-        ueberblendungsDauerMs: 2000,
       );
 
   // ───────────────────────────────────────────────────────────────────────────
@@ -97,325 +90,427 @@ class SoundtrackZustand {
   // ───────────────────────────────────────────────────────────────────────────
 
   SoundtrackZustand copyWith({
-    List<String>? aktiveTracks,
+    bool? laeuft,
     double? lautstaerke,
-    String? aktuellesThema,
-    bool? istStumm,
-    Map<String, double>? schichtLautstaerken,
     GamePhase? aktuellePhase,
+    EmotionsWetterTyp? aktuellesWetter,
+    Map<SoundtrackSchicht, double>? schichtLautstaerken,
+    bool? istStumm,
     bool? istInUeberblendung,
-    int? ueberblendungsDauerMs,
   }) {
     return SoundtrackZustand(
-      aktiveTracks: aktiveTracks ?? this.aktiveTracks,
+      laeuft: laeuft ?? this.laeuft,
       lautstaerke: lautstaerke ?? this.lautstaerke,
-      aktuellesThema: aktuellesThema ?? this.aktuellesThema,
-      istStumm: istStumm ?? this.istStumm,
-      schichtLautstaerken: schichtLautstaerken ?? this.schichtLautstaerken,
       aktuellePhase: aktuellePhase ?? this.aktuellePhase,
+      aktuellesWetter: aktuellesWetter ?? this.aktuellesWetter,
+      schichtLautstaerken: schichtLautstaerken ?? this.schichtLautstaerken,
+      istStumm: istStumm ?? this.istStumm,
       istInUeberblendung: istInUeberblendung ?? this.istInUeberblendung,
-      ueberblendungsDauerMs:
-          ueberblendungsDauerMs ?? this.ueberblendungsDauerMs,
     );
   }
 
+  // ───────────────────────────────────────────────────────────────────────────
+  // Berechnete Getter
+  // ───────────────────────────────────────────────────────────────────────────
+
+  /// Gibt die effektive Lautstärke zurück (0.0 wenn stummgeschaltet).
+  double get effektiveLautstaerke => istStumm ? 0.0 : lautstaerke;
+
   @override
   String toString() =>
-      'SoundtrackZustand(thema: $aktuellesThema, '
-      'aktiveTracks: ${aktiveTracks.length}, '
-      'lautstaerke: ${lautstaerke.toStringAsFixed(2)}, '
-      'istStumm: $istStumm)';
+      'SoundtrackZustand(laeuft: $laeuft, phase: ${aktuellePhase.name}, '
+      'wetter: ${aktuellesWetter.name}, lautstaerke: $lautstaerke, '
+      'stumm: $istStumm)';
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Soundtrack-Konfiguration: Tracks pro Phase und Schicht
+// Audio-Pfad-Hilfsfunktionen
 // ─────────────────────────────────────────────────────────────────────────────
 
-/// Liefert den Dateinamen des Basis-Tracks für eine gegebene Spielphase.
-String _basisTrackFuerPhase(GamePhase phase) {
-  switch (phase) {
-    case GamePhase.geburt:
-      return 'assets/audio/musik/basis_geburt.mp3';
-    case GamePhase.kindheit:
-      return 'assets/audio/musik/basis_kindheit.mp3';
-    case GamePhase.jugend:
-      return 'assets/audio/musik/basis_jugend.mp3';
-    case GamePhase.aufbruch:
-      return 'assets/audio/musik/basis_aufbruch.mp3';
-    case GamePhase.bluetePunkt:
-      return 'assets/audio/musik/basis_bluete.mp3';
-    case GamePhase.pruefung:
-      return 'assets/audio/musik/basis_pruefung.mp3';
-    case GamePhase.weisheit:
-      return 'assets/audio/musik/basis_weisheit.mp3';
-    case GamePhase.vermaechtnis:
-      return 'assets/audio/musik/basis_vermaechtnis.mp3';
-    case GamePhase.tod:
-      return 'assets/audio/musik/basis_tod.mp3';
-  }
+/// Gibt den Asset-Pfad des Basis-Tracks für eine Spielphase zurück.
+String _basisTrackPfad(GamePhase phase) {
+  return switch (phase) {
+    GamePhase.entstehung => 'assets/audio/musik/basis_geburt.mp3',
+    GamePhase.kindheit => 'assets/audio/musik/basis_kindheit.mp3',
+    GamePhase.jugend => 'assets/audio/musik/basis_jugend.mp3',
+    GamePhase.erwachsen => 'assets/audio/musik/basis_aufbruch.mp3',
+    GamePhase.erwachsen => 'assets/audio/musik/basis_bluete.mp3',
+    GamePhase.reife => 'assets/audio/musik/basis_pruefung.mp3',
+    GamePhase.reife => 'assets/audio/musik/basis_weisheit.mp3',
+    GamePhase.reife => 'assets/audio/musik/basis_vermaechtnis.mp3',
+    GamePhase.jenseits => 'assets/audio/musik/basis_tod.mp3',
+  };
 }
 
-/// Liefert die Lautstärke einer Soundtrack-Schicht basierend auf Karma und Emotion.
-double _schichtLautstaerkeBerechnen(
-  SoundtrackSchicht schicht,
-  KarmaProfilModel karma,
-  EmotionsWetterTyp wetterTyp,
-) {
-  switch (schicht) {
-    case SoundtrackSchicht.basis:
-      // Basis-Layer immer auf voller Lautstärke
-      return 1.0;
+/// Gibt den Asset-Pfad des Emotions-Tracks für einen Wettertyp zurück.
+/// Gibt null zurück, wenn für diesen Typ kein spezifischer Track existiert.
+String? _emotionsTrackPfad(EmotionsWetterTyp wetter) {
+  return switch (wetter) {
+    EmotionsWetterTyp.sonnenschein =>
+      'assets/audio/musik/emotion_freude.mp3',
+    EmotionsWetterTyp.warmesLeuchten =>
+      'assets/audio/musik/emotion_liebe.mp3',
+    EmotionsWetterTyp.regen => 'assets/audio/musik/emotion_trauer.mp3',
+    EmotionsWetterTyp.nebel => 'assets/audio/musik/emotion_melancholie.mp3',
+    EmotionsWetterTyp.gewitter => 'assets/audio/musik/emotion_spannung.mp3',
+    EmotionsWetterTyp.sturm => 'assets/audio/musik/emotion_sturm.mp3',
+    EmotionsWetterTyp.kosmisch => 'assets/audio/musik/emotion_kosmisch.mp3',
+    EmotionsWetterTyp.klar => null, // kein separater Emotions-Track bei klarem Wetter
+  };
+}
 
-    case SoundtrackSchicht.karma_positiv:
-      // Layer wird stärker bei positiverem Karma-Durchschnitt
-      final avg = karma.durchschnitt;
-      if (avg <= 0) return 0.0;
-      return (avg / 100.0).clamp(0.0, 1.0);
+/// Gibt den Asset-Pfad des Ambiente-Tracks für eine Spielphase zurück.
+String _ambienteTrackPfad(GamePhase phase) {
+  return switch (phase) {
+    GamePhase.entstehung || GamePhase.kindheit =>
+      'assets/audio/ambient/kindheit_ambient.mp3',
+    GamePhase.jugend || GamePhase.erwachsen =>
+      'assets/audio/ambient/jugend_ambient.mp3',
+    GamePhase.erwachsen || GamePhase.reife =>
+      'assets/audio/ambient/erwachsen_ambient.mp3',
+    GamePhase.reife || GamePhase.reife =>
+      'assets/audio/ambient/alter_ambient.mp3',
+    GamePhase.jenseits => 'assets/audio/ambient/jenseits_ambient.mp3',
+  };
+}
 
-    case SoundtrackSchicht.karma_negativ:
-      // Layer wird stärker bei negativem Karma-Durchschnitt
-      final avg = karma.durchschnitt;
-      if (avg >= 0) return 0.0;
-      return (-avg / 100.0).clamp(0.0, 1.0);
-
-    case SoundtrackSchicht.emotion_freude:
-      // Freude-Layer bei Sonnenschein oder warmem Leuchten
-      return (wetterTyp == EmotionsWetterTyp.sonnenschein ||
-              wetterTyp == EmotionsWetterTyp.warmesLeuchten)
-          ? 0.75
-          : 0.0;
-
-    case SoundtrackSchicht.emotion_trauer:
-      // Trauer-Layer bei Regen oder Nebel
-      return (wetterTyp == EmotionsWetterTyp.regen ||
-              wetterTyp == EmotionsWetterTyp.nebel)
-          ? 0.7
-          : 0.0;
-
-    case SoundtrackSchicht.spannung:
-      // Spannungs-Layer bei Gewitter oder Sturm
-      return (wetterTyp == EmotionsWetterTyp.gewitter ||
-              wetterTyp == EmotionsWetterTyp.sturm)
-          ? 0.85
-          : 0.0;
-
-    case SoundtrackSchicht.stille:
-      // Stille-Layer bei klarem Wetter (kontemplative Momente)
-      return wetterTyp == EmotionsWetterTyp.klar ? 0.5 : 0.0;
-
-    case SoundtrackSchicht.kosmisch:
-      // Kosmischer Layer bei spirituellem Wetter
-      return wetterTyp == EmotionsWetterTyp.kosmisch ? 0.9 : 0.0;
-  }
+/// Berechnet die Lautstärke des Emotions-Layers basierend auf dem Wettertyp.
+double _emotionsLautstaerke(EmotionsWetterTyp wetter) {
+  return switch (wetter) {
+    EmotionsWetterTyp.klar => 0.0,      // Kein Emotions-Layer bei klarem Wetter
+    EmotionsWetterTyp.sonnenschein => 0.6,
+    EmotionsWetterTyp.warmesLeuchten => 0.7,
+    EmotionsWetterTyp.regen => 0.65,
+    EmotionsWetterTyp.nebel => 0.5,
+    EmotionsWetterTyp.gewitter => 0.75,
+    EmotionsWetterTyp.sturm => 0.85,
+    EmotionsWetterTyp.kosmisch => 0.9,
+  };
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// SoundtrackNotifier – verwaltet den dynamischen Layered-Soundtrack
+// SoundtrackNotifier – verwaltet das Layered-Audio-System mit just_audio
 // ─────────────────────────────────────────────────────────────────────────────
+
+/// StateNotifier für das dynamische Layered-Soundtrack-System.
+///
+/// Verwendet [just_audio] für hochqualitatives Streaming und sanfte Überblendungen.
+/// Jede Audio-Schicht hat einen eigenen [AudioPlayer] für unabhängige Lautstärkekontrolle.
 class SoundtrackNotifier extends StateNotifier<SoundtrackZustand> {
-  SoundtrackNotifier() : super(SoundtrackZustand.initial());
+  SoundtrackNotifier() : super(SoundtrackZustand.initial()) {
+    _spielerInitialisieren();
+  }
+
+  // ── Audio-Spieler pro Schicht ──────────────────────────────────────────────
+  final AudioPlayer _basisSpieler = AudioPlayer();
+  final AudioPlayer _emotionsSpieler = AudioPlayer();
+  final AudioPlayer _spannungsSpieler = AudioPlayer();
+  final AudioPlayer _ambienteSpieler = AudioPlayer();
+  final AudioPlayer _effektSpieler = AudioPlayer();
+
+  // Timer für Überblendungen
+  Timer? _ueberblendungsTimer;
+
+  // ───────────────────────────────────────────────────────────────────────────
+  // Initialisierung
+  // ───────────────────────────────────────────────────────────────────────────
+
+  /// Konfiguriert alle Audio-Spieler mit Loop-Modus für Hintergrundmusik.
+  void _spielerInitialisieren() {
+    // Alle Hintergrund-Spieler im Endlos-Loop laufen lassen
+    _basisSpieler.setLoopMode(LoopMode.one);
+    _emotionsSpieler.setLoopMode(LoopMode.one);
+    _spannungsSpieler.setLoopMode(LoopMode.one);
+    _ambienteSpieler.setLoopMode(LoopMode.one);
+    // Effekt-Spieler läuft einmalig
+    _effektSpieler.setLoopMode(LoopMode.off);
+  }
 
   // ───────────────────────────────────────────────────────────────────────────
   // Öffentliche Methoden
   // ───────────────────────────────────────────────────────────────────────────
 
-  /// Aktualisiert den Soundtrack basierend auf Karma-Profil und emotionalem Wetter.
-  /// Berechnet für jede Schicht die passende Lautstärke und wählt aktive Tracks.
-  void soundtrackAktualisieren({
-    required KarmaProfilModel karma,
-    required EmotionsWetterModel wetter,
-    required GamePhase phase,
-  }) {
-    // Neue Schicht-Lautstärken berechnen
-    final neueLautstaerken = <String, double>{};
-    final aktiveTracks = <String>[];
+  /// Lädt und spielt die passende Musik für eine Spielphase ab.
+  ///
+  /// Überlädt alle aktiven Schichten mit phasenspezifischen Tracks.
+  /// Basis- und Ambiente-Layer werden sofort aktualisiert.
+  Future<void> phaseAbspielen(GamePhase phase) async {
+    if (!mounted) return;
 
-    // Basis-Track immer einschalten
-    final basisTrack = _basisTrackFuerPhase(phase);
-    aktiveTracks.add(basisTrack);
-    neueLautstaerken[SoundtrackSchicht.basis.name] = 1.0;
+    state = state.copyWith(
+      aktuellePhase: phase,
+      istInUeberblendung: true,
+    );
 
-    // Alle weiteren Schichten dynamisch berechnen
-    for (final schicht in SoundtrackSchicht.values) {
-      if (schicht == SoundtrackSchicht.basis) continue;
-
-      final lautstaerke = _schichtLautstaerkeBerechnen(
-        schicht,
-        karma,
-        wetter.typ,
+    try {
+      // Basis-Track laden und abspielen
+      final basisPfad = _basisTrackPfad(phase);
+      await _basisSpieler.setAsset(basisPfad);
+      await _basisSpieler.setVolume(
+        state.effektiveLautstaerke *
+            (state.schichtLautstaerken[SoundtrackSchicht.basis] ?? 1.0),
       );
+      await _basisSpieler.play();
 
-      neueLautstaerken[schicht.name] = lautstaerke;
+      // Ambiente-Track laden und abspielen (leiser)
+      final ambientePfad = _ambienteTrackPfad(phase);
+      await _ambienteSpieler.setAsset(ambientePfad);
+      await _ambienteSpieler.setVolume(
+        state.effektiveLautstaerke *
+            (state.schichtLautstaerken[SoundtrackSchicht.ambiente] ?? 0.3),
+      );
+      await _ambienteSpieler.play();
 
-      // Track zur Aktivliste hinzufügen, wenn Lautstärke > 0
-      if (lautstaerke > 0.0) {
-        final trackPfad = _trackPfadFuerSchicht(schicht, phase);
-        if (trackPfad != null) {
-          aktiveTracks.add(trackPfad);
-        }
+      // Spannungs-Track phasenspezifisch laden (Pruefung und Tod haben Priorität)
+      if (phase == GamePhase.reife || phase == GamePhase.jenseits) {
+        await _spannungsSpieler
+            .setAsset('assets/audio/musik/spannung_${phase.name}.mp3');
+        await _spannungsSpieler.setVolume(
+          state.effektiveLautstaerke * 0.5,
+        );
+        await _spannungsSpieler.play();
+      } else {
+        await _spannungsSpieler.stop();
       }
+    } catch (fehler) {
+      // Audio-Fehler sind nicht spielunterbrechend (Stille ist akzeptabel)
+      // In Production-Build: Fehler loggen
     }
 
-    // Thema-Namen bestimmen (kosmisch und Vermächtnis/Tod haben Priorität)
-    final thema = _themaNameBestimmen(phase, karma, wetter.typ);
-
-    state = state.copyWith(
-      aktiveTracks: aktiveTracks,
-      schichtLautstaerken: neueLautstaerken,
-      aktuellesThema: thema,
-      aktuellePhase: phase,
-    );
+    if (mounted) {
+      state = state.copyWith(
+        laeuft: true,
+        istInUeberblendung: false,
+      );
+    }
   }
 
-  /// Wechselt zur nächsten Spielphase und blendet den Soundtrack über.
-  /// Die Überblendung dauert standardmäßig 2 Sekunden.
-  void phasenWechsel(GamePhase neuePhase) {
-    state = state.copyWith(
-      aktuellePhase: neuePhase,
-      istInUeberblendung: true,
-      aktuellesThema: _basisThemaFuerPhase(neuePhase),
-    );
+  /// Überlädt den Emotions-Layer basierend auf dem aktuellen Wettertyp.
+  ///
+  /// Der Übergang erfolgt durch sanftes Einblenden des neuen Tracks.
+  Future<void> wetterSchichtAktualisieren(EmotionsWetterTyp wetter) async {
+    if (!mounted) return;
 
-    // Nach der Überblendungsdauer Flag zurücksetzen
-    Future.delayed(
-      Duration(milliseconds: state.ueberblendungsDauerMs),
-      () {
-        if (mounted) {
-          state = state.copyWith(istInUeberblendung: false);
-        }
-      },
-    );
+    state = state.copyWith(aktuellesWetter: wetter);
+
+    final emotionsPfad = _emotionsTrackPfad(wetter);
+    final zielLautstaerke = _emotionsLautstaerke(wetter);
+
+    try {
+      if (emotionsPfad != null && zielLautstaerke > 0.0) {
+        // Neuen Emotions-Track laden (falls nicht bereits geladen)
+        await _emotionsSpieler.setAsset(emotionsPfad);
+
+        // Sanft einblenden: von 0 auf Ziel-Lautstärke
+        await _emotionsSpieler.setVolume(0.0);
+        await _emotionsSpieler.play();
+        await _schichtEinblenden(
+          _emotionsSpieler,
+          zielLautstaerke * state.effektiveLautstaerke,
+          const Duration(milliseconds: 1500),
+        );
+      } else {
+        // Emotions-Schicht ausblenden und stoppen
+        await _schichtAusblenden(
+          _emotionsSpieler,
+          const Duration(milliseconds: 1500),
+        );
+      }
+    } catch (_) {
+      // Fehler beim Wetter-Übergang sind nicht kritisch
+    }
+
+    // Schicht-Lautstärken im Zustand aktualisieren
+    if (mounted) {
+      final neueSchichtLautstaerken =
+          Map<SoundtrackSchicht, double>.from(state.schichtLautstaerken);
+      neueSchichtLautstaerken[SoundtrackSchicht.emotion] = zielLautstaerke;
+
+      state = state.copyWith(schichtLautstaerken: neueSchichtLautstaerken);
+    }
   }
 
-  /// Setzt die globale Lautstärke (0.0 bis 1.0).
-  void lautstaerkeSetzen(double neueLautstaerke) {
-    state = state.copyWith(
-      lautstaerke: neueLautstaerke.clamp(0.0, 1.0),
-    );
+  /// Setzt die globale Lautstärke (0.0–1.0) für alle Schichten.
+  void lautstaerkeSetzen(double wert) {
+    final begrenzterWert = wert.clamp(0.0, 1.0);
+    state = state.copyWith(lautstaerke: begrenzterWert);
+
+    // Lautstärke aller aktiven Spieler aktualisieren
+    final lautstaerken = state.schichtLautstaerken;
+    _basisSpieler.setVolume(
+        begrenzterWert * (lautstaerken[SoundtrackSchicht.basis] ?? 1.0));
+    _emotionsSpieler.setVolume(
+        begrenzterWert * (lautstaerken[SoundtrackSchicht.emotion] ?? 0.0));
+    _spannungsSpieler.setVolume(
+        begrenzterWert * (lautstaerken[SoundtrackSchicht.spannung] ?? 0.0));
+    _ambienteSpieler.setVolume(
+        begrenzterWert * (lautstaerken[SoundtrackSchicht.ambiente] ?? 0.3));
   }
 
   /// Schaltet den Stummschaltungsmodus um.
   void stummschaltenUmschalten() {
     state = state.copyWith(istStumm: !state.istStumm);
+    lautstaerkeSetzen(state.lautstaerke);
   }
 
-  /// Spielt den finalen Akkord beim Tod – basierend auf dem Karma-Profil des Lebens.
-  /// Der Akkord reflektiert den moralischen Charakter der verstorbenen Seele.
-  void finalenAkkordSpielen(KarmaProfilModel karmaAmEnde) {
-    final avg = karmaAmEnde.durchschnitt;
+  /// Spielt einen einmaligen Soundeffekt ab (UI-Feedback, Ereignis-Sounds).
+  ///
+  /// [pfad] – Asset-Pfad des Soundeffekts (z.B. 'assets/audio/sfx/karma_plus.mp3')
+  Future<void> soundeffektAbspielen(String pfad) async {
+    if (state.istStumm) return;
 
-    // Finalen Akkord-Track basierend auf Karma-Niveau auswählen
-    String akkordTrack;
-    if (avg >= 60.0) {
-      // Erleuchteter Abschluss – hohe, helle Töne
-      akkordTrack = 'assets/audio/musik/akkord_elysium.mp3';
-    } else if (avg >= 20.0) {
-      // Harmonischer Abschluss – warme, wohlklingende Akkorde
-      akkordTrack = 'assets/audio/musik/akkord_harmonia.mp3';
-    } else if (avg >= -20.0) {
-      // Neutraler Abschluss – gedämpfte, nachdenkliche Töne
-      akkordTrack = 'assets/audio/musik/akkord_limbus.mp3';
-    } else if (avg >= -60.0) {
-      // Dunkler Abschluss – tiefe, schwere Akkorde
-      akkordTrack = 'assets/audio/musik/akkord_shadowlands.mp3';
-    } else {
-      // Abyssaler Abschluss – dissonante, beunruhigende Töne
-      akkordTrack = 'assets/audio/musik/akkord_abyssus.mp3';
+    try {
+      await _effektSpieler.setAsset(pfad);
+      await _effektSpieler.setVolume(state.lautstaerke);
+      await _effektSpieler.seek(Duration.zero);
+      await _effektSpieler.play();
+    } catch (_) {
+      // Soundeffekt-Fehler sind nicht spielunterbrechend
+    }
+  }
+
+  /// Pausiert alle aktiven Musik-Schichten.
+  Future<void> pausieren() async {
+    await Future.wait([
+      _basisSpieler.pause(),
+      _emotionsSpieler.pause(),
+      _spannungsSpieler.pause(),
+      _ambienteSpieler.pause(),
+    ]);
+    if (mounted) state = state.copyWith(laeuft: false);
+  }
+
+  /// Setzt alle pausierten Musik-Schichten fort.
+  Future<void> fortsetzen() async {
+    // Nur Spieler fortsetzen, die tatsächlich Schichten mit Lautstärke > 0 haben
+    final lautstaerken = state.schichtLautstaerken;
+    final futures = <Future>[];
+
+    if ((lautstaerken[SoundtrackSchicht.basis] ?? 0.0) > 0.0) {
+      futures.add(_basisSpieler.play());
+    }
+    if ((lautstaerken[SoundtrackSchicht.emotion] ?? 0.0) > 0.0) {
+      futures.add(_emotionsSpieler.play());
+    }
+    if ((lautstaerken[SoundtrackSchicht.spannung] ?? 0.0) > 0.0) {
+      futures.add(_spannungsSpieler.play());
+    }
+    if ((lautstaerken[SoundtrackSchicht.ambiente] ?? 0.0) > 0.0) {
+      futures.add(_ambienteSpieler.play());
     }
 
-    // Finalen Akkord als einzigen aktiven Track setzen
-    state = state.copyWith(
-      aktiveTracks: [akkordTrack],
-      aktuellesThema: 'finaler_akkord',
-      schichtLautstaerken: {
-        SoundtrackSchicht.kosmisch.name: 1.0,
-      },
-    );
+    await Future.wait(futures);
+    if (mounted) state = state.copyWith(laeuft: true);
   }
 
-  /// Setzt alle Audio-Schichten zurück (z.B. beim Start eines neuen Lebens).
-  void zuruecksetzen() {
-    state = SoundtrackZustand.initial();
+  /// Setzt das gesamte Audio-System auf den Anfangszustand zurück.
+  Future<void> zuruecksetzen() async {
+    _ueberblendungsTimer?.cancel();
+    await Future.wait([
+      _basisSpieler.stop(),
+      _emotionsSpieler.stop(),
+      _spannungsSpieler.stop(),
+      _ambienteSpieler.stop(),
+      _effektSpieler.stop(),
+    ]);
+    if (mounted) state = SoundtrackZustand.initial();
+  }
+
+  @override
+  void dispose() {
+    _ueberblendungsTimer?.cancel();
+    _basisSpieler.dispose();
+    _emotionsSpieler.dispose();
+    _spannungsSpieler.dispose();
+    _ambienteSpieler.dispose();
+    _effektSpieler.dispose();
+    super.dispose();
   }
 
   // ───────────────────────────────────────────────────────────────────────────
   // Private Hilfsmethoden
   // ───────────────────────────────────────────────────────────────────────────
 
-  /// Liefert den Track-Pfad für eine gegebene Schicht und Phase.
-  String? _trackPfadFuerSchicht(SoundtrackSchicht schicht, GamePhase phase) {
-    final phaseName = phase.name;
-    switch (schicht) {
-      case SoundtrackSchicht.karma_positiv:
-        return 'assets/audio/musik/karma_positiv_$phaseName.mp3';
-      case SoundtrackSchicht.karma_negativ:
-        return 'assets/audio/musik/karma_negativ_$phaseName.mp3';
-      case SoundtrackSchicht.emotion_freude:
-        return 'assets/audio/musik/emotion_freude.mp3';
-      case SoundtrackSchicht.emotion_trauer:
-        return 'assets/audio/musik/emotion_trauer.mp3';
-      case SoundtrackSchicht.spannung:
-        return 'assets/audio/musik/spannung_$phaseName.mp3';
-      case SoundtrackSchicht.stille:
-        return 'assets/audio/musik/stille_ambient.mp3';
-      case SoundtrackSchicht.kosmisch:
-        return 'assets/audio/musik/kosmisch_ambient.mp3';
-      case SoundtrackSchicht.basis:
-        return null; // Wird separat behandelt
+  /// Blendet einen Audio-Spieler sanft auf eine Ziellautstärke ein.
+  Future<void> _schichtEinblenden(
+    AudioPlayer spieler,
+    double zielLautstaerke,
+    Duration dauer,
+  ) async {
+    const schritte = 15;
+    final schrittDauer =
+        Duration(milliseconds: dauer.inMilliseconds ~/ schritte);
+    final schrittGroesse = zielLautstaerke / schritte;
+
+    for (int i = 1; i <= schritte; i++) {
+      if (!mounted) return;
+      await Future.delayed(schrittDauer);
+      await spieler.setVolume((schrittGroesse * i).clamp(0.0, 1.0));
     }
   }
 
-  /// Bestimmt den Namen des aktuellen Themas basierend auf Phase und Zustand.
-  String _themaNameBestimmen(
-    GamePhase phase,
-    KarmaProfilModel karma,
-    EmotionsWetterTyp wetterTyp,
-  ) {
-    // Kosmische Phasen haben höchste Priorität
-    if (phase == GamePhase.tod || phase == GamePhase.vermaechtnis) {
-      return 'kosmisch_${phase.name}';
-    }
-    // Spirituelles Wetter
-    if (wetterTyp == EmotionsWetterTyp.kosmisch) {
-      return 'kosmisch_moment';
-    }
-    // Karma-basiertes Thema
-    final avg = karma.durchschnitt;
-    if (avg >= 40.0) return '${phase.name}_hell';
-    if (avg <= -40.0) return '${phase.name}_dunkel';
-    return phase.name;
-  }
+  /// Blendet einen Audio-Spieler sanft aus und stoppt ihn danach.
+  Future<void> _schichtAusblenden(AudioPlayer spieler, Duration dauer) async {
+    final startLautstaerke = spieler.volume;
+    const schritte = 15;
+    final schrittDauer =
+        Duration(milliseconds: dauer.inMilliseconds ~/ schritte);
+    final schrittGroesse = startLautstaerke / schritte;
 
-  /// Liefert das Basis-Thema-Präfix für eine Phase.
-  String _basisThemaFuerPhase(GamePhase phase) => phase.name;
+    for (int i = 1; i <= schritte; i++) {
+      if (!mounted) return;
+      await Future.delayed(schrittDauer);
+      final neueLautstaerke = (startLautstaerke - schrittGroesse * i).clamp(0.0, 1.0);
+      await spieler.setVolume(neueLautstaerke);
+    }
+
+    await spieler.stop();
+  }
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Provider
 // ─────────────────────────────────────────────────────────────────────────────
 
-/// Globaler Soundtrack-Provider – steuert das gesamte Musik-System des Spiels
+/// Soundtrack-Provider – steuert das gesamte Layered-Audio-System.
+///
+/// Nutzt [just_audio] für hochqualitatives Streaming und sanfte Überblendungen.
 final soundtrackProvider =
-    StateNotifierProvider<SoundtrackNotifier, SoundtrackZustand>(
-  (ref) => SoundtrackNotifier(),
-);
+    StateNotifierProvider<SoundtrackNotifier, SoundtrackZustand>((ref) {
+  return SoundtrackNotifier();
+});
 
-/// Bequemlichkeits-Provider: Gibt nur die aktuelle Liste der aktiven Tracks zurück
-final aktiveSoundtrackTracksProvider = Provider<List<String>>(
-  (ref) => ref.watch(soundtrackProvider).aktiveTracks,
-);
+// ─────────────────────────────────────────────────────────────────────────────
+// Bequemlichkeits-Provider
+// ─────────────────────────────────────────────────────────────────────────────
 
-/// Bequemlichkeits-Provider: Gibt die globale Lautstärke zurück
-final soundtrackLautstaerkeProvider = Provider<double>(
-  (ref) => ref.watch(soundtrackProvider).lautstaerke,
-);
+/// Gibt die globale Lautstärke zurück.
+final soundtrackLautstaerkeProvider = Provider<double>((ref) {
+  return ref.watch(soundtrackProvider).lautstaerke;
+});
 
-/// Bequemlichkeits-Provider: Gibt zurück, ob das System stummgeschaltet ist
-final soundtrackIstStummProvider = Provider<bool>(
-  (ref) => ref.watch(soundtrackProvider).istStumm,
-);
+/// Gibt zurück, ob das Soundtrack-System gerade aktiv ist.
+final soundtrackLaeuftProvider = Provider<bool>((ref) {
+  return ref.watch(soundtrackProvider).laeuft;
+});
 
-/// Bequemlichkeits-Provider: Gibt die Schicht-Lautstärken zurück
-final schichtLautstaerkenProvider = Provider<Map<String, double>>(
-  (ref) => ref.watch(soundtrackProvider).schichtLautstaerken,
-);
+/// Gibt zurück, ob das System stummgeschaltet ist.
+final soundtrackIstStummProvider = Provider<bool>((ref) {
+  return ref.watch(soundtrackProvider).istStumm;
+});
+
+/// Gibt die Schicht-Lautstärken-Map zurück.
+final schichtLautstaerkenProvider =
+    Provider<Map<SoundtrackSchicht, double>>((ref) {
+  return ref.watch(soundtrackProvider).schichtLautstaerken;
+});
+
+/// Gibt den aktuellen Wettertyp im Soundtrack-System zurück.
+final soundtrackWetterProvider = Provider<EmotionsWetterTyp>((ref) {
+  return ref.watch(soundtrackProvider).aktuellesWetter;
+});
+
+/// Gibt zurück, ob eine Überblendung aktiv ist.
+final soundtrackInUeberblendungProvider = Provider<bool>((ref) {
+  return ref.watch(soundtrackProvider).istInUeberblendung;
+});

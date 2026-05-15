@@ -3,15 +3,15 @@
 // Verwendet den HiveDienst als lokalen Datenspeicher und führt alle
 // JSON-Serialisierungen über die Modellklassen durch.
 
-import 'package:genesis_spiel/data/local/hive_dienst.dart';
-import 'package:genesis_spiel/data/models/beziehung_model.dart';
-import 'package:genesis_spiel/data/models/erinnerung_model.dart';
-import 'package:genesis_spiel/data/models/entscheidung_model.dart';
-import 'package:genesis_spiel/data/models/gedanke_model.dart';
-import 'package:genesis_spiel/data/models/konsequenz_model.dart';
-import 'package:genesis_spiel/data/models/spieler_profil_model.dart';
-import 'package:genesis_spiel/data/models/zyklus_model.dart';
-import 'package:genesis_spiel/domain/repositories/spiel_repository.dart';
+import 'package:genesis_kreislauf_des_lebens/data/local/hive_dienst.dart';
+import 'package:genesis_kreislauf_des_lebens/data/models/beziehung_model.dart';
+import 'package:genesis_kreislauf_des_lebens/data/models/erinnerung_model.dart';
+import 'package:genesis_kreislauf_des_lebens/data/models/entscheidung_model.dart';
+import 'package:genesis_kreislauf_des_lebens/data/models/gedanke_model.dart';
+import 'package:genesis_kreislauf_des_lebens/data/models/konsequenz_model.dart';
+import 'package:genesis_kreislauf_des_lebens/data/models/spieler_profil_model.dart';
+import 'package:genesis_kreislauf_des_lebens/data/models/zyklus_model.dart';
+import 'package:genesis_kreislauf_des_lebens/domain/repositories/spiel_repository.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // SpielRepositoryImpl
@@ -211,5 +211,15 @@ class SpielRepositoryImpl implements SpielRepository {
     return rohliste
         .map((json) => BeziehungModel.fromJson(json))
         .toList();
+  }
+
+  // ───────────────────────────────────────────────────────────────────────────
+  // Verwaltung
+  // ───────────────────────────────────────────────────────────────────────────
+
+  /// Löscht alle gespeicherten Spielstände – delegiert an [HiveDienst.allesDatenLoeschen].
+  @override
+  Future<void> allesZuruecksetzen() async {
+    await _hiveDienst.allesDatenLoeschen();
   }
 }

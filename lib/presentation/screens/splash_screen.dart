@@ -8,8 +8,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:go_router/go_router.dart';
 
-import 'package:genesis_spiel/app/router.dart';
-import 'package:genesis_spiel/core/theme/app_farben.dart';
+import 'package:genesis_kreislauf_des_lebens/app/router.dart';
+import 'package:genesis_kreislauf_des_lebens/core/theme/app_farben.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Partikel-Datenmodell

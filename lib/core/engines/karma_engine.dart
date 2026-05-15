@@ -4,12 +4,12 @@
 // Alle Methoden sind statisch, keine Instanzierung nötig.
 
 import 'dart:math';
-import 'package:genesis_spiel/data/models/karma_profil_model.dart';
-import 'package:genesis_spiel/data/models/erinnerung_model.dart';
-import 'package:genesis_spiel/data/models/gedanke_model.dart';
-import 'package:genesis_spiel/data/models/entscheidung_model.dart';
-import 'package:genesis_spiel/data/models/emotions_wetter_model.dart';
-import 'package:genesis_spiel/data/models/zyklus_model.dart';
+import 'package:genesis_kreislauf_des_lebens/data/models/karma_profil_model.dart';
+import 'package:genesis_kreislauf_des_lebens/data/models/erinnerung_model.dart';
+import 'package:genesis_kreislauf_des_lebens/data/models/gedanke_model.dart';
+import 'package:genesis_kreislauf_des_lebens/data/models/entscheidung_model.dart';
+import 'package:genesis_kreislauf_des_lebens/data/models/emotions_wetter_model.dart';
+import 'package:genesis_kreislauf_des_lebens/data/models/zyklus_model.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // KarmaEngine – statische Berechnungsmethoden für das Karma-System

@@ -3,11 +3,11 @@
 // Läuft vollständig ohne Spielereingabe – alle Entscheidungen werden
 // algorithmisch auf Basis der gesammelten Erinnerungen und Gedanken getroffen.
 
-import 'package:genesis_spiel/data/models/erinnerung_model.dart';
-import 'package:genesis_spiel/data/models/gedanke_model.dart';
-import 'package:genesis_spiel/data/models/karma_profil_model.dart';
-import 'package:genesis_spiel/data/models/zyklus_model.dart';
-import 'package:genesis_spiel/domain/repositories/spiel_repository.dart';
+import 'package:genesis_kreislauf_des_lebens/data/models/erinnerung_model.dart';
+import 'package:genesis_kreislauf_des_lebens/data/models/gedanke_model.dart';
+import 'package:genesis_kreislauf_des_lebens/data/models/karma_profil_model.dart';
+import 'package:genesis_kreislauf_des_lebens/data/models/zyklus_model.dart';
+import 'package:genesis_kreislauf_des_lebens/domain/repositories/spiel_repository.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // KarmaGerichtErgebnis – Rückgabeobjekt des Karma-Gerichts

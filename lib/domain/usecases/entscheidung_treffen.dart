@@ -12,7 +12,7 @@ import 'package:genesis_kreislauf_des_lebens/data/models/karma_profil_model.dart
 import 'package:genesis_kreislauf_des_lebens/data/models/konsequenz_model.dart';
 import 'package:genesis_kreislauf_des_lebens/data/models/spieler_profil_model.dart';
 import 'package:genesis_kreislauf_des_lebens/data/models/zyklus_model.dart';
-import 'package:genesis_spiel/domain/repositories/spiel_repository.dart';
+import 'package:genesis_kreislauf_des_lebens/domain/repositories/spiel_repository.dart';
 import 'package:uuid/uuid.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────

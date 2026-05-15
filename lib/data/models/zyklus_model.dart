@@ -199,7 +199,7 @@ class ZyklusModel {
       getroffeneEntscheidungen: const [],
       sterbealter: 0,
       todesArt: TodesArt.natuerlich,
-      aktuellePhase: GamePhase.geburt,
+      aktuellePhase: GamePhase.entstehung,
       abgeschlossen: false,
       mitgenommeneGedanken: const [],
     );
