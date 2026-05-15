@@ -11,6 +11,18 @@ import 'package:genesis_kreislauf_des_lebens/presentation/screens/haupt_menue_sc
 import 'package:genesis_kreislauf_des_lebens/presentation/screens/neues_spiel_screen.dart';
 import 'package:genesis_kreislauf_des_lebens/presentation/screens/bibliothek_screen.dart';
 import 'package:genesis_kreislauf_des_lebens/presentation/screens/einstellungen_screen.dart';
+import 'package:genesis_kreislauf_des_lebens/presentation/screens/phasen/phase1_entstehung_screen.dart';
+import 'package:genesis_kreislauf_des_lebens/presentation/screens/phasen/entstehung_spiel_screen.dart';
+import 'package:genesis_kreislauf_des_lebens/presentation/screens/phasen/phase2_formung_screen.dart';
+import 'package:genesis_kreislauf_des_lebens/presentation/screens/phasen/phase2_geburt_cinematic.dart';
+import 'package:genesis_kreislauf_des_lebens/presentation/screens/phasen/phase3_kindheit_screen.dart';
+import 'package:genesis_kreislauf_des_lebens/presentation/screens/phasen/phase4_jugend_screen.dart';
+import 'package:genesis_kreislauf_des_lebens/presentation/screens/jenseits/jenseits_reich_screen.dart';
+import 'package:genesis_kreislauf_des_lebens/presentation/screens/jenseits/reinkarnations_screen.dart';
+import 'package:genesis_kreislauf_des_lebens/presentation/screens/phasen/tod_sequenz_screen.dart';
+import 'package:genesis_kreislauf_des_lebens/presentation/screens/jenseits/karma_gericht_screen.dart';
+import 'package:genesis_kreislauf_des_lebens/presentation/screens/jenseits/jenseits_ankunft_screen.dart';
+import 'package:genesis_kreislauf_des_lebens/data/models/zyklus_model.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Routen-Pfade als Konstanten
@@ -67,6 +79,9 @@ abstract final class AppRouten {
 
   /// Sterbe-Sequenz – cineastischer Übergang nach dem Tod
   static const String sterbeSequenz = '/sterbe-sequenz';
+
+  /// Tod-Sequenz – Alias für sterbeSequenz (von Phase 6 verwendet)
+  static const String todSequenz = '/tod-sequenz';
 
   /// Karma-Gericht – Auswertung des gelebten Lebens
   static const String karmaGericht = '/karma-gericht';
@@ -908,61 +923,46 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: AppRouten.phase1,
         name: 'phase1',
-        // Phase 1 ist immer zugänglich – Startphase, kein Guard nötig
         redirect: (context, state) => null,
-        builder: (context, state) => const _PhasePlatzhalterScreen(
-          phaseName: 'Phase I – Entstehung',
-          phaseBeschreibung:
-              'Der Wettlauf ums Leben beginnt.\n'
-              'Millionen von Seelen streben nach der Eizelle.\n'
-              'Nur eine wird geboren.',
-          naechsteRoute: AppRouten.phase2,
-        ),
+        builder: (context, state) => const Phase1EntstehungScreen(),
       ),
 
-      /// Phase 2 – Formung: Embryonalentwicklung, erste Bewusstseinsmomente
+      /// Phase 1 Rennen – direkter Start des Flame-Spiels
+      GoRoute(
+        path: '/phase/1/rennen',
+        name: 'phase1Rennen',
+        builder: (context, state) => const EntstehungSpielScreen(),
+      ),
+
+      /// Phase 2 – Formung: Embryonalentwicklung mit 3 Minispielen
       GoRoute(
         path: AppRouten.phase2,
         name: 'phase2',
         redirect: _phasenGuard(2),
-        builder: (context, state) => const _PhasePlatzhalterScreen(
-          phaseName: 'Phase II – Formung',
-          phaseBeschreibung:
-              'Neun Monate der Stille.\n'
-              'Ein Körper entsteht aus dem Nichts.\n'
-              'Das Bewusstsein erwacht langsam.',
-          naechsteRoute: AppRouten.phase3,
-        ),
+        builder: (context, state) => const Phase2FormungScreen(),
       ),
 
-      /// Phase 3 – Kindheit: Alter 3–12, Charakterformung durch Entscheidungen
+      /// Phase 2 Geburt – cinematischer Übergang nach dem Embryo-Puzzle
+      GoRoute(
+        path: '/phase/2/geburt',
+        name: 'phase2Geburt',
+        builder: (context, state) => const Phase2GeburtCinematic(),
+      ),
+
+      /// Phase 3 – Kindheit: Alter 5–12, Entscheidungskarten
       GoRoute(
         path: AppRouten.phase3,
         name: 'phase3',
         redirect: _phasenGuard(3),
-        builder: (context, state) => const _PhasePlatzhalterScreen(
-          phaseName: 'Phase III – Kindheit',
-          phaseBeschreibung:
-              'Die Welt ist neu und voller Wunder.\n'
-              'Jede Entscheidung formt den Charakter.\n'
-              'Das Karma beginnt zu wachsen.',
-          naechsteRoute: AppRouten.phase4,
-        ),
+        builder: (context, state) => const Phase3KindheitScreen(),
       ),
 
-      /// Phase 4 – Jugend: Alter 13–18, Identitätsfindung und erste Liebe
+      /// Phase 4 – Jugend: Alter 13–18, Cliquen, Identitätskrise
       GoRoute(
         path: AppRouten.phase4,
         name: 'phase4',
         redirect: _phasenGuard(4),
-        builder: (context, state) => const _PhasePlatzhalterScreen(
-          phaseName: 'Phase IV – Jugend',
-          phaseBeschreibung:
-              'Zwischen Kind und Erwachsenem.\n'
-              'Wer bin ich? Wo gehöre ich hin?\n'
-              'Die ersten großen Entscheidungen.',
-          naechsteRoute: AppRouten.phase5,
-        ),
+        builder: (context, state) => const Phase4JugendScreen(),
       ),
 
       /// Phase 5 – Erwachsen: Alter 19–40, Karriere und gesellschaftliche Rolle
@@ -1042,18 +1042,47 @@ final routerProvider = Provider<GoRouter>((ref) {
 
       // ── Spezial-Screens ───────────────────────────────────────────────
 
-      /// Sterbe-Sequenz – cineastischer Übergang nach dem Tod
+      /// Sterbe-Sequenz – cinematischer Übergang nach dem Tod
       GoRoute(
         path: AppRouten.sterbeSequenz,
         name: 'sterbeSequenz',
-        builder: (context, state) => const _SterbeSequenzScreen(),
+        builder: (context, state) => const TodSequenzScreen(
+          todesArt: TodesArt.natuerlich,
+          karmaDurchschnitt: 0.0,
+          sterbealter: 75,
+        ),
       ),
 
-      /// Karma-Gericht – Lebensauswertung und Jenseits-Zuweisung
+      /// Karma-Gericht – Lebensauswertung (vollautomatisch)
       GoRoute(
         path: AppRouten.karmaGericht,
         name: 'karmaGericht',
-        builder: (context, state) => const _KarmaGerichtScreen(),
+        builder: (context, state) => const KarmaGerichtScreen(),
+      ),
+
+      /// Tod-Sequenz Alias (/tod-sequenz) – von Phase 6 Sterbebett aus aufgerufen
+      GoRoute(
+        path: AppRouten.todSequenz,
+        name: 'todSequenz',
+        builder: (context, state) => const TodSequenzScreen(
+          todesArt: TodesArt.natuerlich,
+          karmaDurchschnitt: 0.0,
+          sterbealter: 75,
+        ),
+      ),
+
+      /// Jenseits-Ankunft – cineastischer Übergang zum Jenseitsreich
+      GoRoute(
+        path: '/phase/7/ankunft',
+        name: 'jenseitsAnkunft',
+        builder: (context, state) => const JenseitsAnkunftScreen(),
+      ),
+
+      /// Jenseits-Reich-Route innerhalb des Phase-7-Flusses
+      GoRoute(
+        path: '/phase/7/reich',
+        name: 'jenseitsReichPhase',
+        builder: (context, state) => const JenseitsAnkunftScreen(),
       ),
 
       /// Bibliothek – freigeschaltete Erkenntnisse und Zeitalter-Texte
@@ -1076,10 +1105,16 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: AppRouten.jenseitsReich,
         name: 'jenseitsReich',
         builder: (context, state) {
-          // Reich-Parameter aus der URL extrahieren (Fallback: limbus)
           final reich = state.pathParameters['reich'] ?? 'limbus';
-          return _JenseitsReichScreen(reichName: reich);
+          return JenseitsReichScreen(reichName: reich);
         },
+      ),
+
+      /// Reinkarnations-Screen – nach dem Jenseits das nächste Leben wählen
+      GoRoute(
+        path: '/reinkarnation',
+        name: 'reinkarnation',
+        builder: (context, state) => const ReinkarnationsScreen(),
       ),
     ],
   );

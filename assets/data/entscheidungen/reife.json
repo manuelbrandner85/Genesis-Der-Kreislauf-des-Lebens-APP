@@ -1,0 +1,87 @@
+{
+  "entscheidungen": [
+    {
+      "id": "reife_001",
+      "alter": 55,
+      "kontext": "Dein alternder Elternteil braucht Pflege. Du musst wählen zwischen einem Pflegeheim oder der eigenen Pflege zu Hause.",
+      "frage": "Was entscheidest du?",
+      "typ": "familie",
+      "optionen": [
+        {
+          "id": "reife_001_a",
+          "text": "Pflegeheim – professionelle Pflege ist besser.",
+          "karma": { "weisheit": 3, "liebe": -5 },
+          "sofortigeKonsequenzen": ["Professionelle Betreuung, aber der Elternteil fühlt sich verlassen"],
+          "verzoegerteKonsequenzen": ["reife_schuldgefuehl_elternteil"],
+          "egoistischAltruistisch": 0.3
+        },
+        {
+          "id": "reife_001_b",
+          "text": "Selbst pflegen – Familie steht über allem.",
+          "karma": { "mitgefuehl": 12, "liebe": 10, "grosszuegigkeit": 8 },
+          "sofortigeKonsequenzen": ["Intensive Zeit, persönliche Entbehrungen, aber tiefe Verbindung"],
+          "verzoegerteKonsequenzen": ["reife_familiennaehe", "reife_erschoepfung"],
+          "egoistischAltruistisch": 0.9
+        },
+        {
+          "id": "reife_001_c",
+          "text": "Gemischte Lösung: Pflegeheim, aber täglich besuchen.",
+          "karma": { "weisheit": 7, "liebe": 5, "mitgefuehl": 6 },
+          "sofortigeKonsequenzen": ["Balance zwischen professioneller Pflege und emotionaler Nähe"],
+          "verzoegerteKonsequenzen": ["reife_ausgewogene_loesung"],
+          "egoistischAltruistisch": 0.7
+        }
+      ]
+    },
+    {
+      "id": "reife_002",
+      "alter": 60,
+      "kontext": "Ein junger Kollege bittet dich um Mentoring. Es kostet Zeit, die du nicht hast.",
+      "frage": "Wie reagierst du?",
+      "typ": "weitergabe",
+      "optionen": [
+        {
+          "id": "reife_002_a",
+          "text": "Du lehnst höflich ab. Du hast selbst genug Herausforderungen.",
+          "karma": { "grosszuegigkeit": -6, "weisheit": -3 },
+          "sofortigeKonsequenzen": ["Mehr Zeit für dich, aber eine verpasste Chance zur Weitergabe"],
+          "verzoegerteKonsequenzen": ["reife_einsamkeit_spaeter"],
+          "egoistischAltruistisch": 0.1
+        },
+        {
+          "id": "reife_002_b",
+          "text": "Du nimmst ihn an und gibst dein Wissen weiter.",
+          "karma": { "grosszuegigkeit": 10, "weisheit": 8, "liebe": 5 },
+          "sofortigeKonsequenzen": ["Zeitintensiv, aber du siehst jemanden wachsen"],
+          "verzoegerteKonsequenzen": ["reife_erbe_lebend", "reife_dankbarkeit_zurueck"],
+          "egoistischAltruistisch": 1.0
+        }
+      ]
+    },
+    {
+      "id": "reife_003",
+      "alter": 65,
+      "kontext": "Du hast die Chance, in Rente zu gehen oder noch 5 Jahre weiterzuarbeiten für mehr Geld.",
+      "frage": "Was wählst du?",
+      "typ": "lebensabend",
+      "optionen": [
+        {
+          "id": "reife_003_a",
+          "text": "Rente – du hast genug gearbeitet. Zeit zu leben.",
+          "karma": { "weisheit": 8, "mut": 5 },
+          "sofortigeKonsequenzen": ["Freiheit und Zeit, aber finanzielle Einschränkungen"],
+          "verzoegerteKonsequenzen": ["reife_reisen_erleben", "reife_lebensfreude_spaet"],
+          "egoistischAltruistisch": 0.6
+        },
+        {
+          "id": "reife_003_b",
+          "text": "Weiterarbeiten – Sicherheit für die Familie.",
+          "karma": { "grosszuegigkeit": 6, "mut": -3, "liebe": 4 },
+          "sofortigeKonsequenzen": ["Finanzielle Sicherheit, aber du verpasst wertvolle Zeit"],
+          "verzoegerteKonsequenzen": ["reife_spaete_erkenntnis_zeit"],
+          "egoistischAltruistisch": 0.7
+        }
+      ]
+    }
+  ]
+}

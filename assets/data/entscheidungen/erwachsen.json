@@ -1,0 +1,166 @@
+{
+  "entscheidungen": [
+    {
+      "id": "erwachsen_001",
+      "alter": 25,
+      "kontext": "Dein Vorgesetzter bittet dich, falsche Zahlen in einem Bericht zu unterschreiben. Dein Job hängt davon ab.",
+      "frage": "Was tust du?",
+      "typ": "ethik_beruf",
+      "systemEinfluesse": ["karrieredruck", "existenzangst"],
+      "optionen": [
+        {
+          "id": "erwachsen_001_a",
+          "text": "Du unterschreibst. Dein Job ist wichtiger als Prinzipien.",
+          "karma": { "ehrlichkeit": -12, "mut": -8, "weisheit": -5 },
+          "sofortigeKonsequenzen": ["Job gesichert, aber dein Gewissen lässt dich nicht schlafen"],
+          "verzoegerteKonsequenzen": ["erwachsen_betrug_folgen", "erwachsen_gewissensqual"],
+          "egoistischAltruistisch": 0.0
+        },
+        {
+          "id": "erwachsen_001_b",
+          "text": "Du lehnst ab und meldest den Vorfall anonym der Personalabteilung.",
+          "karma": { "ehrlichkeit": 8, "mut": 6, "weisheit": 5 },
+          "sofortigeKonsequenzen": ["Spannungen mit dem Vorgesetzten, aber du hast deine Integrität bewahrt"],
+          "verzoegerteKonsequenzen": ["erwachsen_respekt_kollegen", "erwachsen_befoerderung"],
+          "egoistischAltruistisch": 0.7
+        },
+        {
+          "id": "erwachsen_001_c",
+          "text": "Du kündest und erstattst Anzeige.",
+          "karma": { "ehrlichkeit": 15, "mut": 12, "grosszuegigkeit": 5 },
+          "sofortigeKonsequenzen": ["Verlust des Jobs, aber du schützt andere vor dem Betrug"],
+          "verzoegerteKonsequenzen": ["erwachsen_held_kollegen", "erwachsen_neuer_job"],
+          "egoistischAltruistisch": 1.0
+        }
+      ]
+    },
+    {
+      "id": "erwachsen_002",
+      "alter": 28,
+      "kontext": "Du hast die Wahl zwischen einem gutbezahlten Job ohne Sinn oder einem sinnvollen Job mit niedrigem Gehalt.",
+      "frage": "Für welchen entscheidest du dich?",
+      "typ": "lebensweg",
+      "systemEinfluesse": ["gesellschaftlicher_druck", "materielle_sicherheit"],
+      "optionen": [
+        {
+          "id": "erwachsen_002_a",
+          "text": "Der gutbezahlte Job – Sicherheit geht vor.",
+          "karma": { "weisheit": -3, "mut": -4 },
+          "sofortigeKonsequenzen": ["Finanzieller Komfort, aber eine innere Leere"],
+          "verzoegerteKonsequenzen": ["erwachsen_burnout_risiko", "erwachsen_reichtum"],
+          "egoistischAltruistisch": 0.2
+        },
+        {
+          "id": "erwachsen_002_b",
+          "text": "Der sinnvolle Job – Bedeutung ist wichtiger als Geld.",
+          "karma": { "weisheit": 8, "mut": 6, "mitgefuehl": 5 },
+          "sofortigeKonsequenzen": ["Finanzielle Einschränkungen, aber tiefe Erfüllung"],
+          "verzoegerteKonsequenzen": ["erwachsen_sinn_gefunden", "erwachsen_inspiration_andere"],
+          "egoistischAltruistisch": 0.8
+        }
+      ]
+    },
+    {
+      "id": "erwachsen_003",
+      "alter": 32,
+      "kontext": "Ein obdachloser Mann bittet dich um Geld. Du eilst zu einem wichtigen Meeting.",
+      "frage": "Was tust du?",
+      "typ": "mitgefuehl",
+      "systemEinfluesse": ["zeitdruck", "soziale_normen"],
+      "optionen": [
+        {
+          "id": "erwachsen_003_a",
+          "text": "Du gehst vorbei. Für das Meeting ist keine Zeit.",
+          "karma": { "mitgefuehl": -8, "grosszuegigkeit": -5 },
+          "sofortigeKonsequenzen": ["Meeting pünktlich, der Mann bleibt hungrig"],
+          "verzoegerteKonsequenzen": ["erwachsen_kalt_werden"],
+          "egoistischAltruistisch": 0.0
+        },
+        {
+          "id": "erwachsen_003_b",
+          "text": "Du gibst ihm etwas Geld und gehst dann schnell weiter.",
+          "karma": { "mitgefuehl": 6, "grosszuegigkeit": 7 },
+          "sofortigeKonsequenzen": ["Du kommst leicht zu spät, aber der Mann kann sich etwas kaufen"],
+          "verzoegerteKonsequenzen": ["erwachsen_gutes_gefuehl"],
+          "egoistischAltruistisch": 0.7
+        },
+        {
+          "id": "erwachsen_003_c",
+          "text": "Du brichst das Meeting ab und begleitest ihn zur nächsten Hilfseinrichtung.",
+          "karma": { "mitgefuehl": 15, "grosszuegigkeit": 12, "ehrlichkeit": 5 },
+          "sofortigeKonsequenzen": ["Meeting verpasst, aber ein Leben möglicherweise verändert"],
+          "verzoegerteKonsequenzen": ["erwachsen_tiefe_verbindung", "erwachsen_job_risiko"],
+          "egoistischAltruistisch": 1.0
+        }
+      ]
+    },
+    {
+      "id": "erwachsen_004",
+      "alter": 35,
+      "kontext": "Dein Partner möchte Kinder. Du bist unsicher, ob du bereit bist.",
+      "frage": "Wie gehst du damit um?",
+      "typ": "beziehung",
+      "systemEinfluesse": ["gesellschaftliche_erwartungen", "biologische_uhr"],
+      "optionen": [
+        {
+          "id": "erwachsen_004_a",
+          "text": "Du stimmst zu, auch wenn du noch nicht wirklich bereit bist.",
+          "karma": { "ehrlichkeit": -6, "liebe": -3, "mut": -4 },
+          "sofortigeKonsequenzen": ["Der Partner ist glücklich, du trägst Zweifel mit dir"],
+          "verzoegerteKonsequenzen": ["erwachsen_eltern_konflikt", "erwachsen_kind_wirft_alles_um"],
+          "egoistischAltruistisch": 0.3
+        },
+        {
+          "id": "erwachsen_004_b",
+          "text": "Du sprichst ehrlich über deine Bedenken und sucht gemeinsam einen Weg.",
+          "karma": { "ehrlichkeit": 10, "liebe": 8, "weisheit": 7 },
+          "sofortigeKonsequenzen": ["Ein tiefes Gespräch, das eure Beziehung stärkt"],
+          "verzoegerteKonsequenzen": ["erwachsen_tiefe_partnerschaft", "erwachsen_gemeinsame_entscheidung"],
+          "egoistischAltruistisch": 0.8
+        },
+        {
+          "id": "erwachsen_004_c",
+          "text": "Du lehnst kategorisch ab. Kinder passen nicht in dein Leben.",
+          "karma": { "ehrlichkeit": 5, "liebe": -8 },
+          "sofortigeKonsequenzen": ["Klare Grenze gesetzt, Beziehungskrise möglich"],
+          "verzoegerteKonsequenzen": ["erwachsen_trennung_oder_akzeptanz"],
+          "egoistischAltruistisch": 0.4
+        }
+      ]
+    },
+    {
+      "id": "erwachsen_005",
+      "alter": 40,
+      "kontext": "Du entdeckst, dass ein enger Freund seit Jahren hinter deinem Rücken schlecht über dich spricht.",
+      "frage": "Was tust du?",
+      "typ": "freundschaft",
+      "systemEinfluesse": ["vertrauen", "soziales_netzwerk"],
+      "optionen": [
+        {
+          "id": "erwachsen_005_a",
+          "text": "Du konfrontierst ihn direkt und forderst eine Erklärung.",
+          "karma": { "mut": 9, "ehrlichkeit": 8 },
+          "sofortigeKonsequenzen": ["Unangenehme Konfrontation, aber endlich Klarheit"],
+          "verzoegerteKonsequenzen": ["erwachsen_freundschaft_klaerung_oder_ende"],
+          "egoistischAltruistisch": 0.6
+        },
+        {
+          "id": "erwachsen_005_b",
+          "text": "Du sagst nichts, distanzierst dich aber langsam.",
+          "karma": { "mut": -5, "ehrlichkeit": -3 },
+          "sofortigeKonsequenzen": ["Kein Streit, aber der Schmerz bleibt"],
+          "verzoegerteKonsequenzen": ["erwachsen_innere_verbitterung"],
+          "egoistischAltruistisch": 0.2
+        },
+        {
+          "id": "erwachsen_005_c",
+          "text": "Du vergibst ihm und sprichst ihn auf sein Verhalten an, ohne Vorwürfe.",
+          "karma": { "mitgefuehl": 10, "weisheit": 8, "liebe": 6 },
+          "sofortigeKonsequenzen": ["Schwieriges Gespräch, aber die Chance auf echte Heilung"],
+          "verzoegerteKonsequenzen": ["erwachsen_tiefere_freundschaft", "erwachsen_vergebung_kraft"],
+          "egoistischAltruistisch": 0.9
+        }
+      ]
+    }
+  ]
+}
