@@ -147,10 +147,7 @@ class _Phase2FormungScreenState extends ConsumerState<Phase2FormungScreen> {
       _intelligenz = intelligenz;
       _stufe = 4;
     });
-    // Phasenwechsel im State festhalten
-    ref.read(spielProvider.notifier).phasWechseln(
-      const GamePhaseExtension._dummy().formung,
-    );
+    // Phasenwechsel wird beim Geburts-Cinematic ausgelöst
   }
 
   void _zumGeburtsCinematic() {
@@ -189,27 +186,6 @@ class _Phase2FormungScreenState extends ConsumerState<Phase2FormungScreen> {
       ),
     );
   }
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
-// Dummy Extension (vermeidet Compile-Fehler ohne Enum-Zugriff im Builder)
-// ─────────────────────────────────────────────────────────────────────────────
-
-// Hinweis: phasWechseln wird aus dem spiel_provider aufgerufen, aber
-// GamePhase.formung ist direkt über den Enum-Wert zugänglich.
-extension _GamePhaseFinder on SpielNotifier {
-  // wird intern nicht genutzt; direkte Verwendung im Callback
-}
-
-// Helper um GamePhase.formung zu erreichen
-extension _GamePhaseExtension on Object {
-  // Dummy-Methode — nicht aufrufen
-}
-
-class GamePhaseExtension {
-  const GamePhaseExtension._dummy();
-  // Zugriff auf GamePhase.formung (statisch importiert)
-  GamePhase get formung => GamePhase.formung;
 }
 
 // ─────────────────────────────────────────────────────────────────────────────

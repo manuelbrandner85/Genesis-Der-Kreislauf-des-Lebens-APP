@@ -1,11 +1,14 @@
 // phase3_kindheit_screen.dart
 // Phase 3: Die Kindheit – Alters-Progression 0–12 Jahre.
+// Entscheidungsdaten werden aus assets/data/entscheidungen/kindheit.json geladen.
 // Enthält: Laufen-Lernen-Sequenz (1–2 Jahre), Sprach-Entwicklung (2–4 Jahre),
-// Entscheidungs-Karten für kindheitliche Weichenstellungen.
+// Entscheidungs-Karten für kindheitliche Weichenstellungen (5–12 Jahre).
 
+import 'dart:convert';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -13,133 +16,110 @@ import 'package:go_router/go_router.dart';
 import 'package:genesis_kreislauf_des_lebens/app/router.dart';
 import 'package:genesis_kreislauf_des_lebens/core/theme/app_farben.dart';
 import 'package:genesis_kreislauf_des_lebens/core/theme/app_text_styles.dart';
-import 'package:genesis_kreislauf_des_lebens/data/models/entscheidung_model.dart';
 import 'package:genesis_kreislauf_des_lebens/data/models/karma_profil_model.dart';
+import 'package:genesis_kreislauf_des_lebens/presentation/providers/karma_provider.dart';
 import 'package:genesis_kreislauf_des_lebens/presentation/providers/spiel_provider.dart';
-import 'package:genesis_kreislauf_des_lebens/presentation/widgets/entscheidungs_karte.dart';
 import 'package:genesis_kreislauf_des_lebens/presentation/widgets/genesis_button.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Eingebettete Kindheits-Entscheidungen (normalerweise aus kindheit.json)
+// Lokale JSON-Modelle für kindheit.json (ohne build_runner / json_serializable)
 // ─────────────────────────────────────────────────────────────────────────────
 
-/// Statische Beispiel-Entscheidungen für die Kindheits-Phase.
-/// In der Produktionsversion werden diese aus assets/data/kindheit.json geladen.
-final List<EntscheidungModel> _kindheitsEntscheidungen = [
-  EntscheidungModel(
-    id: 'k_spielplatz_1',
-    frage: 'Ein Kind weint allein auf dem Spielplatz.',
-    kontext: 'Du bist 5 Jahre alt. Alle anderen Kinder spielen. Ein fremdes Kind sitzt allein und weint.',
-    optionen: [
-      EntscheidungsOption(
-        id: 'k1_o1',
-        text: 'Ich gehe zu ihm und frage was los ist.',
-        egoistischAltruistisch: 0.8,
-        karmaAuswirkung: {
-          KarmaDimension.mitgefuehl: 8.0,
-          KarmaDimension.liebe: 5.0,
-        },
-        sofortigeKonsequenzen: ['Das Kind lächelt dankbar. Du hast einen neuen Freund gefunden.'],
-        verzoegerteKonsequenzen: ['Deine Empathie wächst mit jedem Jahr.'],
-        klingtMoralischAber: false,
+/// Einzelne Antwort-Option aus kindheit.json
+class _JsonOption {
+  final String id;
+  final String text;
+
+  /// Karma-Auswirkungen: Schlüssel = KarmaDimension-Name, Wert = double
+  final Map<String, double> karma;
+  final List<String> sofortigeKonsequenzen;
+  final List<String> verzoegerteKonsequenzen;
+  final double egoistischAltruistisch;
+
+  const _JsonOption({
+    required this.id,
+    required this.text,
+    required this.karma,
+    required this.sofortigeKonsequenzen,
+    required this.verzoegerteKonsequenzen,
+    required this.egoistischAltruistisch,
+  });
+
+  factory _JsonOption.fromJson(Map<String, dynamic> json) {
+    // karma-Feld: Map<String, int/double>
+    final karmaRaw = json['karma'] as Map<String, dynamic>? ?? {};
+    final karmaMap = karmaRaw.map(
+      (key, value) => MapEntry(key, (value as num).toDouble()),
+    );
+
+    return _JsonOption(
+      id: json['id'] as String,
+      text: json['text'] as String,
+      karma: karmaMap,
+      sofortigeKonsequenzen: List<String>.from(
+        json['sofortigeKonsequenzen'] as List? ?? [],
       ),
-      EntscheidungsOption(
-        id: 'k1_o2',
-        text: 'Ich spiele weiter. Das ist nicht mein Problem.',
-        egoistischAltruistisch: -0.6,
-        karmaAuswirkung: {
-          KarmaDimension.mitgefuehl: -5.0,
-        },
-        sofortigeKonsequenzen: ['Du spielst weiter. Das Gefühl lässt dich aber nicht los.'],
-        verzoegerteKonsequenzen: ['Manchmal denkst du noch daran zurück.'],
-        klingtMoralischAber: false,
+      verzoegerteKonsequenzen: List<String>.from(
+        json['verzoegerteKonsequenzen'] as List? ?? [],
       ),
-    ],
-    istMikroEntscheidung: true,
-    hatParallelvorschau: false,
-    systemEinfluesse: {},
-  ),
-  EntscheidungModel(
-    id: 'k_geheimnis_2',
-    frage: 'Du findest das Tagebuch deiner Schwester.',
-    kontext: 'Du bist 8 Jahre alt und findest zufällig das Tagebuch deiner älteren Schwester unter ihrem Bett.',
-    optionen: [
-      EntscheidungsOption(
-        id: 'k2_o1',
-        text: 'Ich lege es zurück ohne es zu lesen.',
-        egoistischAltruistisch: 0.5,
-        karmaAuswirkung: {
-          KarmaDimension.ehrlichkeit: 7.0,
-          KarmaDimension.mut: 3.0,
-        },
-        sofortigeKonsequenzen: ['Respekt für Grenzen wächst in dir.'],
-        verzoegerteKonsequenzen: ['Deine Schwester vertraut dir blind.'],
-        klingtMoralischAber: false,
-      ),
-      EntscheidungsOption(
-        id: 'k2_o2',
-        text: 'Ich lese nur ein bisschen... nur kurz.',
-        egoistischAltruistisch: -0.3,
-        karmaAuswirkung: {
-          KarmaDimension.ehrlichkeit: -6.0,
-          KarmaDimension.weisheit: -2.0,
-        },
-        sofortigeKonsequenzen: ['Du liest über Dinge die du nicht verstehst.'],
-        verzoegerteKonsequenzen: ['Deine Schwester bemerkt es eines Tages.'],
-        klingtMoralischAber: false,
-      ),
-      EntscheidungsOption(
-        id: 'k2_o3',
-        text: 'Ich gebe es ihr und sage was ich gefunden habe.',
-        egoistischAltruistisch: 0.7,
-        karmaAuswirkung: {
-          KarmaDimension.ehrlichkeit: 10.0,
-          KarmaDimension.liebe: 4.0,
-        },
-        sofortigeKonsequenzen: ['Deine Schwester ist überrascht, aber dankbar.'],
-        verzoegerteKonsequenzen: ['Eure Bindung wird stärker.'],
-        klingtMoralischAber: false,
-      ),
-    ],
-    istMikroEntscheidung: false,
-    hatParallelvorschau: true,
-    systemEinfluesse: {},
-  ),
-  EntscheidungModel(
-    id: 'k_luege_3',
-    frage: 'Du hast aus Versehen die Lieblingstasse deiner Mutter zerbrochen.',
-    kontext: 'Niemand hat es gesehen. Deine Mutter liebt diese Tasse sehr – sie war ein Geschenk ihrer eigenen Mutter.',
-    optionen: [
-      EntscheidungsOption(
-        id: 'k3_o1',
-        text: 'Ich sage ihr die Wahrheit und entschuldige mich.',
-        egoistischAltruistisch: 0.6,
-        karmaAuswirkung: {
-          KarmaDimension.ehrlichkeit: 9.0,
-          KarmaDimension.mut: 5.0,
-        },
-        sofortigeKonsequenzen: ['Mama ist traurig, aber stolz auf deine Ehrlichkeit.'],
-        verzoegerteKonsequenzen: ['Du lernst: Ehrlichkeit ist leichter als Lügen.'],
-        klingtMoralischAber: false,
-      ),
-      EntscheidungsOption(
-        id: 'k3_o2',
-        text: 'Ich schiebe die Schuld auf den Hund.',
-        egoistischAltruistisch: -0.7,
-        karmaAuswirkung: {
-          KarmaDimension.ehrlichkeit: -8.0,
-          KarmaDimension.mitgefuehl: -4.0,
-        },
-        sofortigeKonsequenzen: ['Der Hund wird bestraft. Das Schuldgefühl sitzt tief.'],
-        verzoegerteKonsequenzen: ['Du erinnerst dich manchmal daran wenn du älter bist.'],
-        klingtMoralischAber: false,
-      ),
-    ],
-    istMikroEntscheidung: true,
-    hatParallelvorschau: false,
-    systemEinfluesse: {},
-  ),
-];
+      egoistischAltruistisch:
+          (json['egoistischAltruistisch'] as num?)?.toDouble() ?? 0.5,
+    );
+  }
+}
+
+/// Eine Entscheidung aus kindheit.json
+class _JsonEntscheidung {
+  final String id;
+  final int alter;
+  final String kontext;
+  final String frage;
+  final List<_JsonOption> optionen;
+
+  const _JsonEntscheidung({
+    required this.id,
+    required this.alter,
+    required this.kontext,
+    required this.frage,
+    required this.optionen,
+  });
+
+  factory _JsonEntscheidung.fromJson(Map<String, dynamic> json) {
+    final optionenRaw = json['optionen'] as List? ?? [];
+    return _JsonEntscheidung(
+      id: json['id'] as String,
+      alter: (json['alter'] as num).toInt(),
+      kontext: json['kontext'] as String,
+      frage: json['frage'] as String,
+      optionen: optionenRaw
+          .map((o) => _JsonOption.fromJson(o as Map<String, dynamic>))
+          .toList(),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Hilfsfunktion: String → KarmaDimension
+// ─────────────────────────────────────────────────────────────────────────────
+
+KarmaDimension? _dimensionAusString(String name) {
+  switch (name) {
+    case 'mitgefuehl':
+      return KarmaDimension.mitgefuehl;
+    case 'ehrlichkeit':
+      return KarmaDimension.ehrlichkeit;
+    case 'mut':
+      return KarmaDimension.mut;
+    case 'grosszuegigkeit':
+      return KarmaDimension.grosszuegigkeit;
+    case 'weisheit':
+      return KarmaDimension.weisheit;
+    case 'liebe':
+      return KarmaDimension.liebe;
+    default:
+      return null;
+  }
+}
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Phase 3 Kindheit Screen
@@ -147,9 +127,9 @@ final List<EntscheidungModel> _kindheitsEntscheidungen = [
 
 /// Haupt-Screen für Phase 3: Die Kindheit.
 ///
-/// Zeigt eine Alters-Progression von 0–12 Jahren.
-/// Enthält Minigames (Laufen-Lernen, Sprach-Entwicklung) und
-/// altersabhängige Entscheidungskarten.
+/// Lädt Entscheidungen aus assets/data/entscheidungen/kindheit.json.
+/// Zeigt eine Alters-Progression von 0–12 Jahren mit altersabhängigen
+/// Entscheidungskarten, Karma-Feedback und Minigames.
 class Phase3KindheitScreen extends ConsumerStatefulWidget {
   const Phase3KindheitScreen({super.key});
 
@@ -160,33 +140,97 @@ class Phase3KindheitScreen extends ConsumerStatefulWidget {
 
 class _Phase3KindheitScreenState extends ConsumerState<Phase3KindheitScreen>
     with TickerProviderStateMixin {
-  // Aktuell angezeigtes Kapitel (Jahr 0–12)
+  // Aktuell angezeigtes Jahr (0–12)
   int _aktuellesJahr = 0;
 
-  // Welche Entscheidungen wurden bereits getroffen
-  final Set<String> _getroffeneEntscheidungen = {};
+  // Geladene JSON-Entscheidungen, gruppiert nach Alter
+  Map<int, List<_JsonEntscheidung>> _entscheidungenNachAlter = {};
 
-  // Welche Minigames wurden bereits abgeschlossen
+  // Geladene Entscheidungen (alle)
+  List<_JsonEntscheidung> _alleEntscheidungen = [];
+
+  // Lade-Zustand
+  bool _laedt = true;
+  String? _ladefehler;
+
+  // Welche Entscheidungen wurden bereits getroffen (id → gewählter Index)
+  final Map<String, int> _getroffeneEntscheidungen = {};
+
+  // Karma-Feedback-Anzeige
+  _KarmaFeedback? _aktivesFeedback;
+
+  // Minigame-Status
   bool _laufenAbgeschlossen = false;
   bool _sprachAbgeschlossen = false;
 
   // Scroll-Controller für Jahres-Navigation
   final PageController _jahresController = PageController();
 
-  // Aktueller Modus (0 = Jahres-Übersicht, 1 = Minigame, 2 = Entscheidung)
+  // Aktueller Modus: 0 = Jahres-Übersicht, 1 = Minigame, 2 = Entscheidung, 3 = Karma-Feedback
   int _modus = 0;
 
-  // Aktive Entscheidung
-  EntscheidungModel? _aktiveEntscheidung;
+  // Aktive Entscheidung (JSON-Version)
+  _JsonEntscheidung? _aktiveEntscheidung;
 
   // Aktives Minigame (0 = keins, 1 = Laufen, 2 = Sprache)
   int _aktivesMinigame = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _jsonLaden();
+  }
 
   @override
   void dispose() {
     _jahresController.dispose();
     super.dispose();
   }
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // JSON laden
+  // ─────────────────────────────────────────────────────────────────────────
+
+  /// Lädt kindheit.json aus den Assets und parst alle Entscheidungen.
+  Future<void> _jsonLaden() async {
+    try {
+      final jsonString = await rootBundle
+          .loadString('assets/data/entscheidungen/kindheit.json');
+      final jsonDaten = json.decode(jsonString) as Map<String, dynamic>;
+      final entscheidungenRaw =
+          jsonDaten['entscheidungen'] as List? ?? [];
+
+      final geladen = entscheidungenRaw
+          .map((e) =>
+              _JsonEntscheidung.fromJson(e as Map<String, dynamic>))
+          .toList();
+
+      // Nach Alter gruppieren
+      final nachAlter = <int, List<_JsonEntscheidung>>{};
+      for (final e in geladen) {
+        nachAlter.putIfAbsent(e.alter, () => []).add(e);
+      }
+
+      if (mounted) {
+        setState(() {
+          _alleEntscheidungen = geladen;
+          _entscheidungenNachAlter = nachAlter;
+          _laedt = false;
+        });
+      }
+    } catch (fehler) {
+      if (mounted) {
+        setState(() {
+          _ladefehler = fehler.toString();
+          _laedt = false;
+        });
+      }
+    }
+  }
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // Navigation
+  // ─────────────────────────────────────────────────────────────────────────
 
   void _jahrWechseln(int jahr) {
     setState(() => _aktuellesJahr = jahr);
@@ -195,12 +239,14 @@ class _Phase3KindheitScreenState extends ConsumerState<Phase3KindheitScreen>
       duration: const Duration(milliseconds: 400),
       curve: Curves.easeInOut,
     );
-
-    // Alters-Provider aktualisieren
     ref.read(spielProvider.notifier).alterErhoehen();
   }
 
-  void _entscheidungStarten(EntscheidungModel entscheidung) {
+  // ─────────────────────────────────────────────────────────────────────────
+  // Entscheidungen
+  // ─────────────────────────────────────────────────────────────────────────
+
+  void _entscheidungStarten(_JsonEntscheidung entscheidung) {
     setState(() {
       _aktiveEntscheidung = entscheidung;
       _modus = 2;
@@ -209,16 +255,61 @@ class _Phase3KindheitScreenState extends ConsumerState<Phase3KindheitScreen>
 
   void _entscheidungAbgeschlossen(int optionIndex) {
     if (_aktiveEntscheidung == null) return;
+    if (optionIndex < 0) {
+      // Zurück ohne Entscheidung
+      setState(() {
+        _aktiveEntscheidung = null;
+        _modus = 0;
+      });
+      return;
+    }
+
+    final entscheidung = _aktiveEntscheidung!;
+    if (optionIndex >= entscheidung.optionen.length) return;
+
+    final gewaehlt = entscheidung.optionen[optionIndex];
+
+    // Karma-Änderungen anwenden
+    final karmaDimensionen = <KarmaDimension, double>{};
+    gewaehlt.karma.forEach((key, wert) {
+      final dim = _dimensionAusString(key);
+      if (dim != null) {
+        ref.read(karmaProvider.notifier).dimensionAendern(dim, wert);
+        karmaDimensionen[dim] = wert;
+      }
+    });
+
+    // Spiel-Provider informieren
     ref.read(spielProvider.notifier).entscheidungTreffen(
-      _aktiveEntscheidung!.id,
+      entscheidung.id,
       optionIndex,
     );
+
     setState(() {
-      _getroffeneEntscheidungen.add(_aktiveEntscheidung!.id);
+      _getroffeneEntscheidungen[entscheidung.id] = optionIndex;
       _aktiveEntscheidung = null;
+      _modus = 3; // Karma-Feedback anzeigen
+      _aktivesFeedback = _KarmaFeedback(
+        optionText: gewaehlt.text,
+        konsequenz: gewaehlt.sofortigeKonsequenzen.isNotEmpty
+            ? gewaehlt.sofortigeKonsequenzen.first
+            : '',
+        karmaDimensionen: karmaDimensionen,
+        egoistischAltruistisch: gewaehlt.egoistischAltruistisch,
+      );
+    });
+  }
+
+  void _feedbackSchliessen() {
+    setState(() {
+      _aktivesFeedback = null;
       _modus = 0;
     });
   }
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // Minigames
+  // ─────────────────────────────────────────────────────────────────────────
 
   void _minigameStarten(int minigameId) {
     setState(() {
@@ -236,24 +327,81 @@ class _Phase3KindheitScreenState extends ConsumerState<Phase3KindheitScreen>
     });
   }
 
+  // ─────────────────────────────────────────────────────────────────────────
   // Entscheidungen für das aktuelle Jahr
-  List<EntscheidungModel> get _jahresEntscheidungen {
-    // Vereinfachte Zuteilung: Je nach Altersgruppe andere Entscheidungen
-    if (_aktuellesJahr < 4) return [];
-    if (_aktuellesJahr < 8) {
-      return _kindheitsEntscheidungen
-          .where((e) => !_getroffeneEntscheidungen.contains(e.id))
-          .take(1)
-          .toList();
-    }
-    return _kindheitsEntscheidungen
-        .where((e) => !_getroffeneEntscheidungen.contains(e.id))
-        .take(2)
+  // ─────────────────────────────────────────────────────────────────────────
+
+  List<_JsonEntscheidung> get _jahresEntscheidungen {
+    if (_aktuellesJahr < 5) return [];
+    final fuerJahr =
+        _entscheidungenNachAlter[_aktuellesJahr] ?? [];
+    return fuerJahr
+        .where((e) => !_getroffeneEntscheidungen.containsKey(e.id))
         .toList();
   }
 
+  // ─────────────────────────────────────────────────────────────────────────
+  // Build
+  // ─────────────────────────────────────────────────────────────────────────
+
   @override
   Widget build(BuildContext context) {
+    // Lade-Spinner
+    if (_laedt) {
+      return Scaffold(
+        backgroundColor: AppFarben.kosmischSchwarz,
+        body: Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const CircularProgressIndicator(
+                color: AppFarben.phaseKindheit,
+              ),
+              const SizedBox(height: 16),
+              Text(
+                'Kindheitserinnerungen laden...',
+                style: AppTextStyles.koerperKlein.copyWith(
+                  color: AppFarben.textSekundaer,
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
+    // Fehler-Ansicht
+    if (_ladefehler != null) {
+      return Scaffold(
+        backgroundColor: AppFarben.kosmischSchwarz,
+        body: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(24),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(Icons.error_outline, color: AppFarben.karmaNegatv, size: 48),
+                const SizedBox(height: 16),
+                Text(
+                  'Fehler beim Laden der Entscheidungen.',
+                  style: AppTextStyles.koerper.copyWith(
+                    color: AppFarben.karmaNegatv,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 24),
+                GenesisButton(
+                  text: 'Trotzdem weiterspielen',
+                  onPressed: () => context.go(AppRouten.phase4),
+                  typ: GenesisButtonTyp.sekundaer,
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+    }
+
     return Scaffold(
       backgroundColor: AppFarben.kosmischSchwarz,
       body: SafeArea(
@@ -269,6 +417,11 @@ class _Phase3KindheitScreenState extends ConsumerState<Phase3KindheitScreen>
                 key: const ValueKey('entscheidung'),
                 entscheidung: _aktiveEntscheidung!,
                 onAbgeschlossen: _entscheidungAbgeschlossen,
+              ),
+            3 => _KarmaFeedbackOverlay(
+                key: const ValueKey('feedback'),
+                feedback: _aktivesFeedback!,
+                onWeiter: _feedbackSchliessen,
               ),
             _ => _JahresHauptansicht(
                 key: const ValueKey('hauptansicht'),
@@ -290,17 +443,261 @@ class _Phase3KindheitScreenState extends ConsumerState<Phase3KindheitScreen>
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
+// Karma-Feedback Daten-Klasse
+// ─────────────────────────────────────────────────────────────────────────────
+
+class _KarmaFeedback {
+  final String optionText;
+  final String konsequenz;
+  final Map<KarmaDimension, double> karmaDimensionen;
+  final double egoistischAltruistisch;
+
+  const _KarmaFeedback({
+    required this.optionText,
+    required this.konsequenz,
+    required this.karmaDimensionen,
+    required this.egoistischAltruistisch,
+  });
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Karma-Feedback Overlay
+// ─────────────────────────────────────────────────────────────────────────────
+
+/// Zeigt nach einer Entscheidung das Karma-Feedback an.
+/// Buntes, kindgerechtes Design mit animierten Karma-Balken.
+class _KarmaFeedbackOverlay extends StatelessWidget {
+  final _KarmaFeedback feedback;
+  final VoidCallback onWeiter;
+
+  const _KarmaFeedbackOverlay({
+    super.key,
+    required this.feedback,
+    required this.onWeiter,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    // Positive und negative Karma-Änderungen trennen
+    final positiv = feedback.karmaDimensionen.entries
+        .where((e) => e.value > 0)
+        .toList();
+    final negativ = feedback.karmaDimensionen.entries
+        .where((e) => e.value < 0)
+        .toList();
+
+    final istMehrheitlichPositiv =
+        positiv.fold(0.0, (sum, e) => sum + e.value) >
+            negativ.fold(0.0, (sum, e) => sum + e.value.abs());
+
+    final hauptfarbe = istMehrheitlichPositiv
+        ? AppFarben.karmaPositiv
+        : AppFarben.karmaNegatv;
+
+    return Scaffold(
+      backgroundColor: AppFarben.kosmischSchwarz,
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            children: [
+              const Spacer(),
+
+              // Ergebnis-Icon
+              Container(
+                width: 72,
+                height: 72,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: hauptfarbe.withValues(alpha: 0.15),
+                  border: Border.all(color: hauptfarbe.withValues(alpha: 0.5), width: 2),
+                ),
+                child: Icon(
+                  istMehrheitlichPositiv ? Icons.favorite : Icons.sentiment_dissatisfied,
+                  color: hauptfarbe,
+                  size: 36,
+                ),
+              )
+                  .animate()
+                  .fadeIn(duration: 400.ms)
+                  .scale(begin: const Offset(0.5, 0.5)),
+
+              const SizedBox(height: 20),
+
+              // Gewählte Option
+              Text(
+                '"${feedback.optionText}"',
+                style: AppTextStyles.koerperKursiv.copyWith(
+                  color: AppFarben.text.withValues(alpha: 0.85),
+                  fontSize: 15,
+                ),
+                textAlign: TextAlign.center,
+              ).animate().fadeIn(delay: 200.ms),
+
+              const SizedBox(height: 16),
+
+              // Sofortige Konsequenz
+              if (feedback.konsequenz.isNotEmpty)
+                Container(
+                  padding: const EdgeInsets.all(14),
+                  decoration: BoxDecoration(
+                    color: AppFarben.oberflaecheErhoben.withValues(alpha: 0.6),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
+                      color: AppFarben.nebelGrau.withValues(alpha: 0.3),
+                    ),
+                  ),
+                  child: Text(
+                    feedback.konsequenz,
+                    style: AppTextStyles.koerper.copyWith(
+                      color: AppFarben.textSekundaer,
+                      height: 1.6,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ).animate().fadeIn(delay: 400.ms).slideY(begin: 0.1),
+
+              const SizedBox(height: 24),
+
+              // Karma-Dimensionen Anzeige
+              if (feedback.karmaDimensionen.isNotEmpty) ...[
+                Text(
+                  'Karma-Auswirkung',
+                  style: AppTextStyles.beschriftungGross.copyWith(
+                    color: AppFarben.goldGlanz.withValues(alpha: 0.7),
+                    letterSpacing: 1.5,
+                  ),
+                ).animate().fadeIn(delay: 500.ms),
+
+                const SizedBox(height: 12),
+
+                ...feedback.karmaDimensionen.entries
+                    .toList()
+                    .asMap()
+                    .entries
+                    .map((eintrag) {
+                  final delay = 600 + eintrag.key * 100;
+                  final dim = eintrag.value.key;
+                  final wert = eintrag.value.value;
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: 8),
+                    child: _KarmaBalken(
+                      dimension: dim,
+                      wert: wert,
+                    ),
+                  )
+                      .animate()
+                      .fadeIn(delay: Duration(milliseconds: delay))
+                      .slideX(begin: wert > 0 ? -0.2 : 0.2);
+                }),
+              ],
+
+              const Spacer(),
+
+              // Weiter-Button
+              GenesisButton(
+                text: 'Weiter',
+                onPressed: onWeiter,
+                icon: Icons.arrow_forward,
+              ).animate().fadeIn(delay: 800.ms),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Einzelner animierter Karma-Balken im Feedback-Screen.
+class _KarmaBalken extends StatelessWidget {
+  final KarmaDimension dimension;
+  final double wert;
+
+  const _KarmaBalken({required this.dimension, required this.wert});
+
+  String get _dimensionsName {
+    switch (dimension) {
+      case KarmaDimension.mitgefuehl:
+        return 'Mitgefühl';
+      case KarmaDimension.ehrlichkeit:
+        return 'Ehrlichkeit';
+      case KarmaDimension.mut:
+        return 'Mut';
+      case KarmaDimension.grosszuegigkeit:
+        return 'Großzügigkeit';
+      case KarmaDimension.weisheit:
+        return 'Weisheit';
+      case KarmaDimension.liebe:
+        return 'Liebe';
+    }
+  }
+
+  Color get _farbe => wert >= 0 ? AppFarben.karmaPositiv : AppFarben.karmaNegatv;
+
+  @override
+  Widget build(BuildContext context) {
+    final anzeigeWert = wert.abs().clamp(0.0, 100.0);
+    final fortschritt = anzeigeWert / 20.0; // max 20 pro Entscheidung
+
+    return Row(
+      children: [
+        // Dimensions-Name
+        SizedBox(
+          width: 110,
+          child: Text(
+            _dimensionsName,
+            style: AppTextStyles.beschriftung.copyWith(
+              color: AppFarben.textSekundaer,
+            ),
+          ),
+        ),
+
+        const SizedBox(width: 8),
+
+        // Balken
+        Expanded(
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(4),
+            child: LinearProgressIndicator(
+              value: fortschritt.clamp(0.0, 1.0),
+              backgroundColor: AppFarben.nebelGrau.withValues(alpha: 0.2),
+              color: _farbe,
+              minHeight: 8,
+            ),
+          ),
+        ),
+
+        const SizedBox(width: 8),
+
+        // Delta-Wert
+        SizedBox(
+          width: 36,
+          child: Text(
+            '${wert >= 0 ? '+' : ''}${wert.toInt()}',
+            style: AppTextStyles.beschriftung.copyWith(
+              color: _farbe,
+              fontWeight: FontWeight.w700,
+            ),
+            textAlign: TextAlign.right,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
 // Haupt-Jahres-Ansicht
 // ─────────────────────────────────────────────────────────────────────────────
 
 class _JahresHauptansicht extends StatelessWidget {
   final int aktuellesJahr;
   final PageController jahresController;
-  final List<EntscheidungModel> jahresEntscheidungen;
+  final List<_JsonEntscheidung> jahresEntscheidungen;
   final bool laufenAbgeschlossen;
   final bool sprachAbgeschlossen;
   final Function(int) onJahrWechseln;
-  final Function(EntscheidungModel) onEntscheidungStarten;
+  final Function(_JsonEntscheidung) onEntscheidungStarten;
   final Function(int) onMinigameStarten;
   final VoidCallback onPhaseAbschliessen;
 
@@ -396,7 +793,7 @@ class _JahresHauptansicht extends StatelessWidget {
                         onStarten: () => onMinigameStarten(2),
                       ).animate().fadeIn().slideY(begin: 0.1),
 
-                    // Entscheidungskarten
+                    // Entscheidungskarten aus JSON (altersabhängig, bunte runde Karten)
                     for (final entscheidung in jahresEntscheidungen) ...[
                       const SizedBox(height: 8),
                       GestureDetector(
@@ -709,61 +1106,119 @@ class _MinigameKarte extends StatelessWidget {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Entscheidungs-Vorschau-Karte
+// Entscheidungs-Vorschau-Karte (bunte, runde Karte – kindgerechtes Design)
 // ─────────────────────────────────────────────────────────────────────────────
 
 class _EntscheidungsVorschauKarte extends StatelessWidget {
-  final EntscheidungModel entscheidung;
+  final _JsonEntscheidung entscheidung;
 
   const _EntscheidungsVorschauKarte({required this.entscheidung});
 
+  /// Altersabhängige Akzentfarbe für die Karte
+  Color _akzentFarbe() {
+    final alter = entscheidung.alter;
+    if (alter <= 6) return const Color(0xFFFFB74D); // Orange – frühes Kindalter
+    if (alter <= 9) return const Color(0xFF4FC3F7); // Hellblau – mittlere Kindheit
+    return const Color(0xFFBA68C8);                 // Lila – späte Kindheit
+  }
+
   @override
   Widget build(BuildContext context) {
+    final farbe = _akzentFarbe();
+
     return Container(
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: AppFarben.mystischLila.withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(10),
+        color: farbe.withValues(alpha: 0.08),
+        borderRadius: BorderRadius.circular(16), // runde Ecken – kindgerecht
         border: Border.all(
-          color: AppFarben.mystischLila.withValues(alpha: 0.4),
+          color: farbe.withValues(alpha: 0.45),
+          width: 1.5,
         ),
+        boxShadow: [
+          BoxShadow(
+            color: farbe.withValues(alpha: 0.12),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
       ),
-      child: Row(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(
-            Icons.help_outline,
-            color: AppFarben.goldGlanz.withValues(alpha: 0.8),
-            size: 22,
-          ),
-
-          const SizedBox(width: 12),
-
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  entscheidung.frage,
-                  style: AppTextStyles.entscheidung.copyWith(
-                    fontWeight: FontWeight.w600,
-                  ),
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
+          // Alter-Badge + Icon
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                decoration: BoxDecoration(
+                  color: farbe.withValues(alpha: 0.2),
+                  borderRadius: BorderRadius.circular(20),
                 ),
-                const SizedBox(height: 4),
-                Text(
-                  '${entscheidung.optionen.length} Optionen',
+                child: Text(
+                  '${entscheidung.alter} Jahre',
                   style: AppTextStyles.beschriftung.copyWith(
-                    color: AppFarben.textTertiaer,
+                    color: farbe,
+                    fontWeight: FontWeight.w700,
                   ),
                 ),
-              ],
-            ),
+              ),
+
+              const Spacer(),
+
+              Icon(
+                Icons.help_outline_rounded,
+                color: farbe.withValues(alpha: 0.7),
+                size: 20,
+              ),
+            ],
           ),
 
-          Icon(
-            Icons.chevron_right,
-            color: AppFarben.goldGlanz.withValues(alpha: 0.6),
+          const SizedBox(height: 10),
+
+          // Kontext (kursiv, dezent)
+          if (entscheidung.kontext.isNotEmpty)
+            Text(
+              entscheidung.kontext,
+              style: AppTextStyles.koerperKlein.copyWith(
+                color: AppFarben.textSekundaer.withValues(alpha: 0.8),
+                fontStyle: FontStyle.italic,
+              ),
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+            ),
+
+          const SizedBox(height: 8),
+
+          // Frage (fett)
+          Text(
+            entscheidung.frage,
+            style: AppTextStyles.koerper.copyWith(
+              color: AppFarben.text,
+              fontWeight: FontWeight.w600,
+            ),
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+          ),
+
+          const SizedBox(height: 10),
+
+          // Optionen-Hinweis
+          Row(
+            children: [
+              Icon(
+                Icons.touch_app_rounded,
+                color: farbe.withValues(alpha: 0.6),
+                size: 14,
+              ),
+              const SizedBox(width: 4),
+              Text(
+                '${entscheidung.optionen.length} Möglichkeiten – Tippe zum Entscheiden',
+                style: AppTextStyles.beschriftung.copyWith(
+                  color: farbe.withValues(alpha: 0.7),
+                ),
+              ),
+            ],
           ),
         ],
       ),
@@ -1099,7 +1554,7 @@ class _SprachEntwicklungMinigameState extends State<_SprachEntwicklungMinigame> 
 
   // Ziel-Sequenz der aktuellen Stufe
   static const _sequenzen = [
-    ['A', 'E', 'I', 'O', 'U'],          // Vokale (Baby)
+    ['A', 'E', 'I', 'O', 'U'],           // Vokale (Baby)
     ['MA', 'MA', 'BA', 'BA', 'PA', 'PA'], // Silben (Kleinkind)
     ['Mama', 'Papa', 'Nein', 'Mehr', 'Ich'], // Wörter (Kind)
   ];
@@ -1293,11 +1748,11 @@ class _SprachEntwicklungMinigameState extends State<_SprachEntwicklungMinigame> 
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Entscheidungs-Wrapper (zeigt die vollständige EntscheidungsKarte)
+// Entscheidungs-Wrapper (zeigt Frage und Optionen aus JSON)
 // ─────────────────────────────────────────────────────────────────────────────
 
 class _EntscheidungsWrapper extends StatelessWidget {
-  final EntscheidungModel entscheidung;
+  final _JsonEntscheidung entscheidung;
   final Function(int) onAbgeschlossen;
 
   const _EntscheidungsWrapper({
@@ -1306,8 +1761,18 @@ class _EntscheidungsWrapper extends StatelessWidget {
     required this.onAbgeschlossen,
   });
 
+  /// Altersabhängige Farbe
+  Color _akzentFarbe() {
+    final alter = entscheidung.alter;
+    if (alter <= 6) return const Color(0xFFFFB74D);
+    if (alter <= 9) return const Color(0xFF4FC3F7);
+    return const Color(0xFFBA68C8);
+  }
+
   @override
   Widget build(BuildContext context) {
+    final farbe = _akzentFarbe();
+
     return Scaffold(
       backgroundColor: AppFarben.kosmischSchwarz,
       body: SafeArea(
@@ -1323,9 +1788,9 @@ class _EntscheidungsWrapper extends StatelessWidget {
                     onPressed: () => onAbgeschlossen(-1),
                   ),
                   Text(
-                    'Eine Entscheidung',
+                    '${entscheidung.alter} Jahre alt',
                     style: AppTextStyles.koerperKlein.copyWith(
-                      color: AppFarben.textSekundaer,
+                      color: farbe,
                     ),
                   ),
                 ],
@@ -1333,13 +1798,104 @@ class _EntscheidungsWrapper extends StatelessWidget {
             ),
 
             Expanded(
-              child: Center(
-                child: SingleChildScrollView(
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  child: EntscheidungsKarte(
-                    entscheidung: entscheidung,
-                    onEntscheidung: onAbgeschlossen,
-                  ),
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.all(20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    // Kontext-Box
+                    Container(
+                      padding: const EdgeInsets.all(14),
+                      decoration: BoxDecoration(
+                        color: farbe.withValues(alpha: 0.08),
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: farbe.withValues(alpha: 0.3)),
+                      ),
+                      child: Text(
+                        entscheidung.kontext,
+                        style: AppTextStyles.koerperKursiv.copyWith(
+                          color: AppFarben.textSekundaer,
+                          height: 1.6,
+                        ),
+                      ),
+                    ).animate().fadeIn(),
+
+                    const SizedBox(height: 20),
+
+                    // Frage
+                    Text(
+                      entscheidung.frage,
+                      style: AppTextStyles.ueberschrift3.copyWith(
+                        color: AppFarben.text,
+                        fontSize: 18,
+                      ),
+                      textAlign: TextAlign.center,
+                    ).animate().fadeIn(delay: 200.ms),
+
+                    const SizedBox(height: 24),
+
+                    // Optionen – bunte, runde Karten
+                    ...entscheidung.optionen.asMap().entries.map((eintrag) {
+                      final index = eintrag.key;
+                      final option = eintrag.value;
+                      final delay = 300 + index * 120;
+
+                      return Padding(
+                        padding: const EdgeInsets.only(bottom: 12),
+                        child: GestureDetector(
+                          onTap: () => onAbgeschlossen(index),
+                          child: Container(
+                            padding: const EdgeInsets.all(16),
+                            decoration: BoxDecoration(
+                              color: farbe.withValues(alpha: 0.1),
+                              borderRadius: BorderRadius.circular(16),
+                              border: Border.all(
+                                color: farbe.withValues(alpha: 0.4),
+                                width: 1.5,
+                              ),
+                            ),
+                            child: Row(
+                              children: [
+                                // Buchstaben-Kreis
+                                Container(
+                                  width: 32,
+                                  height: 32,
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: farbe.withValues(alpha: 0.2),
+                                    border: Border.all(color: farbe.withValues(alpha: 0.5)),
+                                  ),
+                                  child: Center(
+                                    child: Text(
+                                      String.fromCharCode(65 + index), // A, B, C...
+                                      style: AppTextStyles.beschriftungGross.copyWith(
+                                        color: farbe,
+                                        fontWeight: FontWeight.w700,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+
+                                const SizedBox(width: 12),
+
+                                Expanded(
+                                  child: Text(
+                                    option.text,
+                                    style: AppTextStyles.koerper.copyWith(
+                                      color: AppFarben.text,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      )
+                          .animate()
+                          .fadeIn(delay: Duration(milliseconds: delay))
+                          .slideY(begin: 0.15);
+                    }),
+                  ],
                 ),
               ),
             ),

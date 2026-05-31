@@ -22,6 +22,11 @@ import 'package:genesis_kreislauf_des_lebens/presentation/screens/jenseits/reink
 import 'package:genesis_kreislauf_des_lebens/presentation/screens/phasen/tod_sequenz_screen.dart';
 import 'package:genesis_kreislauf_des_lebens/presentation/screens/jenseits/karma_gericht_screen.dart';
 import 'package:genesis_kreislauf_des_lebens/presentation/screens/jenseits/jenseits_ankunft_screen.dart';
+import 'package:genesis_kreislauf_des_lebens/presentation/screens/phasen/phase5_erwachsen_screen.dart';
+import 'package:genesis_kreislauf_des_lebens/presentation/screens/phasen/phase6_reife_screen.dart';
+import 'package:genesis_kreislauf_des_lebens/presentation/screens/phasen/phase7_jenseits_vorbereitung_screen.dart';
+import 'package:genesis_kreislauf_des_lebens/presentation/screens/phasen/phase8_kosmisch_screen.dart';
+import 'package:genesis_kreislauf_des_lebens/presentation/screens/phasen/phase9_schoepfung_screen.dart';
 import 'package:genesis_kreislauf_des_lebens/data/models/zyklus_model.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -104,130 +109,6 @@ abstract final class AppRouten {
   /// Gibt den vollständigen Pfad für ein Jenseits-Reich zurück.
   /// Gültige Werte: 'limbus', 'elysium', 'harmonia', 'shadowlands', 'abyssus'
   static String jenseits(String reich) => '/jenseits/$reich';
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
-// Platzhalter-Screen für noch nicht vollständig implementierte Phasen
-// ─────────────────────────────────────────────────────────────────────────────
-
-/// Generischer Phasen-Screen für Phasen ohne eigene vollständige Implementierung.
-///
-/// Zeigt Phasenname, Beschreibung und einen Weiter-Button.
-/// Wird durch die vollständigen Phasen-Implementierungen ersetzt.
-class _PhasePlatzhalterScreen extends StatelessWidget {
-  /// Anzeigename der Phase (z.B. "Phase II – Formung")
-  final String phaseName;
-
-  /// Atmosphärische Kurzbeschreibung der Phase
-  final String phaseBeschreibung;
-
-  /// Route, zu der der "Weiter"-Button navigiert
-  final String naechsteRoute;
-
-  const _PhasePlatzhalterScreen({
-    required this.phaseName,
-    required this.phaseBeschreibung,
-    required this.naechsteRoute,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFF0A0A0F),
-      appBar: AppBar(
-        title: Text(phaseName),
-        backgroundColor: Colors.transparent,
-        foregroundColor: const Color(0xFFFFD700),
-        elevation: 0,
-      ),
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(24.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              // Phasen-Kreissymbol
-              Container(
-                width: 120,
-                height: 120,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  border: Border.all(
-                    color: const Color(0xFFFFD700),
-                    width: 2,
-                  ),
-                  gradient: const RadialGradient(
-                    colors: [
-                      Color(0xFF2D1B69),
-                      Color(0xFF0A0A0F),
-                    ],
-                  ),
-                ),
-                child: const Icon(
-                  Icons.auto_awesome,
-                  color: Color(0xFFFFD700),
-                  size: 60,
-                ),
-              ),
-              const SizedBox(height: 24),
-
-              // Phasenname in goldener Cinzel-Schrift
-              Text(
-                phaseName,
-                style: const TextStyle(
-                  fontFamily: 'Cinzel',
-                  fontSize: 26,
-                  fontWeight: FontWeight.bold,
-                  color: Color(0xFFFFD700),
-                  letterSpacing: 2,
-                ),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 16),
-
-              // Beschreibung der Phase
-              Text(
-                phaseBeschreibung,
-                style: const TextStyle(
-                  fontFamily: 'Lato',
-                  fontSize: 16,
-                  color: Color(0xFF9CA3AF),
-                  height: 1.7,
-                ),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 48),
-
-              // Weiter-Button zur nächsten Phase oder zum Ziel-Screen
-              ElevatedButton(
-                onPressed: () => context.go(naechsteRoute),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFFFFD700),
-                  foregroundColor: const Color(0xFF0A0A0F),
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 40,
-                    vertical: 16,
-                  ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(4),
-                  ),
-                ),
-                child: const Text(
-                  'WEITER',
-                  style: TextStyle(
-                    fontFamily: 'Cinzel',
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    letterSpacing: 2,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -970,14 +851,7 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: AppRouten.phase5,
         name: 'phase5',
         redirect: _phasenGuard(5),
-        builder: (context, state) => const _PhasePlatzhalterScreen(
-          phaseName: 'Phase V – Erwachsen',
-          phaseBeschreibung:
-              'Die Welt erwartet deine Beiträge.\n'
-              'Liebe, Arbeit, Verantwortung – alles auf einmal.\n'
-              'Welches Erbe willst du hinterlassen?',
-          naechsteRoute: AppRouten.phase6,
-        ),
+        builder: (context, state) => const Phase5ErwachsenScreen(),
       ),
 
       /// Phase 6 – Reife: Alter 41–65, Weisheit und gesellschaftlicher Einfluss
@@ -985,14 +859,7 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: AppRouten.phase6,
         name: 'phase6',
         redirect: _phasenGuard(6),
-        builder: (context, state) => const _PhasePlatzhalterScreen(
-          phaseName: 'Phase VI – Reife',
-          phaseBeschreibung:
-              'Die Früchte des Lebens reifen.\n'
-              'Weisheit ersetzt Impulsivität.\n'
-              'Was bleibt von dem, was du aufgebaut hast?',
-          naechsteRoute: AppRouten.phase7,
-        ),
+        builder: (context, state) => const Phase6ReifeScreen(),
       ),
 
       /// Phase 7 – Jenseits-Vorbereitung: Alter 66+, Akzeptanz und Vermächtnis
@@ -1000,14 +867,7 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: AppRouten.phase7,
         name: 'phase7',
         redirect: _phasenGuard(7),
-        builder: (context, state) => const _PhasePlatzhalterScreen(
-          phaseName: 'Phase VII – Jenseits-Vorbereitung',
-          phaseBeschreibung:
-              'Das Ende nähert sich.\n'
-              'Alles wird klar in der Stille des Alters.\n'
-              'Frieden oder Reue – du entscheidest.',
-          naechsteRoute: AppRouten.sterbeSequenz,
-        ),
+        builder: (context, state) => const Phase7JenseitsVorbereitungScreen(),
       ),
 
       /// Phase 8 – Kosmisch: Rückblick nach dem Tod, Übergang ins Jenseits
@@ -1015,14 +875,7 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: AppRouten.phase8,
         name: 'phase8',
         redirect: _phasenGuard(8),
-        builder: (context, state) => const _PhasePlatzhalterScreen(
-          phaseName: 'Phase VIII – Kosmische Reise',
-          phaseBeschreibung:
-              'Zwischen den Welten.\n'
-              'Das Leben erscheint wie ein Traum.\n'
-              'Die kosmische Wahrheit offenbart sich.',
-          naechsteRoute: AppRouten.phase9,
-        ),
+        builder: (context, state) => const Phase8KosmischScreen(),
       ),
 
       /// Phase 9 – Schöpfung: Einfluss auf die nächste Inkarnation
@@ -1030,14 +883,7 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: AppRouten.phase9,
         name: 'phase9',
         redirect: _phasenGuard(9),
-        builder: (context, state) => const _PhasePlatzhalterScreen(
-          phaseName: 'Phase IX – Schöpfung',
-          phaseBeschreibung:
-              'Der Kreislauf schließt sich.\n'
-              'Du kannst nun das nächste Leben formen.\n'
-              'Was gibst du der nächsten Seele mit?',
-          naechsteRoute: AppRouten.hauptMenue,
-        ),
+        builder: (context, state) => const Phase9SchoepfungScreen(),
       ),
 
       // ── Spezial-Screens ───────────────────────────────────────────────

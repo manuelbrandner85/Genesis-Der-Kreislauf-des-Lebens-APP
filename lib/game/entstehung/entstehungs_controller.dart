@@ -8,7 +8,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:genesis_kreislauf_des_lebens/app/router.dart';
-import 'package:genesis_kreislauf_des_lebens/data/models/genetischer_code_model.dart';
 import 'package:genesis_kreislauf_des_lebens/game/entstehung/rennen_ergebnis.dart';
 import 'package:genesis_kreislauf_des_lebens/presentation/providers/spiel_provider.dart';
 import 'package:genesis_kreislauf_des_lebens/presentation/providers/spiel_zustand.dart';

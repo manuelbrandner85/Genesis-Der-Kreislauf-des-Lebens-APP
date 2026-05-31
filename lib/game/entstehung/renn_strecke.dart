@@ -343,7 +343,7 @@ class RennStrecke extends Component with HasGameRef {
       ),
     ];
 
-    for (final (routenTyp, name, farbe, beschreibung, xPos) in routenDaten) {
+    for (final (_, name, farbe, beschreibung, xPos) in routenDaten) {
       _zeichneRoutenOption(
         canvas,
         xPos,

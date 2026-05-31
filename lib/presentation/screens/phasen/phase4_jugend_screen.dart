@@ -1,13 +1,7 @@
 // phase4_jugend_screen.dart
-// Phase 4: Die Jugend (13–18 Jahre) – Identitätsfindung, Clique und Rebellion.
-//
-// Features:
-// - Stress-Meter (0–100, steigt bei schwierigen Entscheidungen)
-// - Clique-System: 4 Gruppen (Künstler, Sportler, Intellektuelle, Außenseiter)
-// - Entscheidungen aus assets/data/entscheidungen/jugend.json
-// - Identity-Crisis-Moment bei 16 Jahren: "Wer bin ich?"
-// - Dunkle, moody Teenager-Ästhetik (schwarz, lila, dunkelblau)
-// - Navigation zu /phase/5 nach allen Entscheidungen
+// Phase 4: Die Jugend – Social-Simulation mit Skill-Tree, Cliquen-System,
+// Schul-Stress-Anzeige und Entscheidungen aus jugend.json.
+// Alter 13–18, Identitätsfindung, Identitätskrise-Sequenz (Pflicht bei 16+).
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
