@@ -1,0 +1,156 @@
+{
+  "entscheidungen": [
+    {
+      "id": "form_001",
+      "phase": "formung",
+      "kontext": "Dein Herz beginnt zu schlagen. Doch der Rhythmus ist unregelmäßig – zu schnell, dann zu langsam.",
+      "frage": "Du spürst den Takt. Was tust du?",
+      "typ": "herzrhythmus_miniGame",
+      "optionen": [
+        {
+          "id": "form_001_a",
+          "text": "Atme in den Rhythmus hinein – ruhig, stetig.",
+          "karma": { "liebe": 5, "weisheit": 3 },
+          "sofortigeKonsequenzen": ["Herz findet einen stabilen Takt. Lebenspuls: stark."],
+          "verzoegerteKonsequenzen": ["form_herz_stark"],
+          "egoistischAltruistisch": 0.5,
+          "attributBonus": { "ausdauer": 8, "empathie": 4 }
+        },
+        {
+          "id": "form_001_b",
+          "text": "Lass den Rhythmus sich selbst finden – nicht eingreifen.",
+          "karma": { "weisheit": 2 },
+          "sofortigeKonsequenzen": ["Herz schlägt unregelmäßig. Entwicklung geht weiter."],
+          "verzoegerteKonsequenzen": ["form_herz_mittel"],
+          "egoistischAltruistisch": 0.5,
+          "attributBonus": { "intuition": 5 }
+        },
+        {
+          "id": "form_001_c",
+          "text": "Stärker pumpen – schneller, kraftvoller.",
+          "karma": { "mut": 4, "grosszuegigkeit": -2 },
+          "sofortigeKonsequenzen": ["Herz klopft laut und stark. Energie strömt."],
+          "verzoegerteKonsequenzen": ["form_herz_kraft"],
+          "egoistischAltruistisch": 0.2,
+          "attributBonus": { "kraft": 8, "ausdauer": 3 }
+        }
+      ]
+    },
+    {
+      "id": "form_002",
+      "phase": "formung",
+      "kontext": "Dein Gehirn wächst – und die ersten Nervenbahnen verbinden sich. Welche Verbindungen entstehen zuerst?",
+      "frage": "Welche Synapsen verbindest du als erste?",
+      "typ": "synapsen_miniGame",
+      "optionen": [
+        {
+          "id": "form_002_a",
+          "text": "Emotionszentrum und Gedächtnis – Gefühle sollen sich einprägen.",
+          "karma": { "mitgefuehl": 5, "liebe": 4 },
+          "sofortigeKonsequenzen": ["Emotionales Gedächtnis wird besonders stark ausgebildet."],
+          "verzoegerteKonsequenzen": ["form_gehirn_emotional"],
+          "egoistischAltruistisch": 0.6,
+          "attributBonus": { "empathie": 10, "intelligenz": 3 }
+        },
+        {
+          "id": "form_002_b",
+          "text": "Logikzentrum und Sprachzentrum – Worte und Muster sollen dominieren.",
+          "karma": { "weisheit": 6, "ehrlichkeit": 2 },
+          "sofortigeKonsequenzen": ["Analytisches Denken wird zur Stärke."],
+          "verzoegerteKonsequenzen": ["form_gehirn_analytisch"],
+          "egoistischAltruistisch": 0.5,
+          "attributBonus": { "intelligenz": 10, "reaktion": 5 }
+        },
+        {
+          "id": "form_002_c",
+          "text": "Motorikzentrum und Wahrnehmung – Körper und Sinne zuerst.",
+          "karma": { "mut": 3 },
+          "sofortigeKonsequenzen": ["Körperliches Bewusstsein dominiert die frühe Entwicklung."],
+          "verzoegerteKonsequenzen": ["form_gehirn_motorisch"],
+          "egoistischAltruistisch": 0.4,
+          "attributBonus": { "kraft": 7, "reaktion": 8 }
+        }
+      ]
+    },
+    {
+      "id": "form_003",
+      "phase": "formung",
+      "kontext": "Ein fremder Ton dringt von außen ein – eine Stimme, warm und vertraut, spricht zu dir.",
+      "frage": "Wie reagierst du auf den ersten Klang von außen?",
+      "typ": "sinnes_reaktion",
+      "optionen": [
+        {
+          "id": "form_003_a",
+          "text": "Du streckst dich dem Ton entgegen – neugierig, offen.",
+          "karma": { "liebe": 6, "weisheit": 3 },
+          "sofortigeKonsequenzen": ["Bindung zur äußeren Stimme wächst."],
+          "verzoegerteKonsequenzen": ["form_bindung_stark"],
+          "egoistischAltruistisch": 0.7,
+          "attributBonus": { "empathie": 8, "intuition": 4 }
+        },
+        {
+          "id": "form_003_b",
+          "text": "Du hörst zu, ohne dich zu bewegen – beobachtend, still.",
+          "karma": { "weisheit": 5 },
+          "sofortigeKonsequenzen": ["Stille Beobachtungsgabe entwickelt sich früh."],
+          "verzoegerteKonsequenzen": ["form_bindung_beobachtend"],
+          "egoistischAltruistisch": 0.5,
+          "attributBonus": { "intelligenz": 6, "intuition": 6 }
+        },
+        {
+          "id": "form_003_c",
+          "text": "Der Ton erschreckt dich – du ziehst dich zusammen.",
+          "karma": {},
+          "sofortigeKonsequenzen": ["Vorsicht vor Fremdem wird zur ersten Lektion."],
+          "verzoegerteKonsequenzen": ["form_bindung_vorsichtig"],
+          "egoistischAltruistisch": 0.3,
+          "attributBonus": { "reaktion": 10, "ausdauer": 3 }
+        }
+      ]
+    },
+    {
+      "id": "form_004",
+      "phase": "formung",
+      "kontext": "Die Organe formen sich. Eines davon braucht mehr Energie als erwartet. Du spürst: Etwas muss warten.",
+      "frage": "Welches Organ bekommt Priorität?",
+      "typ": "ressourcen_verteilung",
+      "optionen": [
+        {
+          "id": "form_004_a",
+          "text": "Das Herz – Zentrum des Lebens zuerst.",
+          "karma": { "liebe": 4, "mitgefuehl": 3 },
+          "sofortigeKonsequenzen": ["Herz-Kreislauf-System wird überdurchschnittlich stark."],
+          "verzoegerteKonsequenzen": ["form_organ_herz_stark"],
+          "egoistischAltruistisch": 0.5,
+          "attributBonus": { "ausdauer": 12 }
+        },
+        {
+          "id": "form_004_b",
+          "text": "Das Gehirn – Denken soll dominieren.",
+          "karma": { "weisheit": 5 },
+          "sofortigeKonsequenzen": ["Neurologische Kapazität wird außergewöhnlich ausgebaut."],
+          "verzoegerteKonsequenzen": ["form_organ_gehirn_stark"],
+          "egoistischAltruistisch": 0.5,
+          "attributBonus": { "intelligenz": 12 }
+        },
+        {
+          "id": "form_004_c",
+          "text": "Die Lunge – Atem ist Leben.",
+          "karma": { "mut": 3 },
+          "sofortigeKonsequenzen": ["Atemkapazität und Ausdauer werden zur größten körperlichen Stärke."],
+          "verzoegerteKonsequenzen": ["form_organ_lunge_stark"],
+          "egoistischAltruistisch": 0.5,
+          "attributBonus": { "ausdauer": 8, "kraft": 4 }
+        }
+      ]
+    }
+  ],
+  "geburtsCinematic": {
+    "text_01": "Monatelange Stille. Wärme. Klang. Bewegung.",
+    "text_02": "Dann – Licht.",
+    "text_03": "Kalt. Laut. Grenzenlos.",
+    "text_04": "Du bist angekommen.",
+    "soundtrack": "geburt_theme",
+    "dauer_sekunden": 8
+  }
+}

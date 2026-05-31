@@ -1,0 +1,122 @@
+{
+  "routen": [
+    {
+      "id": "route_a",
+      "name": "Der Direkte Weg",
+      "beschreibung": "Ein gerader Tunnel – wenig Hindernisse, wenig Chancen. Schnell aber ohne Überraschungen.",
+      "basisAttribute": {
+        "ausdauer": 70,
+        "reaktion": 50,
+        "intuition": 40,
+        "kraft": 60,
+        "intelligenz": 50,
+        "empathie": 40
+      },
+      "karmaBonus": { "mut": 2 }
+    },
+    {
+      "id": "route_b",
+      "name": "Der Verschlungene Pfad",
+      "beschreibung": "Engpässe, Strudel und leuchtende Power-Ups. Wer navigieren kann, kommt gestärkt an.",
+      "basisAttribute": {
+        "ausdauer": 50,
+        "reaktion": 70,
+        "intuition": 65,
+        "kraft": 45,
+        "intelligenz": 60,
+        "empathie": 55
+      },
+      "karmaBonus": { "weisheit": 3, "mut": 1 }
+    },
+    {
+      "id": "route_c",
+      "name": "Der Tiefe Strom",
+      "beschreibung": "Langsam, tief, ruhig. Andere rasen vorbei – doch manchmal gewinnt die Besonnenheit.",
+      "basisAttribute": {
+        "ausdauer": 65,
+        "reaktion": 45,
+        "intuition": 60,
+        "kraft": 50,
+        "intelligenz": 55,
+        "empathie": 75
+      },
+      "karmaBonus": { "mitgefuehl": 4, "liebe": 2 }
+    }
+  ],
+  "powerUps": [
+    {
+      "id": "pu_kraft",
+      "typ": "kraft",
+      "name": "Energieschub",
+      "beschreibung": "Nährstoffe aus dem umliegenden Gewebe.",
+      "attributBonus": { "kraft": 5, "ausdauer": 3 }
+    },
+    {
+      "id": "pu_intelligenz",
+      "typ": "intelligenz",
+      "name": "Chemischer Impuls",
+      "beschreibung": "Ein Neurotransmitter-Schwall öffnet neue Verbindungen.",
+      "attributBonus": { "intelligenz": 5, "reaktion": 3 }
+    },
+    {
+      "id": "pu_empathie",
+      "typ": "empathie",
+      "name": "Resonanzwelle",
+      "beschreibung": "Eine rätselhafte Schwingung – als ob die Welt auf dich hört.",
+      "attributBonus": { "empathie": 5, "intuition": 3 }
+    },
+    {
+      "id": "pu_schild",
+      "typ": "schild",
+      "name": "Schutzfilm",
+      "beschreibung": "Eine Membranschicht prallt Hindernisse ab.",
+      "dauer": 3.0
+    },
+    {
+      "id": "pu_tempo",
+      "typ": "tempo",
+      "name": "Adrenalinwelle",
+      "beschreibung": "Kurzer Geschwindigkeitsrausch – das Rennen wird zum Sprint.",
+      "dauer": 2.5
+    }
+  ],
+  "hindernisse": [
+    {
+      "id": "h_immunzelle",
+      "name": "Immunzelle",
+      "beschreibung": "Tödlich für Schwache, lehrreich für Überlebende.",
+      "schadenMultiplikator": 1.0
+    },
+    {
+      "id": "h_strudel",
+      "name": "Strudel",
+      "beschreibung": "Zieht Spermien in die falsche Richtung.",
+      "schadenMultiplikator": 0.5,
+      "verlangsamung": 0.7
+    },
+    {
+      "id": "h_engpass",
+      "name": "Engpass",
+      "beschreibung": "Nur eine Spur ist frei.",
+      "schadenMultiplikator": 0.3
+    },
+    {
+      "id": "h_saeurewolke",
+      "name": "Säurewolke",
+      "beschreibung": "Chemische Barriere – braucht Umgehung oder Kraft.",
+      "schadenMultiplikator": 1.5
+    }
+  ],
+  "rennenTexte": {
+    "start": "Millionen starten gleichzeitig. Nur einer kommt an.",
+    "routenWahl": "Drei Wege liegen vor dir. Wähle.",
+    "powerUpKraft": "Kraftschub!",
+    "powerUpIntelligenz": "Geistesblitz!",
+    "powerUpEmpathie": "Herzöffner!",
+    "treffer": "Ein Hindernis! Halte durch.",
+    "erster": "Du führst das Rennen an.",
+    "aufgeholt": "Du wirst aufgeholt.",
+    "ziel": "Du hast es geschafft.",
+    "auswertung": "Deine Route formt, wer du wirst."
+  }
+}

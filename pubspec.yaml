@@ -93,20 +93,33 @@ flutter:
 
   # ── Asset-Verzeichnisse ───────────────────────────────────────────────────
   assets:
-    # Spielinhalts-Daten (JSON)
+    # Spielinhalts-Daten (JSON) – Hauptverzeichnis und alle Unterordner
     - assets/data/
+    - assets/data/entscheidungen/
+    - assets/data/texte/
+    - assets/data/zeitalter/
 
-    # Grafiken, Sprites, Hintergründe
+    # Grafiken, Sprites, Hintergründe – Hauptverzeichnis und Unterordner
     - assets/images/
+    - assets/images/phasen/
+    - assets/images/ui/
+    - assets/images/jenseits/
 
     # Hintergrundmusik, Soundeffekte, Ambient-Klänge
     - assets/audio/
+    - assets/audio/musik/
+    - assets/audio/effekte/
 
-    # GLSL-Shader für visuelle Effekte (Aura, Karma-Glow, Wetter)
+    # GLSL-Shader für visuelle Effekte (Aura, Karma-Glow, Wetter, Tunnel)
     - assets/shaders/
 
     # Rive- und Lottie-Animationsdateien
     - assets/animations/
+    - assets/animations/charaktere/
+    - assets/animations/ui/
+
+    # Schriftarten (lokale TTF-Dateien)
+    - assets/fonts/
 
   # ── Schriftarten ─────────────────────────────────────────────────────────
   fonts:

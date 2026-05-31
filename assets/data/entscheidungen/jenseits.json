@@ -1,0 +1,227 @@
+{
+  "reiche": {
+    "elysium": {
+      "id": "elysium",
+      "name": "Elysium",
+      "untertitel": "Das ewige Licht",
+      "beschreibung": "Die Sonne steht immer hoch. Seelen, die hier ankommen, strahlen selbst wie Sterne. Es gibt keine Zeit – nur Fülle.",
+      "farbe": "#87CEEB",
+      "startText": "Du öffnest die Augen. Licht. Sanftes, goldenes Licht. Eine Stimme flüstert: 'Du hast gut gelebt.'",
+      "mechanik": "aufbau_strategie",
+      "soundtrack": "elysium_theme"
+    },
+    "harmonia": {
+      "id": "harmonia",
+      "name": "Harmonia",
+      "untertitel": "Das Gleichgewicht",
+      "beschreibung": "Grüne Hügel, ruhige Seen, Seelen im Gespräch. Hier ist weder Himmel noch Erde – nur das perfekte Dazwischen.",
+      "farbe": "#90EE90",
+      "startText": "Du erwachst in einer Wiese. Um dich herum sitzen andere – manche erkennst du. Alle lauschen.",
+      "mechanik": "diplomatie_simulation",
+      "soundtrack": "harmonia_theme"
+    },
+    "limbus": {
+      "id": "limbus",
+      "name": "Limbus",
+      "untertitel": "Das Dazwischen",
+      "beschreibung": "Grauer Nebel, der sich hebt und senkt. Erinnerungen schweben wie Seifenblasen. Die Antworten sind hier – aber versteckt.",
+      "farbe": "#D3D3D3",
+      "startText": "Du stehst in Stille. Irgendwo tickt eine Uhr. Du weißt nicht, wo du bist – aber du weißt, dass du hier bist.",
+      "mechanik": "raetsel_mystery",
+      "soundtrack": "limbus_theme"
+    },
+    "shadowlands": {
+      "id": "shadowlands",
+      "name": "Shadowlands",
+      "untertitel": "Das Schattenreich",
+      "beschreibung": "Dunkle Wälder, endlose Nacht, doch kein Sterben mehr. Was hier lebt, lernt – oder vergisst.",
+      "farbe": "#4A4A6A",
+      "startText": "Dunkelheit. Aber keine Leere. Du spürst andere – sie beobachten, urteilen nicht. Noch nicht.",
+      "mechanik": "exploration",
+      "soundtrack": "shadowlands_theme"
+    },
+    "abyssus": {
+      "id": "abyssus",
+      "name": "Abyssus",
+      "untertitel": "Der Abgrund",
+      "beschreibung": "Feuer, das nicht wärmt. Stürme, die nicht weggehen. Und doch: Wer tief genug fällt, findet einen Funken.",
+      "farbe": "#8B0000",
+      "startText": "Der Fall hat kein Ende – bis er es plötzlich hat. Du landest. Es ist dunkel. Aber du lebst. Noch.",
+      "mechanik": "roguelike_survival",
+      "soundtrack": "abyssus_theme"
+    }
+  },
+  "entscheidungen": [
+    {
+      "id": "jen_001",
+      "kontext": "Du bist angekommen. Dein Leben liegt hinter dir wie ein Buch, das du gerade zu Ende gelesen hast.",
+      "frage": "Was nimmst du als erstes wahr?",
+      "typ": "ankunft",
+      "gueltigFuerReiche": ["elysium", "harmonia", "limbus", "shadowlands", "abyssus"],
+      "optionen": [
+        {
+          "id": "jen_001_a",
+          "text": "Das Licht – oder das Fehlen davon.",
+          "karma": {},
+          "sofortigeKonsequenzen": ["Deine visuelle Wahrnehmung öffnet sich für das Reich."],
+          "verzoegerteKonsequenzen": [],
+          "egoistischAltruistisch": 0.5
+        },
+        {
+          "id": "jen_001_b",
+          "text": "Die Stille – und in ihr: dein eigener Herzschlag.",
+          "karma": { "weisheit": 3 },
+          "sofortigeKonsequenzen": ["Du erreichst früh innere Ruhe. Weisheit wächst."],
+          "verzoegerteKonsequenzen": ["jen_weisheit_boost"],
+          "egoistischAltruistisch": 0.5
+        },
+        {
+          "id": "jen_001_c",
+          "text": "Andere Seelen – du bist nicht allein.",
+          "karma": { "liebe": 4, "mitgefuehl": 3 },
+          "sofortigeKonsequenzen": ["Verbindung zu anderen Seelen entsteht schneller."],
+          "verzoegerteKonsequenzen": ["jen_verbindung_schnell"],
+          "egoistischAltruistisch": 0.7
+        }
+      ]
+    },
+    {
+      "id": "jen_002",
+      "kontext": "Eine verlorene Seele sitzt allein in einer Ecke des Jenseits. Sie versteht nicht, was passiert ist. Ihre Erinnerungen sind zerstreut.",
+      "frage": "Was tust du?",
+      "typ": "verlorene_seele",
+      "gueltigFuerReiche": ["elysium", "harmonia", "limbus"],
+      "optionen": [
+        {
+          "id": "jen_002_a",
+          "text": "Du setzt dich zu ihr und hörst zu.",
+          "karma": { "mitgefuehl": 8, "liebe": 5 },
+          "sofortigeKonsequenzen": ["Die verlorene Seele öffnet sich. Ihr Rätsel teilt sich mit dir."],
+          "verzoegerteKonsequenzen": ["jen_seele_gerettet", "jen_verbündeter_gewonnen"],
+          "egoistischAltruistisch": 0.9
+        },
+        {
+          "id": "jen_002_b",
+          "text": "Du zeigst ihr den Weg zu den anderen Seelen.",
+          "karma": { "mitgefuehl": 5, "grosszuegigkeit": 3 },
+          "sofortigeKonsequenzen": ["Die Seele geht. Vielleicht kommt sie wieder."],
+          "verzoegerteKonsequenzen": ["jen_seele_weggewiesen"],
+          "egoistischAltruistisch": 0.7
+        },
+        {
+          "id": "jen_002_c",
+          "text": "Du gehst weiter – du hast eigene Dinge zu klären.",
+          "karma": { "mitgefuehl": -4 },
+          "sofortigeKonsequenzen": ["Die Seele bleibt allein. Du gehst deinen Weg."],
+          "verzoegerteKonsequenzen": ["jen_seele_ignoriert"],
+          "egoistischAltruistisch": 0.1
+        }
+      ]
+    },
+    {
+      "id": "jen_003",
+      "kontext": "Das Karma-Gericht zeigt dir eine Erinnerung, die dich schmerzt. Eine Entscheidung, die du anders hättest treffen können.",
+      "frage": "Wie begegnest du dieser Erinnerung?",
+      "typ": "karma_gericht",
+      "gueltigFuerReiche": ["elysium", "harmonia", "limbus", "shadowlands", "abyssus"],
+      "optionen": [
+        {
+          "id": "jen_003_a",
+          "text": "Ich hätte es nicht anders machen können – so war ich damals.",
+          "karma": { "ehrlichkeit": 3, "weisheit": 4 },
+          "sofortigeKonsequenzen": ["Selbstakzeptanz wächst. Die Erinnerung verliert ihre Schärfe."],
+          "verzoegerteKonsequenzen": ["jen_akzeptanz"],
+          "egoistischAltruistisch": 0.5
+        },
+        {
+          "id": "jen_003_b",
+          "text": "Ich bereue es tief. Es war falsch.",
+          "karma": { "ehrlichkeit": 6, "mitgefuehl": 5 },
+          "sofortigeKonsequenzen": ["Die Reue ist echt. Die Erinnerung wird zur Lehre."],
+          "verzoegerteKonsequenzen": ["jen_reue_lehre"],
+          "egoistischAltruistisch": 0.5
+        },
+        {
+          "id": "jen_003_c",
+          "text": "Es war die richtige Entscheidung. Ich würde es wieder tun.",
+          "karma": { "mut": 4, "ehrlichkeit": 5 },
+          "sofortigeKonsequenzen": ["Überzeugung steht fest. Die Welt war komplex – du weißt es."],
+          "verzoegerteKonsequenzen": ["jen_ueberzeugung"],
+          "egoistischAltruistisch": 0.5
+        }
+      ]
+    },
+    {
+      "id": "jen_004",
+      "kontext": "Im Jenseits findest du einen Brief. Die Handschrift erkennst du – er ist von dir. Aus einem früheren Leben.",
+      "frage": "Liest du den Brief?",
+      "typ": "vermaechtnis_brief",
+      "gueltigFuerReiche": ["elysium", "harmonia", "limbus", "shadowlands"],
+      "optionen": [
+        {
+          "id": "jen_004_a",
+          "text": "Ja – ich lese jeden Satz zweimal.",
+          "karma": { "weisheit": 6 },
+          "sofortigeKonsequenzen": ["Erkenntnisse aus einem früheren Leben strömen ein."],
+          "verzoegerteKonsequenzen": ["jen_brief_gelesen"],
+          "egoistischAltruistisch": 0.5
+        },
+        {
+          "id": "jen_004_b",
+          "text": "Ich lese den Anfang – und lege ihn weg. Manche Dinge soll ich selbst entdecken.",
+          "karma": { "weisheit": 3, "mut": 3 },
+          "sofortigeKonsequenzen": ["Du bewahrt dir die Freiheit der Überraschung."],
+          "verzoegerteKonsequenzen": ["jen_brief_teilgelesen"],
+          "egoistischAltruistisch": 0.5
+        },
+        {
+          "id": "jen_004_c",
+          "text": "Nein – ich verbrenne ihn. Die Vergangenheit soll mich nicht fesseln.",
+          "karma": { "mut": 6, "weisheit": -2 },
+          "sofortigeKonsequenzen": ["Der Brief ist fort. Du beginnst frei – aber ohne Wegweiser."],
+          "verzoegerteKonsequenzen": ["jen_brief_verbrannt"],
+          "egoistischAltruistisch": 0.4
+        }
+      ]
+    },
+    {
+      "id": "jen_005",
+      "kontext": "Der Abyssus-Funken: Nur in diesem Reich erreichbar. Tief in der Dunkelheit pulsiert ein Licht.",
+      "frage": "Was ist das Licht?",
+      "typ": "abyssus_erloesung",
+      "gueltigFuerReiche": ["abyssus"],
+      "optionen": [
+        {
+          "id": "jen_005_a",
+          "text": "Die Hoffnung – sie war immer da. Ich habe sie nur nicht gesehen.",
+          "karma": { "liebe": 10, "weisheit": 8, "mitgefuehl": 6 },
+          "sofortigeKonsequenzen": ["Erlösung beginnt. Der Abyssus verliert seine Macht."],
+          "verzoegerteKonsequenzen": ["jen_abyssus_erloesung"],
+          "egoistischAltruistisch": 0.8
+        },
+        {
+          "id": "jen_005_b",
+          "text": "Ich – so wie ich hätte sein können.",
+          "karma": { "weisheit": 10, "ehrlichkeit": 6 },
+          "sofortigeKonsequenzen": ["Selbsterkenntnis auf tiefster Ebene."],
+          "verzoegerteKonsequenzen": ["jen_abyssus_selbsterkenntnis"],
+          "egoistischAltruistisch": 0.6
+        },
+        {
+          "id": "jen_005_c",
+          "text": "Es ist nur ein Reflex. Nichts ist wirklich.",
+          "karma": { "weisheit": 2 },
+          "sofortigeKonsequenzen": ["Der Abyssus bleibt – aber du bist stärker als zuvor."],
+          "verzoegerteKonsequenzen": ["jen_abyssus_verbleib"],
+          "egoistischAltruistisch": 0.3
+        }
+      ]
+    }
+  ],
+  "bibliothekTexte": {
+    "einleitung": "Willkommen in der Bibliothek zwischen den Leben. Hier ist alles was war – und alles was kommen wird.",
+    "abschnitt_erinnerungen": "Die Erinnerungen, die du mitgenommen hast, leuchteten nicht immer laut. Manche haben sich eingebettet wie ein stiller Ton.",
+    "abschnitt_konsequenzen": "Jede Entscheidung hat einen goldenen Faden hinterlassen. Hier siehst du, wohin er geführt hat.",
+    "abschnitt_ahnenreihe": "Deine Seele ist nicht allein. Hier sind alle, die vor dir waren – und die aus dir entstanden sind."
+  }
+}
