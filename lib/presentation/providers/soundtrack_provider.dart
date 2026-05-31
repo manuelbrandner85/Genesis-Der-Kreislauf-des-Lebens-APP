@@ -131,13 +131,11 @@ class SoundtrackZustand {
 String _basisTrackPfad(GamePhase phase) {
   return switch (phase) {
     GamePhase.entstehung => 'assets/audio/musik/basis_geburt.mp3',
+    GamePhase.formung => 'assets/audio/musik/basis_geburt.mp3',
     GamePhase.kindheit => 'assets/audio/musik/basis_kindheit.mp3',
     GamePhase.jugend => 'assets/audio/musik/basis_jugend.mp3',
-    GamePhase.erwachsen => 'assets/audio/musik/basis_aufbruch.mp3',
     GamePhase.erwachsen => 'assets/audio/musik/basis_bluete.mp3',
-    GamePhase.reife => 'assets/audio/musik/basis_pruefung.mp3',
     GamePhase.reife => 'assets/audio/musik/basis_weisheit.mp3',
-    GamePhase.reife => 'assets/audio/musik/basis_vermaechtnis.mp3',
     GamePhase.jenseits => 'assets/audio/musik/basis_tod.mp3',
   };
 }

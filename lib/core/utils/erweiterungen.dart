@@ -48,7 +48,7 @@ extension DoubleSpielErweiterungen on double {
       AppFarben.karmaFarbeInterpoliert(karmaZuProzent());
 
   /// Begrenzt diesen Wert auf den gültigen Karma-Bereich [-100, +100].
-  double karmaBegrenzt() => clamp(kMinKarma, kMaxKarma);
+  double karmaBegrenzt() => clamp(kMinKarma, kMaxKarma).toDouble();
 
   // ── Allgemeine Hilfsmethoden ─────────────────────────────────────────────
 

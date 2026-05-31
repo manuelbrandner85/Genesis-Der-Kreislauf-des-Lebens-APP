@@ -748,7 +748,7 @@ class _PfadKarte extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Icon(
-                            Icons.check_small,
+                            Icons.check,
                             color: istGewaehlt
                                 ? _akzentFarbe
                                 : AppFarben.textTertiaer,
