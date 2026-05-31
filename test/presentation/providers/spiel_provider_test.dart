@@ -38,9 +38,9 @@ void main() {
       expect(zustand.aktuellerZyklus, isNull);
     });
 
-    test('Initialzustand hat GamePhase.geburt als aktuelle Phase', () {
+    test('Initialzustand hat GamePhase.entstehung als aktuelle Phase', () {
       final zustand = container.read(spielProvider);
-      expect(zustand.aktuellePhase, equals(GamePhase.geburt));
+      expect(zustand.aktuellePhase, equals(GamePhase.entstehung));
     });
 
     test('Initialzustand ist nicht ladend', () {
@@ -85,10 +85,10 @@ void main() {
       expect(zyklus, isNull);
     });
 
-    test('aktuellePhaseProvider liefert GamePhase.geburt im Initialzustand',
+    test('aktuellePhaseProvider liefert GamePhase.entstehung im Initialzustand',
         () {
       final phase = container.read(aktuellePhaseProvider);
-      expect(phase, equals(GamePhase.geburt));
+      expect(phase, equals(GamePhase.entstehung));
     });
 
     test('aktuellesAlterProvider liefert 0 im Initialzustand', () {
@@ -132,7 +132,7 @@ void main() {
 
       expect(initial.spielerProfil, isNull);
       expect(initial.aktuellerZyklus, isNull);
-      expect(initial.aktuellePhase, equals(GamePhase.geburt));
+      expect(initial.aktuellePhase, equals(GamePhase.entstehung));
       expect(initial.istLadend, isFalse);
       expect(initial.fehlerMeldung, isNull);
       expect(initial.spielLaeuft, isFalse);
