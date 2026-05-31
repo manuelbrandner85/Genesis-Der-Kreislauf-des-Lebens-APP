@@ -261,7 +261,7 @@ class _StartOverlay extends StatelessWidget {
 
           Text(
             'Das Rennen um das Leben',
-            style: AppTextStyles.koerpergross.copyWith(
+            style: AppTextStyles.koerperGross.copyWith(
               color: AppFarben.textSekundaer,
             ),
             textAlign: TextAlign.center,
@@ -274,7 +274,7 @@ class _StartOverlay extends StatelessWidget {
             child: Text(
               'Deine Route durch das kosmische Rennen bestimmt '
               'deine Basis-Attribute für dieses Leben.',
-              style: AppTextStyles.koerperklein.copyWith(
+              style: AppTextStyles.koerperKlein.copyWith(
                 color: AppFarben.textSekundaer,
                 fontStyle: FontStyle.italic,
               ),

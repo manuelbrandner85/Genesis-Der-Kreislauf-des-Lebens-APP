@@ -176,7 +176,7 @@ class _AnkunftScene extends StatelessWidget {
             const SizedBox(height: 16),
             Text(
               'Was du warst, wird gewogen.\nNicht von anderen. Von dir.',
-              style: AppTextStyles.koerpergross.copyWith(
+              style: AppTextStyles.koerperGross.copyWith(
                 color: AppFarben.textSekundaer,
                 height: 1.8,
                 fontStyle: FontStyle.italic,
@@ -243,7 +243,7 @@ class _SortierungsScene extends StatelessWidget {
             const SizedBox(height: 16),
             Text(
               'Abgeschlossenes wird zur Stärke.\nOffenes wird zur Narbe.\nBeides trägst du mit.',
-              style: AppTextStyles.koerpergross.copyWith(
+              style: AppTextStyles.koerperGross.copyWith(
                 color: AppFarben.textSekundaer,
                 height: 2,
                 fontStyle: FontStyle.italic,
@@ -297,7 +297,7 @@ class _ErgebnisScene extends StatelessWidget {
               const SizedBox(height: 48),
               Text(
                 'Weil es dich nicht losgelassen hat.',
-                style: AppTextStyles.koerpergross.copyWith(
+                style: AppTextStyles.koerperGross.copyWith(
                   color: AppFarben.textSekundaer,
                   fontStyle: FontStyle.italic,
                 ),
@@ -348,7 +348,7 @@ class _ErinnerungsKarte extends StatelessWidget {
                 const SizedBox(height: 4),
                 Text(
                   erinnerung.beschreibung,
-                  style: AppTextStyles.koerperklein.copyWith(
+                  style: AppTextStyles.koerperKlein.copyWith(
                     color: AppFarben.textSekundaer,
                     fontStyle: FontStyle.italic,
                   ),
