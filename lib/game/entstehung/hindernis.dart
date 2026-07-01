@@ -107,8 +107,8 @@ class Hindernis extends PositionComponent
         // Zwei separate Hitboxen für obere und untere Wandhälften
         // Die Lücke (ca. 80px) in der Mitte hat keine Hitbox
         final screenBreite = size.x;
-        final lückeBreite = 90.0;
-        final wandBreite = (screenBreite - lückeBreite) / 2;
+        final lueckeBreite = 90.0;
+        final wandBreite = (screenBreite - lueckeBreite) / 2;
         add(RectangleHitbox(
           size: Vector2(wandBreite, 18),
           position: Vector2(0, 0),
@@ -116,7 +116,7 @@ class Hindernis extends PositionComponent
         ));
         add(RectangleHitbox(
           size: Vector2(wandBreite, 18),
-          position: Vector2(wandBreite + lückeBreite, 0),
+          position: Vector2(wandBreite + lueckeBreite, 0),
           anchor: Anchor.topLeft,
         ));
     }
@@ -310,9 +310,9 @@ class Hindernis extends PositionComponent
   /// Zeichnet eine Wand: horizontale Linie mit Lücke in der Mitte
   void _zeichneWand(Canvas canvas) {
     final screenBreite = size.x;
-    final lückeBreite = 90.0;
-    final wandBreite = (screenBreite - lückeBreite) / 2;
-    final lückeStart = wandBreite;
+    final lueckeBreite = 90.0;
+    final wandBreite = (screenBreite - lueckeBreite) / 2;
+    final lueckeStart = wandBreite;
 
     final wandFarbe = const Color(0xFF3A7BD5);
     final glowFarbe = const Color(0xFF5B9BD5).withValues(alpha: 0.4);
@@ -325,7 +325,7 @@ class Hindernis extends PositionComponent
         ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 6),
     );
     canvas.drawRect(
-      Rect.fromLTWH(lückeStart + lückeBreite, -4, wandBreite, 26),
+      Rect.fromLTWH(lueckeStart + lueckeBreite, -4, wandBreite, 26),
       Paint()
         ..color = glowFarbe
         ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 6),
@@ -339,7 +339,7 @@ class Hindernis extends PositionComponent
 
     // Rechte Wandhälfte
     canvas.drawRect(
-      Rect.fromLTWH(lückeStart + lückeBreite, 0, wandBreite, 18),
+      Rect.fromLTWH(lueckeStart + lueckeBreite, 0, wandBreite, 18),
       Paint()..color = wandFarbe,
     );
 
@@ -350,7 +350,7 @@ class Hindernis extends PositionComponent
       ..strokeWidth = 2;
     canvas.drawLine(const Offset(0, 0), Offset(wandBreite, 0), randPaint);
     canvas.drawLine(
-      Offset(lückeStart + lückeBreite, 0),
+      Offset(lueckeStart + lueckeBreite, 0),
       Offset(screenBreite, 0),
       randPaint,
     );
@@ -361,11 +361,11 @@ class Hindernis extends PositionComponent
     final hinweisPaint = Paint()
       ..color = hinweisfarbe
       ..style = PaintingStyle.fill;
-    final lückeMitte = lückeStart + lückeBreite / 2;
+    final lueckeMitte = lueckeStart + lueckeBreite / 2;
     final pfad = Path()
-      ..moveTo(lückeMitte - 12, 18)
-      ..lineTo(lückeMitte + 12, 18)
-      ..lineTo(lückeMitte, 4)
+      ..moveTo(lueckeMitte - 12, 18)
+      ..lineTo(lueckeMitte + 12, 18)
+      ..lineTo(lueckeMitte, 4)
       ..close();
     canvas.drawPath(pfad, hinweisPaint);
   }

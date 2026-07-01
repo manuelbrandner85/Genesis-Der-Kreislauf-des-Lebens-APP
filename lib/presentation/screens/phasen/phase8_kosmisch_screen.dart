@@ -11,8 +11,10 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import 'package:genesis_kreislauf_des_lebens/core/constants/app_konstanten.dart';
 import 'package:genesis_kreislauf_des_lebens/core/theme/app_farben.dart';
 import 'package:genesis_kreislauf_des_lebens/core/theme/app_text_styles.dart';
+import 'package:genesis_kreislauf_des_lebens/presentation/widgets/phasen_hintergrund.dart';
 
 /// Phase 8 – Die Kosmische Reise.
 ///
@@ -100,6 +102,11 @@ class _Phase8KosmischScreenState extends ConsumerState<Phase8KosmischScreen>
       backgroundColor: Colors.black,
       body: Stack(
         children: [
+          // Phasen-Artwork-Hintergrund
+          const Positioned.fill(
+            child: PhasenHintergrund(phase: GamePhase.kosmisch),
+          ),
+
           // Animiertes Sternenfeld
           Positioned.fill(
             child: AnimatedBuilder(
@@ -215,10 +222,11 @@ class _SternenPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    // Kosmischer Hintergrundverlauf.
+    // Kosmischer Hintergrundverlauf – halbtransparent,
+    // damit das Galaxie-Artwork darunter sichtbar bleibt.
     final hintergrund = Paint()
       ..shader = const RadialGradient(
-        colors: [Color(0xFF1A0F3C), Colors.black],
+        colors: [Color(0x661A0F3C), Color(0x8C000000)],
         radius: 1.0,
       ).createShader(Offset.zero & size);
     canvas.drawRect(Offset.zero & size, hintergrund);

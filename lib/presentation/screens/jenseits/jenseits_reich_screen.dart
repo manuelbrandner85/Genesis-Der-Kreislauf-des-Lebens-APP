@@ -16,6 +16,7 @@ import 'package:genesis_kreislauf_des_lebens/core/theme/app_text_styles.dart';
 import 'package:genesis_kreislauf_des_lebens/data/models/zyklus_model.dart';
 import 'package:genesis_kreislauf_des_lebens/presentation/providers/karma_provider.dart';
 import 'package:genesis_kreislauf_des_lebens/presentation/widgets/genesis_button.dart';
+import 'package:genesis_kreislauf_des_lebens/presentation/widgets/phasen_hintergrund.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // JenseitsReichScreen
@@ -242,6 +243,14 @@ class _JenseitsReichScreenState extends ConsumerState<JenseitsReichScreen>
       backgroundColor: config.hintergrundFarben.first,
       body: Stack(
         children: [
+          // Reich-Artwork-Hintergrund
+          Positioned.fill(
+            child: PhasenHintergrund(
+              assetPfad: jenseitsArtworkPfad(_reich),
+              abdunkelung: 0.5,
+            ),
+          ),
+
           // Hintergrund-Gradient (reich-spezifisch)
           _HintergrundGradient(config: config),
 
@@ -340,7 +349,8 @@ class _HintergrundGradient extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Elysium: RadialGradient weiß/gold
+    // Elysium: RadialGradient weiß/gold – halbtransparent,
+    // damit das Reich-Artwork darunter sichtbar bleibt.
     if (config.stimmung == 'golden') {
       return Container(
         decoration: BoxDecoration(
@@ -350,8 +360,8 @@ class _HintergrundGradient extends StatelessWidget {
             colors: [
               Colors.white.withValues(alpha: 0.08),
               config.hauptfarbe.withValues(alpha: 0.15),
-              config.hintergrundFarben.last,
-              config.hintergrundFarben.first,
+              config.hintergrundFarben.last.withValues(alpha: 0.45),
+              config.hintergrundFarben.first.withValues(alpha: 0.60),
             ],
             stops: const [0.0, 0.25, 0.6, 1.0],
           ),
@@ -359,13 +369,16 @@ class _HintergrundGradient extends StatelessWidget {
       );
     }
 
-    // Alle anderen: linearer Gradient von unten nach oben
+    // Alle anderen: linearer Gradient von unten nach oben –
+    // halbtransparente Reich-Färbung über dem Artwork.
     return Container(
       decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
-          colors: config.hintergrundFarben,
+          colors: config.hintergrundFarben
+              .map((f) => f.withValues(alpha: 0.55))
+              .toList(),
         ),
       ),
     );

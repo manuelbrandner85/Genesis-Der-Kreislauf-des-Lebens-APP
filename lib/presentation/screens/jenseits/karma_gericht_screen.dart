@@ -12,6 +12,7 @@ import 'package:genesis_kreislauf_des_lebens/core/theme/app_farben.dart';
 import 'package:genesis_kreislauf_des_lebens/core/theme/app_text_styles.dart';
 import 'package:genesis_kreislauf_des_lebens/data/models/erinnerung_model.dart';
 import 'package:genesis_kreislauf_des_lebens/data/models/gedanke_model.dart';
+import 'package:genesis_kreislauf_des_lebens/presentation/widgets/phasen_hintergrund.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Karma-Gericht Screen
@@ -100,14 +101,24 @@ class _KarmaGerichtScreenState extends ConsumerState<KarmaGerichtScreen>
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
-      body: AnimatedSwitcher(
-        duration: const Duration(milliseconds: 2000),
-        child: switch (_phase) {
-          0 => _AnkunftScene(lichterController: _lichterController),
-          1 => _SortierungsScene(lichterController: _lichterController),
-          2 => _ErgebnisScene(erinnerungen: _ausgewaehlteErinnerungen),
-          _ => _UebergangScene(),
-        },
+      body: Stack(
+        fit: StackFit.expand,
+        children: [
+          const PhasenHintergrund(
+            assetPfad: 'assets/images/jenseits/limbus.webp',
+            abdunkelung: 0.65,
+            mitKenBurns: false,
+          ),
+          AnimatedSwitcher(
+            duration: const Duration(milliseconds: 2000),
+            child: switch (_phase) {
+              0 => _AnkunftScene(lichterController: _lichterController),
+              1 => _SortierungsScene(lichterController: _lichterController),
+              2 => _ErgebnisScene(erinnerungen: _ausgewaehlteErinnerungen),
+              _ => _UebergangScene(),
+            },
+          ),
+        ],
       ),
     );
   }

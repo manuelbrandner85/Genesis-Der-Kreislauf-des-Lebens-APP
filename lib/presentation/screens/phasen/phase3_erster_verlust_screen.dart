@@ -8,11 +8,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:genesis_kreislauf_des_lebens/app/router.dart';
+import 'package:genesis_kreislauf_des_lebens/core/constants/app_konstanten.dart';
 import 'package:genesis_kreislauf_des_lebens/core/theme/app_farben.dart';
 import 'package:genesis_kreislauf_des_lebens/core/theme/app_text_styles.dart';
 import 'package:genesis_kreislauf_des_lebens/data/models/karma_profil_model.dart';
 import 'package:genesis_kreislauf_des_lebens/presentation/providers/spiel_provider.dart';
 import 'package:genesis_kreislauf_des_lebens/presentation/widgets/genesis_button.dart';
+import 'package:genesis_kreislauf_des_lebens/presentation/widgets/phasen_hintergrund.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Kapitel-Daten (Erzählschritte)
@@ -166,23 +168,33 @@ class _Phase3ErsterVerlustScreenState
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
-      body: AnimatedSwitcher(
-        duration: const Duration(milliseconds: 600),
-        child: _zeigeErgebnis
-            ? _ErgebnisAnzeige(
-                key: const ValueKey('ergebnis'),
-                ersteReaktion: _ersteReaktion!,
-                zweiteReaktion: _zweiteReaktion!,
-                onWeiter: _weiterZuPhase4,
-              )
-            : _ErzaehlungsAnzeige(
-                key: const ValueKey('erzaehlung'),
-                aktuellesKapitel: _aktuellesKapitel,
-                erzaehlungFertig: _erzaehlungFertig,
-                ersteReaktion: _ersteReaktion,
-                zweiteReaktion: _zweiteReaktion,
-                onReaktionGewaehlt: _reaktionGewaehlt,
-              ),
+      body: Stack(
+        fit: StackFit.expand,
+        children: [
+          const PhasenHintergrund(
+            phase: GamePhase.kindheit,
+            abdunkelung: 0.7,
+            mitPartikeln: false,
+          ),
+          AnimatedSwitcher(
+            duration: const Duration(milliseconds: 600),
+            child: _zeigeErgebnis
+                ? _ErgebnisAnzeige(
+                    key: const ValueKey('ergebnis'),
+                    ersteReaktion: _ersteReaktion!,
+                    zweiteReaktion: _zweiteReaktion!,
+                    onWeiter: _weiterZuPhase4,
+                  )
+                : _ErzaehlungsAnzeige(
+                    key: const ValueKey('erzaehlung'),
+                    aktuellesKapitel: _aktuellesKapitel,
+                    erzaehlungFertig: _erzaehlungFertig,
+                    ersteReaktion: _ersteReaktion,
+                    zweiteReaktion: _zweiteReaktion,
+                    onReaktionGewaehlt: _reaktionGewaehlt,
+                  ),
+          ),
+        ],
       ),
     );
   }

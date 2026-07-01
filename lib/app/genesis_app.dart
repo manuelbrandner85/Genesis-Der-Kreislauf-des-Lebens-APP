@@ -233,7 +233,7 @@ class AppTheme {
 
       // ── Karten-Thema ────────────────────────────────────────────────────
       // Dunkle Karten mit subtilen kosmischen Rändern
-      cardTheme: CardTheme(
+      cardTheme: CardThemeData(
         color: AppFarben.oberflaecheErhoben,
         elevation: 4,
         shadowColor: Colors.black54,

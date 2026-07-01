@@ -14,12 +14,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:genesis_kreislauf_des_lebens/app/router.dart';
+import 'package:genesis_kreislauf_des_lebens/core/constants/app_konstanten.dart';
 import 'package:genesis_kreislauf_des_lebens/core/theme/app_farben.dart';
 import 'package:genesis_kreislauf_des_lebens/core/theme/app_text_styles.dart';
 import 'package:genesis_kreislauf_des_lebens/data/models/karma_profil_model.dart';
 import 'package:genesis_kreislauf_des_lebens/presentation/providers/karma_provider.dart';
 import 'package:genesis_kreislauf_des_lebens/presentation/providers/spiel_provider.dart';
 import 'package:genesis_kreislauf_des_lebens/presentation/widgets/genesis_button.dart';
+import 'package:genesis_kreislauf_des_lebens/presentation/widgets/phasen_hintergrund.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Lokale JSON-Modelle für kindheit.json (ohne build_runner / json_serializable)
@@ -404,39 +406,45 @@ class _Phase3KindheitScreenState extends ConsumerState<Phase3KindheitScreen>
 
     return Scaffold(
       backgroundColor: AppFarben.kosmischSchwarz,
-      body: SafeArea(
-        child: AnimatedSwitcher(
-          duration: const Duration(milliseconds: 400),
-          child: switch (_modus) {
-            1 => _MinigameWrapper(
-                key: const ValueKey('minigame'),
-                minigameId: _aktivesMinigame,
-                onAbgeschlossen: _minigameAbgeschlossen,
-              ),
-            2 => _EntscheidungsWrapper(
-                key: const ValueKey('entscheidung'),
-                entscheidung: _aktiveEntscheidung!,
-                onAbgeschlossen: _entscheidungAbgeschlossen,
-              ),
-            3 => _KarmaFeedbackOverlay(
-                key: const ValueKey('feedback'),
-                feedback: _aktivesFeedback!,
-                onWeiter: _feedbackSchliessen,
-              ),
-            _ => _JahresHauptansicht(
-                key: const ValueKey('hauptansicht'),
-                aktuellesJahr: _aktuellesJahr,
-                jahresController: _jahresController,
-                jahresEntscheidungen: _jahresEntscheidungen,
-                laufenAbgeschlossen: _laufenAbgeschlossen,
-                sprachAbgeschlossen: _sprachAbgeschlossen,
-                onJahrWechseln: _jahrWechseln,
-                onEntscheidungStarten: _entscheidungStarten,
-                onMinigameStarten: _minigameStarten,
-                onPhaseAbschliessen: () => context.go(AppRouten.phase4),
-              ),
-          },
-        ),
+      body: Stack(
+        fit: StackFit.expand,
+        children: [
+          const PhasenHintergrund(phase: GamePhase.kindheit),
+          SafeArea(
+            child: AnimatedSwitcher(
+              duration: const Duration(milliseconds: 400),
+              child: switch (_modus) {
+                1 => _MinigameWrapper(
+                    key: const ValueKey('minigame'),
+                    minigameId: _aktivesMinigame,
+                    onAbgeschlossen: _minigameAbgeschlossen,
+                  ),
+                2 => _EntscheidungsWrapper(
+                    key: const ValueKey('entscheidung'),
+                    entscheidung: _aktiveEntscheidung!,
+                    onAbgeschlossen: _entscheidungAbgeschlossen,
+                  ),
+                3 => _KarmaFeedbackOverlay(
+                    key: const ValueKey('feedback'),
+                    feedback: _aktivesFeedback!,
+                    onWeiter: _feedbackSchliessen,
+                  ),
+                _ => _JahresHauptansicht(
+                    key: const ValueKey('hauptansicht'),
+                    aktuellesJahr: _aktuellesJahr,
+                    jahresController: _jahresController,
+                    jahresEntscheidungen: _jahresEntscheidungen,
+                    laufenAbgeschlossen: _laufenAbgeschlossen,
+                    sprachAbgeschlossen: _sprachAbgeschlossen,
+                    onJahrWechseln: _jahrWechseln,
+                    onEntscheidungStarten: _entscheidungStarten,
+                    onMinigameStarten: _minigameStarten,
+                    onPhaseAbschliessen: () => context.go(AppRouten.phase4),
+                  ),
+              },
+            ),
+          ),
+        ],
       ),
     );
   }

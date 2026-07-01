@@ -12,12 +12,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:genesis_kreislauf_des_lebens/app/router.dart';
+import 'package:genesis_kreislauf_des_lebens/core/constants/app_konstanten.dart';
 import 'package:genesis_kreislauf_des_lebens/core/theme/app_farben.dart';
 import 'package:genesis_kreislauf_des_lebens/core/theme/app_text_styles.dart';
 import 'package:genesis_kreislauf_des_lebens/data/models/karma_profil_model.dart';
 import 'package:genesis_kreislauf_des_lebens/data/models/zyklus_model.dart';
 import 'package:genesis_kreislauf_des_lebens/presentation/providers/karma_provider.dart';
 import 'package:genesis_kreislauf_des_lebens/presentation/widgets/genesis_button.dart';
+import 'package:genesis_kreislauf_des_lebens/presentation/widgets/phasen_hintergrund.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // ReinkarnationsScreen
@@ -129,6 +131,14 @@ class _ReinkarnationsScreenState extends ConsumerState<ReinkarnationsScreen>
       backgroundColor: const Color(0xFF0A0A1F),
       body: Stack(
         children: [
+          // Phasen-Artwork-Hintergrund
+          const Positioned.fill(
+            child: PhasenHintergrund(
+              phase: GamePhase.kosmisch,
+              abdunkelung: 0.55,
+            ),
+          ),
+
           // Weiß-blauer Hintergrund-Gradient (sanfter Übergang)
           _HintergrundSchimmer(controller: _hintergrundController),
 

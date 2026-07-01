@@ -7,9 +7,11 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import 'package:genesis_kreislauf_des_lebens/core/constants/app_konstanten.dart';
 import 'package:genesis_kreislauf_des_lebens/core/theme/app_farben.dart';
 import 'package:genesis_kreislauf_des_lebens/core/theme/app_text_styles.dart';
 import 'package:genesis_kreislauf_des_lebens/presentation/widgets/genesis_button.dart';
+import 'package:genesis_kreislauf_des_lebens/presentation/widgets/phasen_hintergrund.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Phase 1 Screen – Entstehung
@@ -68,6 +70,11 @@ class _Phase1EntstehungScreenState
       backgroundColor: Colors.black,
       body: Stack(
         children: [
+          // Phasen-Artwork-Hintergrund
+          const Positioned.fill(
+            child: PhasenHintergrund(phase: GamePhase.entstehung),
+          ),
+
           // Kosmischer Hintergrund – tiefes Schwarz mit Partikeleffekten
           _KosmischerHintergrund(),
 

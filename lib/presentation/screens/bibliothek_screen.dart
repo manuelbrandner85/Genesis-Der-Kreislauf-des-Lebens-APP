@@ -9,8 +9,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:genesis_kreislauf_des_lebens/app/router.dart';
+import 'package:genesis_kreislauf_des_lebens/core/constants/app_konstanten.dart';
 import 'package:genesis_kreislauf_des_lebens/core/theme/app_farben.dart';
 import 'package:genesis_kreislauf_des_lebens/core/theme/app_text_styles.dart';
+import 'package:genesis_kreislauf_des_lebens/presentation/widgets/phasen_hintergrund.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // BibliothekScreen
@@ -32,78 +34,88 @@ class BibliothekScreen extends ConsumerWidget {
       length: 4,
       child: Scaffold(
         backgroundColor: AppFarben.kosmischSchwarz,
-        body: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [
-                AppFarben.kosmischViolett.withValues(alpha: 0.6),
-                AppFarben.kosmischSchwarz,
-              ],
-              stops: const [0.0, 0.4],
+        body: Stack(
+          fit: StackFit.expand,
+          children: [
+            const PhasenHintergrund(
+              phase: GamePhase.kosmisch,
+              abdunkelung: 0.65,
+              mitKenBurns: false,
             ),
-          ),
-          child: SafeArea(
-            child: Column(
-              children: [
-                // ── Kopfzeile ────────────────────────────────────────────
-                _BibliothekKopfzeile(
-                  onZurueck: () => context.go(AppRouten.hauptMenue),
+            Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    AppFarben.kosmischViolett.withValues(alpha: 0.6),
+                    AppFarben.kosmischSchwarz,
+                  ],
+                  stops: const [0.0, 0.4],
                 ),
-
-                // ── Dekorative goldene Bücherrücken-Silhouette ───────────
-                const _BuecherSilhouette(),
-
-                const SizedBox(height: 8),
-
-                // ── TabBar ────────────────────────────────────────────────
-                Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 16),
-                  decoration: BoxDecoration(
-                    color: AppFarben.oberflaeche,
-                    borderRadius: BorderRadius.circular(8),
-                    border: Border.all(
-                      color: AppFarben.goldGlanz.withValues(alpha: 0.2),
-                      width: 1,
+              ),
+              child: SafeArea(
+                child: Column(
+                  children: [
+                    // ── Kopfzeile ────────────────────────────────────────────
+                    _BibliothekKopfzeile(
+                      onZurueck: () => context.go(AppRouten.hauptMenue),
                     ),
-                  ),
-                  child: TabBar(
-                    labelColor: AppFarben.goldGlanz,
-                    unselectedLabelColor: AppFarben.textTertiaer,
-                    indicatorColor: AppFarben.goldGlanz,
-                    indicatorSize: TabBarIndicatorSize.tab,
-                    dividerColor: Colors.transparent,
-                    labelStyle: AppTextStyles.beschriftungGross.copyWith(
-                      color: AppFarben.goldGlanz,
-                      letterSpacing: 0.8,
+
+                    // ── Dekorative goldene Bücherrücken-Silhouette ───────────
+                    const _BuecherSilhouette(),
+
+                    const SizedBox(height: 8),
+
+                    // ── TabBar ────────────────────────────────────────────────
+                    Container(
+                      margin: const EdgeInsets.symmetric(horizontal: 16),
+                      decoration: BoxDecoration(
+                        color: AppFarben.oberflaeche,
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(
+                          color: AppFarben.goldGlanz.withValues(alpha: 0.2),
+                          width: 1,
+                        ),
+                      ),
+                      child: TabBar(
+                        labelColor: AppFarben.goldGlanz,
+                        unselectedLabelColor: AppFarben.textTertiaer,
+                        indicatorColor: AppFarben.goldGlanz,
+                        indicatorSize: TabBarIndicatorSize.tab,
+                        dividerColor: Colors.transparent,
+                        labelStyle: AppTextStyles.beschriftungGross.copyWith(
+                          color: AppFarben.goldGlanz,
+                          letterSpacing: 0.8,
+                        ),
+                        unselectedLabelStyle: AppTextStyles.beschriftungGross,
+                        tabs: const [
+                          Tab(text: 'Leben'),
+                          Tab(text: 'Gedanken'),
+                          Tab(text: 'Weisheiten'),
+                          Tab(text: 'Ahnenreihe'),
+                        ],
+                      ),
                     ),
-                    unselectedLabelStyle: AppTextStyles.beschriftungGross,
-                    tabs: const [
-                      Tab(text: 'Leben'),
-                      Tab(text: 'Gedanken'),
-                      Tab(text: 'Weisheiten'),
-                      Tab(text: 'Ahnenreihe'),
-                    ],
-                  ),
-                ),
 
-                const SizedBox(height: 8),
+                    const SizedBox(height: 8),
 
-                // ── Tab-Inhalte ───────────────────────────────────────────
-                const Expanded(
-                  child: TabBarView(
-                    children: [
-                      _LifeTab(),
-                      _GedankenTab(),
-                      _WeisheitenTab(),
-                      _AhnenreiheTab(),
-                    ],
-                  ),
+                    // ── Tab-Inhalte ───────────────────────────────────────────
+                    const Expanded(
+                      child: TabBarView(
+                        children: [
+                          _LifeTab(),
+                          _GedankenTab(),
+                          _WeisheitenTab(),
+                          _AhnenreiheTab(),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
-              ],
+              ),
             ),
-          ),
+          ],
         ),
       ),
     );
