@@ -14,8 +14,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:genesis_kreislauf_des_lebens/app/router.dart';
+import 'package:genesis_kreislauf_des_lebens/core/constants/app_konstanten.dart';
 import 'package:genesis_kreislauf_des_lebens/core/theme/app_farben.dart';
 import 'package:genesis_kreislauf_des_lebens/core/theme/app_text_styles.dart';
+import 'package:genesis_kreislauf_des_lebens/presentation/widgets/phasen_hintergrund.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Datenmodell: Zeitalter
@@ -196,68 +198,77 @@ class _NeuesSpielScreenState extends ConsumerState<NeuesSpielScreen>
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppFarben.kosmischSchwarz,
-      body: Container(
-        decoration: const BoxDecoration(
-          gradient: RadialGradient(
-            center: Alignment(0, -0.5),
-            radius: 1.4,
-            colors: [
-              AppFarben.kosmischViolett,
-              AppFarben.kosmischSchwarz,
-            ],
+      body: Stack(
+        fit: StackFit.expand,
+        children: [
+          const PhasenHintergrund(
+            phase: GamePhase.kosmisch,
+            abdunkelung: 0.6,
           ),
-        ),
-        child: SafeArea(
-          child: Column(
-            children: [
-              // ── Kopfzeile ────────────────────────────────────────────────
-              _Kopfzeile(
-                aktuellerSchritt: _aktuellerSchritt,
-                onZurueck: _zurueck,
+          Container(
+            decoration: const BoxDecoration(
+              gradient: RadialGradient(
+                center: Alignment(0, -0.5),
+                radius: 1.4,
+                colors: [
+                  AppFarben.kosmischViolett,
+                  AppFarben.kosmischSchwarz,
+                ],
               ),
-
-              const SizedBox(height: 8),
-
-              // ── Fortschrittsanzeige ──────────────────────────────────────
-              _Fortschrittsanzeige(aktuellerSchritt: _aktuellerSchritt),
-
-              const SizedBox(height: 24),
-
-              // ── Schrittinhalt ────────────────────────────────────────────
-              Expanded(
-                child: SingleChildScrollView(
-                  padding: const EdgeInsets.symmetric(horizontal: 24),
-                  child: AnimatedSwitcher(
-                    duration: const Duration(milliseconds: 350),
-                    transitionBuilder: (child, animation) {
-                      return FadeTransition(
-                        opacity: animation,
-                        child: SlideTransition(
-                          position: Tween<Offset>(
-                            begin: const Offset(0.05, 0),
-                            end: Offset.zero,
-                          ).animate(animation),
-                          child: child,
-                        ),
-                      );
-                    },
-                    child: _schrittWidget(),
+            ),
+            child: SafeArea(
+              child: Column(
+                children: [
+                  // ── Kopfzeile ────────────────────────────────────────────────
+                  _Kopfzeile(
+                    aktuellerSchritt: _aktuellerSchritt,
+                    onZurueck: _zurueck,
                   ),
-                ),
-              ),
 
-              // ── Navigations-Buttons ──────────────────────────────────────
-              _NavigationsButtons(
-                aktuellerSchritt: _aktuellerSchritt,
-                onWeiter: _weiter,
-                onZurueck: _zurueck,
-                onStart: () => context.go(AppRouten.phase1),
-              ),
+                  const SizedBox(height: 8),
 
-              const SizedBox(height: 16),
-            ],
+                  // ── Fortschrittsanzeige ──────────────────────────────────────
+                  _Fortschrittsanzeige(aktuellerSchritt: _aktuellerSchritt),
+
+                  const SizedBox(height: 24),
+
+                  // ── Schrittinhalt ────────────────────────────────────────────
+                  Expanded(
+                    child: SingleChildScrollView(
+                      padding: const EdgeInsets.symmetric(horizontal: 24),
+                      child: AnimatedSwitcher(
+                        duration: const Duration(milliseconds: 350),
+                        transitionBuilder: (child, animation) {
+                          return FadeTransition(
+                            opacity: animation,
+                            child: SlideTransition(
+                              position: Tween<Offset>(
+                                begin: const Offset(0.05, 0),
+                                end: Offset.zero,
+                              ).animate(animation),
+                              child: child,
+                            ),
+                          );
+                        },
+                        child: _schrittWidget(),
+                      ),
+                    ),
+                  ),
+
+                  // ── Navigations-Buttons ──────────────────────────────────────
+                  _NavigationsButtons(
+                    aktuellerSchritt: _aktuellerSchritt,
+                    onWeiter: _weiter,
+                    onZurueck: _zurueck,
+                    onStart: () => context.go(AppRouten.phase1),
+                  ),
+
+                  const SizedBox(height: 16),
+                ],
+              ),
+            ),
           ),
-        ),
+        ],
       ),
     );
   }

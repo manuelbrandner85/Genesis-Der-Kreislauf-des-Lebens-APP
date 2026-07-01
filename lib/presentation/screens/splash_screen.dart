@@ -9,7 +9,9 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:genesis_kreislauf_des_lebens/app/router.dart';
+import 'package:genesis_kreislauf_des_lebens/core/constants/app_konstanten.dart';
 import 'package:genesis_kreislauf_des_lebens/core/theme/app_farben.dart';
+import 'package:genesis_kreislauf_des_lebens/presentation/widgets/phasen_hintergrund.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Partikel-Datenmodell
@@ -182,6 +184,12 @@ class _SplashScreenState extends State<SplashScreen>
       body: Stack(
         fit: StackFit.expand,
         children: [
+          // ── Schicht 0: Phasen-Artwork-Hintergrund ──────────────────────
+          const PhasenHintergrund(
+            phase: GamePhase.kosmisch,
+            abdunkelung: 0.55,
+          ),
+
           // ── Schicht 1: Animierter Partikel-Hintergrund ─────────────────
           AnimatedBuilder(
             animation: _partikelController,
