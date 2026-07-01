@@ -13,7 +13,7 @@ import 'package:go_router/go_router.dart';
 
 import 'package:genesis_kreislauf_des_lebens/core/theme/app_farben.dart';
 import 'package:genesis_kreislauf_des_lebens/core/theme/app_text_styles.dart';
-import 'package:genesis_kreislauf_des_lebens/core/constants/karma_konstanten.dart';
+import 'package:genesis_kreislauf_des_lebens/data/models/karma_profil_model.dart';
 import 'package:genesis_kreislauf_des_lebens/presentation/providers/karma_provider.dart';
 
 /// Phase 9 – Die Schöpfung.

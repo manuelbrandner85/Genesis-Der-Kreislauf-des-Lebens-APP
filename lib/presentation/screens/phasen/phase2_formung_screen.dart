@@ -896,7 +896,7 @@ class _SynapsenMinigameState extends State<_SynapsenMinigame> {
     );
   }
 
-  void _neuronBerührt(int index) {
+  void _neuronBeruehrt(int index) {
     if (_gezogenStart == null) {
       setState(() => _gezogenStart = index);
     } else if (_gezogenStart != index) {
@@ -963,7 +963,7 @@ class _SynapsenMinigameState extends State<_SynapsenMinigame> {
                           for (int i = 0; i < _neuronen.length; i++) {
                             final abstand = (_neuronen[i] - rel).distance;
                             if (abstand < 0.06) {
-                              _neuronBerührt(i);
+                              _neuronBeruehrt(i);
                               return;
                             }
                           }
