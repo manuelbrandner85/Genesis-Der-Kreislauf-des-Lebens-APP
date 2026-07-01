@@ -1,10 +1,14 @@
 name: Build APK
 
-# Baut die Release-APK auf GitHubs Runnern und stellt sie als Download bereit.
-# Läuft bei jedem Push auf main sowie manuell über den Actions-Tab.
+# Baut die Release-APK auf GitHubs Runnern und stellt sie zum Download bereit.
+# Läuft bei jedem Push auf main, bei Versions-Tags (v*) und manuell über den
+# Actions-Tab ("Run workflow"). Die fertige APK wird auf zwei Wegen bereitgestellt:
+#   1. Als Build-Artefakt (Actions-Tab → Lauf öffnen → Artifacts) – benötigt Login.
+#   2. Als GitHub-Release "latest" mit permanentem, öffentlichem Download-Link.
 on:
   push:
     branches: [main]
+    tags: ['v*']
   workflow_dispatch:
 
 permissions:
@@ -46,8 +50,28 @@ jobs:
           path: build/app/outputs/flutter-apk/app-release.apk
           if-no-files-found: error
 
-      - name: APK an Release anhängen (nur bei Tag-Push)
-        if: startsWith(github.ref, 'refs/tags/')
+      # ── Permanentes "latest"-Release aktualisieren (nur auf main / manuell) ──
+      # Bietet einen stabilen Download-Link, der immer die neueste APK enthält:
+      #   https://github.com/<owner>/<repo>/releases/latest
+      - name: APK an "latest"-Release anhängen
+        if: github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: latest
+          name: GENESIS – Neueste APK
+          body: |
+            Automatisch gebaute Release-APK von GENESIS: Der Kreislauf des Lebens.
+            Enthält den aktuellen Stand des `main`-Branches (Commit ${{ github.sha }}).
+
+            **Installation:** APK unten unter "Assets" herunterladen, auf dem
+            Android-Gerät öffnen und Installation aus unbekannten Quellen erlauben.
+          prerelease: true
+          make_latest: true
+          files: build/app/outputs/flutter-apk/app-release.apk
+
+      # ── Versioniertes Release bei Tag-Push (z. B. v1.0.0) ──
+      - name: APK an Versions-Release anhängen (bei Tag-Push)
+        if: startsWith(github.ref, 'refs/tags/v')
         uses: softprops/action-gh-release@v2
         with:
           files: build/app/outputs/flutter-apk/app-release.apk
