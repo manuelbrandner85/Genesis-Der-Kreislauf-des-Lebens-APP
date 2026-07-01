@@ -65,7 +65,9 @@ jobs:
 
             **Installation:** APK unten unter "Assets" herunterladen, auf dem
             Android-Gerät öffnen und Installation aus unbekannten Quellen erlauben.
-          prerelease: true
+          # Kein Prerelease, damit die URL releases/latest auflöst und das
+          # "Latest"-Badge gesetzt wird.
+          prerelease: false
           make_latest: true
           files: build/app/outputs/flutter-apk/app-release.apk
 
