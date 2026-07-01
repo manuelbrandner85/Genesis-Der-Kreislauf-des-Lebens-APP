@@ -12,6 +12,7 @@ import 'package:go_router/go_router.dart';
 
 import 'package:genesis_kreislauf_des_lebens/core/theme/app_farben.dart';
 import 'package:genesis_kreislauf_des_lebens/core/theme/app_text_styles.dart';
+import 'package:genesis_kreislauf_des_lebens/presentation/widgets/phasen_hintergrund.dart';
 
 /// Phase 7 – Jenseits-Vorbereitung.
 ///
@@ -90,81 +91,90 @@ class _Phase7JenseitsVorbereitungScreenState
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppFarben.kosmischSchwarz,
-      body: AnimatedBuilder(
-        animation: _lichtController,
-        builder: (context, child) {
-          final t = Curves.easeInOut.transform(_lichtController.value);
-          // Hintergrund wechselt von dunkelviolett zu hellweiß.
-          final hintergrund = Color.lerp(
-            const Color(0xFF1A0F3C),
-            const Color(0xFFF5F3FF),
-            t,
-          )!;
-          // Textfarbe invertiert sich, damit Lesbarkeit erhalten bleibt.
-          final textFarbe =
-              Color.lerp(AppFarben.text, const Color(0xFF2D1B69), t)!;
-          return Container(
-            decoration: BoxDecoration(
-              gradient: RadialGradient(
-                center: Alignment.center,
-                radius: 0.6 + t * 1.4,
-                colors: [
-                  Color.lerp(const Color(0xFF6A0DAD), Colors.white, t)!,
-                  hintergrund,
-                ],
-              ),
-            ),
-            child: SafeArea(
-              child: Center(
-                child: Padding(
-                  padding: const EdgeInsets.all(32),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      for (var i = 0; i < _sichtbareTexte; i++)
-                        Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 14),
-                          child: Text(
-                            _texte[i],
-                            textAlign: TextAlign.center,
-                            style: AppTextStyles.ueberschrift3.copyWith(
-                              color: textFarbe,
-                              letterSpacing: 2.5,
-                              height: 1.6,
-                            ),
-                          ).animate().fadeIn(duration: 1500.ms),
-                        ),
-                      const SizedBox(height: 48),
-                      if (_bereit)
-                        OutlinedButton(
-                          onPressed: _weiter,
-                          style: OutlinedButton.styleFrom(
-                            foregroundColor: const Color(0xFF2D1B69),
-                            side: const BorderSide(
-                              color: Color(0xFF6A0DAD),
-                              width: 1.5,
-                            ),
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 36,
-                              vertical: 16,
-                            ),
-                          ),
-                          child: const Text(
-                            'VOR DAS KARMA-GERICHT',
-                            style: TextStyle(
-                              fontFamily: 'Cinzel',
-                              fontSize: 14,
-                              letterSpacing: 2,
-                            ),
-                          ),
-                        ).animate().fadeIn(duration: 1200.ms),
+      body: Stack(
+        fit: StackFit.expand,
+        children: [
+          const PhasenHintergrund(
+            assetPfad: 'assets/images/jenseits/limbus.webp',
+            abdunkelung: 0.6,
+          ),
+          AnimatedBuilder(
+            animation: _lichtController,
+            builder: (context, child) {
+              final t = Curves.easeInOut.transform(_lichtController.value);
+              // Hintergrund wechselt von dunkelviolett zu hellweiß.
+              final hintergrund = Color.lerp(
+                const Color(0xFF1A0F3C),
+                const Color(0xFFF5F3FF),
+                t,
+              )!;
+              // Textfarbe invertiert sich, damit Lesbarkeit erhalten bleibt.
+              final textFarbe =
+                  Color.lerp(AppFarben.text, const Color(0xFF2D1B69), t)!;
+              return Container(
+                decoration: BoxDecoration(
+                  gradient: RadialGradient(
+                    center: Alignment.center,
+                    radius: 0.6 + t * 1.4,
+                    colors: [
+                      Color.lerp(const Color(0xFF6A0DAD), Colors.white, t)!,
+                      hintergrund,
                     ],
                   ),
                 ),
-              ),
-            ),
-          );
-        },
+                child: SafeArea(
+                  child: Center(
+                    child: Padding(
+                      padding: const EdgeInsets.all(32),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          for (var i = 0; i < _sichtbareTexte; i++)
+                            Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 14),
+                              child: Text(
+                                _texte[i],
+                                textAlign: TextAlign.center,
+                                style: AppTextStyles.ueberschrift3.copyWith(
+                                  color: textFarbe,
+                                  letterSpacing: 2.5,
+                                  height: 1.6,
+                                ),
+                              ).animate().fadeIn(duration: 1500.ms),
+                            ),
+                          const SizedBox(height: 48),
+                          if (_bereit)
+                            OutlinedButton(
+                              onPressed: _weiter,
+                              style: OutlinedButton.styleFrom(
+                                foregroundColor: const Color(0xFF2D1B69),
+                                side: const BorderSide(
+                                  color: Color(0xFF6A0DAD),
+                                  width: 1.5,
+                                ),
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 36,
+                                  vertical: 16,
+                                ),
+                              ),
+                              child: const Text(
+                                'VOR DAS KARMA-GERICHT',
+                                style: TextStyle(
+                                  fontFamily: 'Cinzel',
+                                  fontSize: 14,
+                                  letterSpacing: 2,
+                                ),
+                              ),
+                            ).animate().fadeIn(duration: 1200.ms),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              );
+            },
+          ),
+        ],
       ),
     );
   }

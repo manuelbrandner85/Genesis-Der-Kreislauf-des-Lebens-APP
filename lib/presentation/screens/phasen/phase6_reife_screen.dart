@@ -10,10 +10,12 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import 'package:genesis_kreislauf_des_lebens/core/constants/app_konstanten.dart';
 import 'package:genesis_kreislauf_des_lebens/core/theme/app_farben.dart';
 import 'package:genesis_kreislauf_des_lebens/core/theme/app_text_styles.dart';
 import 'package:genesis_kreislauf_des_lebens/data/models/karma_profil_model.dart';
 import 'package:genesis_kreislauf_des_lebens/presentation/providers/karma_provider.dart';
+import 'package:genesis_kreislauf_des_lebens/presentation/widgets/phasen_hintergrund.dart';
 
 /// Phase 6 – Reife: Das Sterbebett.
 ///
@@ -92,54 +94,60 @@ class _Phase6ReifeScreenState extends ConsumerState<Phase6ReifeScreen>
 
     return Scaffold(
       backgroundColor: _warmSepia,
-      body: AnimatedBuilder(
-        animation: _kerzenController,
-        builder: (context, child) {
-          // Weiches Flackern moduliert den Schimmer des gesamten Raums.
-          final flacker =
-              0.85 + 0.15 * math.sin(_kerzenController.value * math.pi * 2);
-          return Container(
-            decoration: BoxDecoration(
-              gradient: RadialGradient(
-                center: Alignment.topCenter,
-                radius: 1.4,
-                colors: [
-                  Color.lerp(_sepiaHell, _kerzenlicht, 0.12 * flacker)!,
-                  _warmSepia,
-                ],
+      body: Stack(
+        fit: StackFit.expand,
+        children: [
+          const PhasenHintergrund(phase: GamePhase.reife),
+          AnimatedBuilder(
+            animation: _kerzenController,
+            builder: (context, child) {
+              // Weiches Flackern moduliert den Schimmer des gesamten Raums.
+              final flacker =
+                  0.85 + 0.15 * math.sin(_kerzenController.value * math.pi * 2);
+              return Container(
+                decoration: BoxDecoration(
+                  gradient: RadialGradient(
+                    center: Alignment.topCenter,
+                    radius: 1.4,
+                    colors: [
+                      Color.lerp(_sepiaHell, _kerzenlicht, 0.12 * flacker)!,
+                      _warmSepia,
+                    ],
+                  ),
+                ),
+                child: child,
+              );
+            },
+            child: SafeArea(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    _baueKerzenReihe(),
+                    const SizedBox(height: 16),
+                    _baueKopf(durchschnitt),
+                    const SizedBox(height: 28),
+                    _baueEntscheidung1(),
+                    if (_aktuelleEntscheidung >= 1) ...[
+                      const SizedBox(height: 24),
+                      _baueEntscheidung2(),
+                    ],
+                    if (_aktuelleEntscheidung >= 2) ...[
+                      const SizedBox(height: 24),
+                      _baueEntscheidung3(),
+                    ],
+                    if (_aktuelleEntscheidung >= 3) ...[
+                      const SizedBox(height: 36),
+                      _baueLetzterAtemzug(),
+                    ],
+                    const SizedBox(height: 32),
+                  ],
+                ),
               ),
             ),
-            child: child,
-          );
-        },
-        child: SafeArea(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                _baueKerzenReihe(),
-                const SizedBox(height: 16),
-                _baueKopf(durchschnitt),
-                const SizedBox(height: 28),
-                _baueEntscheidung1(),
-                if (_aktuelleEntscheidung >= 1) ...[
-                  const SizedBox(height: 24),
-                  _baueEntscheidung2(),
-                ],
-                if (_aktuelleEntscheidung >= 2) ...[
-                  const SizedBox(height: 24),
-                  _baueEntscheidung3(),
-                ],
-                if (_aktuelleEntscheidung >= 3) ...[
-                  const SizedBox(height: 36),
-                  _baueLetzterAtemzug(),
-                ],
-                const SizedBox(height: 32),
-              ],
-            ),
           ),
-        ),
+        ],
       ),
     );
   }

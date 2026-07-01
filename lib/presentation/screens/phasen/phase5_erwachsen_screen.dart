@@ -14,10 +14,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:genesis_kreislauf_des_lebens/core/constants/app_konstanten.dart';
 import 'package:genesis_kreislauf_des_lebens/core/theme/app_farben.dart';
 import 'package:genesis_kreislauf_des_lebens/core/theme/app_text_styles.dart';
 import 'package:genesis_kreislauf_des_lebens/data/models/karma_profil_model.dart';
 import 'package:genesis_kreislauf_des_lebens/presentation/providers/karma_provider.dart';
+import 'package:genesis_kreislauf_des_lebens/presentation/widgets/phasen_hintergrund.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Lokale Datenstrukturen
@@ -452,120 +454,126 @@ class _Phase5ErwachsenScreenState
 
     return Scaffold(
       backgroundColor: AppFarben.kosmischSchwarz,
-      body: SafeArea(
-        child: Column(
-          children: [
-            // Kopfzeile: Titel + Gesundheit + Feedback
-            _ErwachsenenKopfzeile(
-              alter: alter,
-              gesundheit: gesundheit,
-              feedbackNachricht: _feedbackNachricht,
-              feedbackFarbe: _feedbackFarbe,
+      body: Stack(
+        fit: StackFit.expand,
+        children: [
+          const PhasenHintergrund(phase: GamePhase.erwachsen),
+          SafeArea(
+            child: Column(
+              children: [
+                // Kopfzeile: Titel + Gesundheit + Feedback
+                _ErwachsenenKopfzeile(
+                  alter: alter,
+                  gesundheit: gesundheit,
+                  feedbackNachricht: _feedbackNachricht,
+                  feedbackFarbe: _feedbackFarbe,
+                ),
+
+                // Tab-Bar mit 4 Registerkarten
+                _ErwachsenenTabBar(controller: _tabController),
+
+                // Tab-Inhalte
+                Expanded(
+                  child: TabBarView(
+                    controller: _tabController,
+                    children: [
+                      // Tab 1: Leben – Tagesroutine-Entscheidungen
+                      _LebenTab(
+                        getroffene: _getroffeneLebenEntscheidungen,
+                        onEntscheidung: (index, optionA) {
+                          final e = _lebenEntscheidungen[index];
+                          _getroffeneLebenEntscheidungen.add(index);
+                          _karmaUndGesundheitAnpassen(
+                            karma: optionA ? e.karmaA : e.karmaB,
+                            gesundheitsDelta:
+                                optionA ? e.gesundheitA : e.gesundheitB,
+                            feedback: optionA
+                                ? '${e.optionA} gewählt'
+                                : '${e.optionB} gewählt',
+                            positiv: optionA
+                                ? e.gesundheitA > 0
+                                : e.gesundheitB > 0,
+                          );
+                        },
+                      ),
+
+                      // Tab 2: Karriere – Pfadwahl + Dilemmas
+                      _KarriereTab(
+                        gewaehltePfad: ref.watch(_p5KarriereProvider),
+                        getroffeneEntscheidungen: _getroffeneKarriereEntscheidungen,
+                        onPfadWaehlen: (pfad) {
+                          ref.read(_p5KarriereProvider.notifier).state = pfad;
+                          _karmaUndGesundheitAnpassen(
+                            karma: pfad.karmaBonus,
+                            feedback: 'Karrierepfad: ${pfad.titel}',
+                          );
+                        },
+                        onEntscheidung: (index, optionA) {
+                          final e = _karriereEntscheidungen[index];
+                          _getroffeneKarriereEntscheidungen.add(index);
+                          _karmaUndGesundheitAnpassen(
+                            karma: optionA ? e.karmaA : e.karmaB,
+                            feedback: optionA ? e.optionA : e.optionB,
+                            positiv: optionA,
+                          );
+                        },
+                      ),
+
+                      // Tab 3: Beziehungen – Kandidatenwahl + Konflikte
+                      _BeziehungenTab(
+                        gewaehltKandidat: ref.watch(_p5BeziehungProvider),
+                        getroffeneKonflikte: _getroffeneKonflikte,
+                        onKandidatWaehlen: (kandidat) {
+                          ref.read(_p5BeziehungProvider.notifier).state = kandidat;
+                          _karmaUndGesundheitAnpassen(
+                            karma: kandidat.karmaBonus,
+                            gesundheitsDelta: 5,
+                            feedback: '${kandidat.name} – Beziehung begonnen',
+                          );
+                        },
+                        onKonflikt: (index, loesen) {
+                          final k = _konflikte[index];
+                          _getroffeneKonflikte.add(index);
+                          _karmaUndGesundheitAnpassen(
+                            karma: loesen ? k.karmaLoesen : k.karmaIgnorieren,
+                            feedback: loesen
+                                ? 'Konflikt gelöst'
+                                : 'Konflikt ignoriert',
+                            positiv: loesen,
+                          );
+                        },
+                      ),
+
+                      // Tab 4: Seele – Meditation, Spiritualität, Erinnerungen
+                      _SeelenTab(
+                        aktivitaetenCount:
+                            ref.watch(_p5SeelenAktivitaetenProvider),
+                        onAktivitaet: (aktivitaet) {
+                          ref
+                              .read(_p5SeelenAktivitaetenProvider.notifier)
+                              .state++;
+                          _karmaUndGesundheitAnpassen(
+                            karma: aktivitaet.karmaBonus,
+                            gesundheitsDelta: 5,
+                            feedback:
+                                '${aktivitaet.name}: ${aktivitaet.wirkung}',
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+
+                // Unterer Bereich: Alters-Meter + Weiter-Button
+                _AltersUndWeiterLeiste(
+                  alter: alter,
+                  kannWeiter: _kannWeiter,
+                  onWeiter: () => context.go('/phase/6'),
+                ),
+              ],
             ),
-
-            // Tab-Bar mit 4 Registerkarten
-            _ErwachsenenTabBar(controller: _tabController),
-
-            // Tab-Inhalte
-            Expanded(
-              child: TabBarView(
-                controller: _tabController,
-                children: [
-                  // Tab 1: Leben – Tagesroutine-Entscheidungen
-                  _LebenTab(
-                    getroffene: _getroffeneLebenEntscheidungen,
-                    onEntscheidung: (index, optionA) {
-                      final e = _lebenEntscheidungen[index];
-                      _getroffeneLebenEntscheidungen.add(index);
-                      _karmaUndGesundheitAnpassen(
-                        karma: optionA ? e.karmaA : e.karmaB,
-                        gesundheitsDelta:
-                            optionA ? e.gesundheitA : e.gesundheitB,
-                        feedback: optionA
-                            ? '${e.optionA} gewählt'
-                            : '${e.optionB} gewählt',
-                        positiv: optionA
-                            ? e.gesundheitA > 0
-                            : e.gesundheitB > 0,
-                      );
-                    },
-                  ),
-
-                  // Tab 2: Karriere – Pfadwahl + Dilemmas
-                  _KarriereTab(
-                    gewaehltePfad: ref.watch(_p5KarriereProvider),
-                    getroffeneEntscheidungen: _getroffeneKarriereEntscheidungen,
-                    onPfadWaehlen: (pfad) {
-                      ref.read(_p5KarriereProvider.notifier).state = pfad;
-                      _karmaUndGesundheitAnpassen(
-                        karma: pfad.karmaBonus,
-                        feedback: 'Karrierepfad: ${pfad.titel}',
-                      );
-                    },
-                    onEntscheidung: (index, optionA) {
-                      final e = _karriereEntscheidungen[index];
-                      _getroffeneKarriereEntscheidungen.add(index);
-                      _karmaUndGesundheitAnpassen(
-                        karma: optionA ? e.karmaA : e.karmaB,
-                        feedback: optionA ? e.optionA : e.optionB,
-                        positiv: optionA,
-                      );
-                    },
-                  ),
-
-                  // Tab 3: Beziehungen – Kandidatenwahl + Konflikte
-                  _BeziehungenTab(
-                    gewaehltKandidat: ref.watch(_p5BeziehungProvider),
-                    getroffeneKonflikte: _getroffeneKonflikte,
-                    onKandidatWaehlen: (kandidat) {
-                      ref.read(_p5BeziehungProvider.notifier).state = kandidat;
-                      _karmaUndGesundheitAnpassen(
-                        karma: kandidat.karmaBonus,
-                        gesundheitsDelta: 5,
-                        feedback: '${kandidat.name} – Beziehung begonnen',
-                      );
-                    },
-                    onKonflikt: (index, loesen) {
-                      final k = _konflikte[index];
-                      _getroffeneKonflikte.add(index);
-                      _karmaUndGesundheitAnpassen(
-                        karma: loesen ? k.karmaLoesen : k.karmaIgnorieren,
-                        feedback: loesen
-                            ? 'Konflikt gelöst'
-                            : 'Konflikt ignoriert',
-                        positiv: loesen,
-                      );
-                    },
-                  ),
-
-                  // Tab 4: Seele – Meditation, Spiritualität, Erinnerungen
-                  _SeelenTab(
-                    aktivitaetenCount:
-                        ref.watch(_p5SeelenAktivitaetenProvider),
-                    onAktivitaet: (aktivitaet) {
-                      ref
-                          .read(_p5SeelenAktivitaetenProvider.notifier)
-                          .state++;
-                      _karmaUndGesundheitAnpassen(
-                        karma: aktivitaet.karmaBonus,
-                        gesundheitsDelta: 5,
-                        feedback:
-                            '${aktivitaet.name}: ${aktivitaet.wirkung}',
-                      );
-                    },
-                  ),
-                ],
-              ),
-            ),
-
-            // Unterer Bereich: Alters-Meter + Weiter-Button
-            _AltersUndWeiterLeiste(
-              alter: alter,
-              kannWeiter: _kannWeiter,
-              onWeiter: () => context.go('/phase/6'),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

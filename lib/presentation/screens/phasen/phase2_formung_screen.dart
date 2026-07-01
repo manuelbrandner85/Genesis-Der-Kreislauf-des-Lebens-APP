@@ -13,10 +13,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:genesis_kreislauf_des_lebens/app/router.dart';
+import 'package:genesis_kreislauf_des_lebens/core/constants/app_konstanten.dart';
 import 'package:genesis_kreislauf_des_lebens/core/theme/app_farben.dart';
 import 'package:genesis_kreislauf_des_lebens/core/theme/app_text_styles.dart';
 import 'package:genesis_kreislauf_des_lebens/presentation/providers/spiel_provider.dart';
 import 'package:genesis_kreislauf_des_lebens/presentation/widgets/genesis_button.dart';
+import 'package:genesis_kreislauf_des_lebens/presentation/widgets/phasen_hintergrund.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Daten-Modelle für Minigames
@@ -158,31 +160,37 @@ class _Phase2FormungScreenState extends ConsumerState<Phase2FormungScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppFarben.kosmischSchwarz,
-      body: SafeArea(
-        child: AnimatedSwitcher(
-          duration: const Duration(milliseconds: 500),
-          child: switch (_stufe) {
-            0 => _IntroSequenz(key: const ValueKey(0)),
-            1 => _OrganPuzzleMinigame(
-                key: const ValueKey(1),
-                onAbgeschlossen: _stufe1Abgeschlossen,
-              ),
-            2 => _HerzschlagMinigame(
-                key: const ValueKey(2),
-                onAbgeschlossen: _stufe2Abgeschlossen,
-              ),
-            3 => _SynapsenMinigame(
-                key: const ValueKey(3),
-                onAbgeschlossen: _stufe3Abgeschlossen,
-              ),
-            _ => _AlleStufeAbgeschlossen(
-                key: const ValueKey(4),
-                herzGesundheit: _herzGesundheit,
-                intelligenz: _intelligenz,
-                onWeiter: _zumGeburtsCinematic,
-              ),
-          },
-        ),
+      body: Stack(
+        fit: StackFit.expand,
+        children: [
+          const PhasenHintergrund(phase: GamePhase.formung),
+          SafeArea(
+            child: AnimatedSwitcher(
+              duration: const Duration(milliseconds: 500),
+              child: switch (_stufe) {
+                0 => _IntroSequenz(key: const ValueKey(0)),
+                1 => _OrganPuzzleMinigame(
+                    key: const ValueKey(1),
+                    onAbgeschlossen: _stufe1Abgeschlossen,
+                  ),
+                2 => _HerzschlagMinigame(
+                    key: const ValueKey(2),
+                    onAbgeschlossen: _stufe2Abgeschlossen,
+                  ),
+                3 => _SynapsenMinigame(
+                    key: const ValueKey(3),
+                    onAbgeschlossen: _stufe3Abgeschlossen,
+                  ),
+                _ => _AlleStufeAbgeschlossen(
+                    key: const ValueKey(4),
+                    herzGesundheit: _herzGesundheit,
+                    intelligenz: _intelligenz,
+                    onWeiter: _zumGeburtsCinematic,
+                  ),
+              },
+            ),
+          ),
+        ],
       ),
     );
   }

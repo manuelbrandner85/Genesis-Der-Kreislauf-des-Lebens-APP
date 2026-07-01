@@ -17,6 +17,7 @@ import 'package:genesis_kreislauf_des_lebens/core/theme/app_text_styles.dart';
 import 'package:genesis_kreislauf_des_lebens/data/models/zyklus_model.dart';
 import 'package:genesis_kreislauf_des_lebens/presentation/providers/karma_provider.dart';
 import 'package:genesis_kreislauf_des_lebens/presentation/widgets/genesis_button.dart';
+import 'package:genesis_kreislauf_des_lebens/presentation/widgets/phasen_hintergrund.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // JenseitsAnkunftScreen
@@ -212,6 +213,14 @@ class _JenseitsAnkunftScreenState extends ConsumerState<JenseitsAnkunftScreen>
       backgroundColor: config.hintergrundStart,
       body: Stack(
         children: [
+          // Reich-Artwork-Hintergrund
+          Positioned.fill(
+            child: PhasenHintergrund(
+              assetPfad: jenseitsArtworkPfad(reich),
+              abdunkelung: 0.5,
+            ),
+          ),
+
           // Hintergrund-Gradient
           _HintergrundGradient(config: config),
 
@@ -298,14 +307,16 @@ class _HintergrundGradient extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Halbtransparente Reich-Färbung – das Jenseits-Artwork
+    // darunter bleibt sichtbar und wird nur eingefärbt.
     return Container(
       decoration: BoxDecoration(
         gradient: RadialGradient(
           center: Alignment.topCenter,
           radius: 1.8,
           colors: [
-            config.hintergrundEnde,
-            config.hintergrundStart,
+            config.hintergrundEnde.withValues(alpha: 0.45),
+            config.hintergrundStart.withValues(alpha: 0.65),
           ],
         ),
       ),

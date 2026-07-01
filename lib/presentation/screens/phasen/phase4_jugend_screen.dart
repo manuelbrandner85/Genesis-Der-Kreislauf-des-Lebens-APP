@@ -9,10 +9,12 @@ import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:genesis_kreislauf_des_lebens/core/constants/app_konstanten.dart';
 import 'package:genesis_kreislauf_des_lebens/core/theme/app_farben.dart';
 import 'package:genesis_kreislauf_des_lebens/core/theme/app_text_styles.dart';
 import 'package:genesis_kreislauf_des_lebens/data/models/karma_profil_model.dart';
 import 'package:genesis_kreislauf_des_lebens/presentation/providers/karma_provider.dart';
+import 'package:genesis_kreislauf_des_lebens/presentation/widgets/phasen_hintergrund.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Interne Datenmodelle für Phase 4
@@ -442,39 +444,46 @@ class _Phase4JugendScreenState extends ConsumerState<Phase4JugendScreen>
     // Teenager-Ästhetik: dunkles Hintergrundsystem
     return Scaffold(
       backgroundColor: const Color(0xFF0A0A14),
-      body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              Color(0xFF0A0A14), // Tiefes Schwarz-Blau
-              Color(0xFF120820), // Dunkles Lila-Schwarz
-              Color(0xFF0A0A14),
-            ],
-          ),
-        ),
-        child: SafeArea(
-          child: _laedt
-              ? _LadeAnzeige()
-              : _phaseAbgeschlossen
-                  ? _PhaseAbschluss(onWeiter: () => context.go('/phase/5'))
-                  : Column(
-                      children: [
-                        // Kopfzeile: Phase-Titel + Stress-Meter
-                        _KopfZeile(
-                          stress: _stress,
-                          stressPulsAnimation: _stressPulsAnimation,
-                          gewaehlteCLique: _gewaehlteCLique,
-                        ),
+      body: Stack(
+        fit: StackFit.expand,
+        children: [
+          const PhasenHintergrund(phase: GamePhase.jugend),
+          Container(
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                // Halbtransparent, damit das Phasen-Artwork durchscheint
+                colors: [
+                  Color(0xB30A0A14), // Tiefes Schwarz-Blau (70 %)
+                  Color(0x99120820), // Dunkles Lila-Schwarz (60 %)
+                  Color(0xB30A0A14),
+                ],
+              ),
+            ),
+            child: SafeArea(
+              child: _laedt
+                  ? _LadeAnzeige()
+                  : _phaseAbgeschlossen
+                      ? _PhaseAbschluss(onWeiter: () => context.go('/phase/5'))
+                      : Column(
+                          children: [
+                            // Kopfzeile: Phase-Titel + Stress-Meter
+                            _KopfZeile(
+                              stress: _stress,
+                              stressPulsAnimation: _stressPulsAnimation,
+                              gewaehlteCLique: _gewaehlteCLique,
+                            ),
 
-                        // Hauptinhalt
-                        Expanded(
-                          child: _buildHauptinhalt(),
+                            // Hauptinhalt
+                            Expanded(
+                              child: _buildHauptinhalt(),
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
-        ),
+            ),
+          ),
+        ],
       ),
     );
   }
