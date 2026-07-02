@@ -4,6 +4,7 @@
 // und Gefahr (Rot). Enthält optionale Lade-Animation und Icon-Unterstützung.
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
 import 'package:genesis_kreislauf_des_lebens/core/theme/app_farben.dart';
@@ -193,6 +194,8 @@ class _GenesisButtonState extends State<GenesisButton>
               ? null
               : (_) {
                   setState(() => _gedrueckt = false);
+                  // Spürbares Feedback bei jedem Tastendruck
+                  HapticFeedback.lightImpact();
                   widget.onPressed?.call();
                 },
           onTapCancel: () => setState(() => _gedrueckt = false),
