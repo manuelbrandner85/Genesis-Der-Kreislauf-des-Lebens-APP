@@ -17,6 +17,8 @@ import 'package:genesis_kreislauf_des_lebens/app/router.dart';
 import 'package:genesis_kreislauf_des_lebens/core/constants/app_konstanten.dart';
 import 'package:genesis_kreislauf_des_lebens/core/theme/app_farben.dart';
 import 'package:genesis_kreislauf_des_lebens/core/theme/app_text_styles.dart';
+import 'package:genesis_kreislauf_des_lebens/data/models/zyklus_model.dart';
+import 'package:genesis_kreislauf_des_lebens/presentation/providers/spiel_provider.dart';
 import 'package:genesis_kreislauf_des_lebens/presentation/widgets/phasen_hintergrund.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -112,6 +114,9 @@ class _NeuesSpielScreenState extends ConsumerState<NeuesSpielScreen>
   String _gewaehlterZeitalterID = '';
   String _seelenCode = '';
 
+  /// Verhindert Doppel-Starts, während das Profil angelegt wird.
+  bool _startetSpiel = false;
+
   // Animation für Schrittübergänge
   late final AnimationController _uebergangController;
 
@@ -173,6 +178,43 @@ class _NeuesSpielScreenState extends ConsumerState<NeuesSpielScreen>
     }
   }
 
+  /// Legt das Spielerprofil samt erstem Lebenszyklus an und startet Phase 1.
+  ///
+  /// Vorher wurde hier nur navigiert, ohne Name und Zeitalter zu speichern –
+  /// alle nachfolgenden Screens liefen dadurch ohne Profil ins Leere.
+  Future<void> _spielStarten() async {
+    if (_startetSpiel) return;
+
+    final name = _nameController.text.trim();
+    if (name.isEmpty) {
+      setState(() => _aktuellerSchritt = 1);
+      _zeigeFehler('Bitte gib einen Namen ein.');
+      return;
+    }
+
+    // Lokale Zeitalter-ID auf das Domänen-Enum abbilden
+    final zeitalter = Zeitalter.values.firstWhere(
+      (z) => z.name == _gewaehlterZeitalterID,
+      orElse: () => Zeitalter.moderne,
+    );
+
+    setState(() => _startetSpiel = true);
+    HapticFeedback.mediumImpact();
+
+    await ref.read(spielProvider.notifier).neuesSpielStarten(name, zeitalter);
+
+    if (!mounted) return;
+
+    final fehler = ref.read(spielProvider).fehlerMeldung;
+    if (fehler != null) {
+      setState(() => _startetSpiel = false);
+      _zeigeFehler(fehler);
+      return;
+    }
+
+    context.go(AppRouten.phase1);
+  }
+
   void _zeigeFehler(String nachricht) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -206,13 +248,14 @@ class _NeuesSpielScreenState extends ConsumerState<NeuesSpielScreen>
             abdunkelung: 0.6,
           ),
           Container(
-            decoration: const BoxDecoration(
+            // Halbtransparente Färbung, damit das Kosmos-Artwork sichtbar bleibt
+            decoration: BoxDecoration(
               gradient: RadialGradient(
-                center: Alignment(0, -0.5),
+                center: const Alignment(0, -0.5),
                 radius: 1.4,
                 colors: [
-                  AppFarben.kosmischViolett,
-                  AppFarben.kosmischSchwarz,
+                  AppFarben.kosmischViolett.withValues(alpha: 0.35),
+                  AppFarben.kosmischSchwarz.withValues(alpha: 0.55),
                 ],
               ),
             ),
@@ -260,7 +303,7 @@ class _NeuesSpielScreenState extends ConsumerState<NeuesSpielScreen>
                     aktuellerSchritt: _aktuellerSchritt,
                     onWeiter: _weiter,
                     onZurueck: _zurueck,
-                    onStart: () => context.go(AppRouten.phase1),
+                    onStart: _spielStarten,
                   ),
 
                   const SizedBox(height: 16),
@@ -281,6 +324,7 @@ class _NeuesSpielScreenState extends ConsumerState<NeuesSpielScreen>
           key: const ValueKey(1),
           controller: _nameController,
           focusNode: _nameFocusNode,
+          onFertig: _weiter,
         );
       case 2:
         return _Schritt2Zeitalter(
@@ -447,10 +491,14 @@ class _Schritt1Name extends StatelessWidget {
   final TextEditingController controller;
   final FocusNode focusNode;
 
+  /// Wird bei Enter/Fertig auf der Tastatur aufgerufen (weiter zu Schritt 2).
+  final VoidCallback? onFertig;
+
   const _Schritt1Name({
     super.key,
     required this.controller,
     required this.focusNode,
+    this.onFertig,
   });
 
   @override
@@ -525,7 +573,11 @@ class _Schritt1Name extends StatelessWidget {
             LengthLimitingTextInputFormatter(24),
           ],
           textCapitalization: TextCapitalization.words,
-          autofocus: false,
+          // Tastatur öffnet sich sofort – kein zusätzlicher Tipp nötig
+          autofocus: true,
+          keyboardType: TextInputType.name,
+          textInputAction: TextInputAction.done,
+          onSubmitted: onFertig == null ? null : (_) => onFertig!(),
         )
             .animate()
             .fadeIn(duration: 400.ms, delay: 200.ms)

@@ -10,6 +10,7 @@ import 'package:genesis_kreislauf_des_lebens/presentation/screens/splash_screen.
 import 'package:genesis_kreislauf_des_lebens/presentation/screens/haupt_menue_screen.dart';
 import 'package:genesis_kreislauf_des_lebens/presentation/screens/neues_spiel_screen.dart';
 import 'package:genesis_kreislauf_des_lebens/presentation/screens/bibliothek_screen.dart';
+import 'package:genesis_kreislauf_des_lebens/presentation/screens/spiel_laden_screen.dart';
 import 'package:genesis_kreislauf_des_lebens/presentation/screens/einstellungen_screen.dart';
 import 'package:genesis_kreislauf_des_lebens/presentation/screens/phasen/phase1_entstehung_screen.dart';
 import 'package:genesis_kreislauf_des_lebens/presentation/screens/phasen/entstehung_spiel_screen.dart';
@@ -111,79 +112,6 @@ abstract final class AppRouten {
   static String jenseits(String reich) => '/jenseits/$reich';
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Spiel-Laden-Screen (Platzhalter)
-// ─────────────────────────────────────────────────────────────────────────────
-
-/// Screen zum Laden gespeicherter Spielstände.
-/// Zeigt alle in Hive gespeicherten Leben an.
-class _SpielLadenScreen extends StatelessWidget {
-  const _SpielLadenScreen();
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFF0A0A0F),
-      appBar: AppBar(
-        title: const Text('Gespeichertes Leben laden'),
-        backgroundColor: Colors.transparent,
-        foregroundColor: const Color(0xFFFFD700),
-        elevation: 0,
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Icon(
-              Icons.history,
-              color: Color(0xFF4B5563),
-              size: 64,
-            ),
-            const SizedBox(height: 16),
-            const Text(
-              'Keine gespeicherten Leben gefunden.',
-              style: TextStyle(
-                fontFamily: 'Lato',
-                color: Color(0xFF9CA3AF),
-                fontSize: 16,
-              ),
-            ),
-            const SizedBox(height: 8),
-            const Text(
-              'Beginne ein neues Leben, um deine Seele zu formen.',
-              style: TextStyle(
-                fontFamily: 'Lato',
-                color: Color(0xFF6B7280),
-                fontSize: 14,
-              ),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 32),
-            OutlinedButton(
-              onPressed: () => context.go(AppRouten.neuesSpiel),
-              style: OutlinedButton.styleFrom(
-                foregroundColor: const Color(0xFFFFD700),
-                side: const BorderSide(color: Color(0xFFFFD700), width: 1.5),
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 32,
-                  vertical: 14,
-                ),
-              ),
-              child: const Text(
-                'NEUES LEBEN BEGINNEN',
-                style: TextStyle(
-                  fontFamily: 'Cinzel',
-                  fontSize: 13,
-                  letterSpacing: 1.5,
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Sterbe-Sequenz-Screen
@@ -795,7 +723,7 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: AppRouten.spielLaden,
         name: 'spielLaden',
-        builder: (context, state) => const _SpielLadenScreen(),
+        builder: (context, state) => const SpielLadenScreen(),
       ),
 
       // ── Lebensphasen ──────────────────────────────────────────────────
