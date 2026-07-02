@@ -457,6 +457,24 @@ class SpielNotifier extends StateNotifier<SpielZustand> {
     await spielSpeichern();
   }
 
+  /// Setzt das Alter des Charakters direkt auf [neuesAlter] und persistiert.
+  ///
+  /// Anders als [alterErhoehen] wird KEIN automatischer Phasenwechsel
+  /// ausgelöst – gedacht für den Jahres-Loop der Phase 5 (Alter > Phasen-
+  /// Maximum ohne vorzeitigen Übergang) und das dynamische Sterbealter
+  /// in Phase 6.
+  Future<void> alterSetzen(int neuesAlter) async {
+    final zyklus = state.aktuellerZyklus;
+    if (zyklus == null) return;
+
+    state = state.copyWith(
+      aktuellesAlter: neuesAlter,
+      aktuellerZyklus: zyklus.copyWith(aktuellesAlter: neuesAlter),
+      fehlerLoeschen: true,
+    );
+    await spielSpeichern();
+  }
+
   /// Setzt die aktuelle Fehlermeldung zurück.
   void fehlerZuruecksetzen() {
     state = state.copyWith(fehlerLoeschen: true);

@@ -1,372 +1,322 @@
 // phase5_erwachsen_screen.dart
-// Phase 5: Das Erwachsenenleben (20–60 Jahre) – Grand-Strategy mit 4 Tabs.
+// Phase 5: Das Erwachsenenleben (19–60 Jahre) – volle Lebenssimulation.
 //
-// Tabs:
-// 1. Leben     – Tagesroutine, Gesundheitsauswirkungen
-// 2. Karriere  – Jobwahl, Beförderungen, ethische Dilemmas
-// 3. Beziehungen – Partner, Freundschaft, Konflikte
-// 4. Seele     – Meditation, Spiritualität, Erinnerungen
+// Datengrundlage: assets/data/entscheidungen/erwachsen.json
+//   - lebensabschnitte : Aufbaujahre (19–28), Lebensmitte (29–45), Umbruchjahre (46–60)
+//   - karrieren        : zeitalter-gefilterte Karrierepfade mit Attribut-Gates,
+//                        Gehaltsstufen (Beförderung) und Stress pro Jahr
+//   - zufallsereignisse: pro Jahr max. 1 gewürfeltes Ereignis → eigener Screen
+//   - entscheidungen   : altersgestreute Lebens-Entscheidungen mit Karma
 //
-// Am unteren Rand: langsam vorschreitendes Alters-Meter (20–60).
-// Button "Das Leben reift weiter" → /phase/6
+// Jahres-Loop ("Nächstes Jahr"):
+//   1. Alter +1 (spielProvider, persistiert)
+//   2. Körper-Simulation (koerperProvider.jahrSimulieren mit Genen/Risiken)
+//   3. Gehalt − Lebenshaltungskosten aufs Geld
+//   4. Zufallsereignis würfeln → /phase/5/ereignis (pop liefert Geld-Delta)
+//   5. Fällige Entscheidung präsentieren (blockiert das nächste Jahr)
+//
+// Übergang zu Phase 6: Gesundheit < 15 % ODER Alter >= 60.
+//
+// Der gesamte Lebens-Zustand (Geld, Karriere, Familie, Burnout) lebt als
+// lokaler State im ConsumerStatefulWidget – KEINE globalen StateProvider
+// mehr in dieser Datei (behebt Audit-Fund #13).
+
+import 'dart:convert';
+import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+
 import 'package:genesis_kreislauf_des_lebens/core/constants/app_konstanten.dart';
 import 'package:genesis_kreislauf_des_lebens/core/theme/app_farben.dart';
 import 'package:genesis_kreislauf_des_lebens/core/theme/app_text_styles.dart';
+import 'package:genesis_kreislauf_des_lebens/core/utils/attribut_gates.dart';
+import 'package:genesis_kreislauf_des_lebens/data/models/genetischer_code_model.dart';
 import 'package:genesis_kreislauf_des_lebens/data/models/karma_profil_model.dart';
 import 'package:genesis_kreislauf_des_lebens/presentation/providers/karma_provider.dart';
+import 'package:genesis_kreislauf_des_lebens/presentation/providers/koerper_provider.dart';
 import 'package:genesis_kreislauf_des_lebens/presentation/providers/spiel_provider.dart';
 import 'package:genesis_kreislauf_des_lebens/presentation/widgets/phasen_hintergrund.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Lokale Datenstrukturen
+// Interne Datenmodelle (geparst aus erwachsen.json)
 // ─────────────────────────────────────────────────────────────────────────────
 
-/// Eine Tagesroutine-Entscheidung im "Leben"-Tab.
-class _LebenEntscheidung {
-  final String titel;
-  final String beschreibung;
-  final IconData icon;
-  final String optionA;
-  final String optionB;
-  final Map<KarmaDimension, double> karmaA;
-  final Map<KarmaDimension, double> karmaB;
-  final int gesundheitA; // -20 bis +20
-  final int gesundheitB;
-
-  const _LebenEntscheidung({
-    required this.titel,
-    required this.beschreibung,
-    required this.icon,
-    required this.optionA,
-    required this.optionB,
-    required this.karmaA,
-    required this.karmaB,
-    required this.gesundheitA,
-    required this.gesundheitB,
-  });
+/// Hilfsfunktion: String → KarmaDimension.
+KarmaDimension? _dimensionVonString(String s) {
+  switch (s) {
+    case 'mitgefuehl':
+      return KarmaDimension.mitgefuehl;
+    case 'ehrlichkeit':
+      return KarmaDimension.ehrlichkeit;
+    case 'mut':
+      return KarmaDimension.mut;
+    case 'grosszuegigkeit':
+      return KarmaDimension.grosszuegigkeit;
+    case 'weisheit':
+      return KarmaDimension.weisheit;
+    case 'liebe':
+      return KarmaDimension.liebe;
+    default:
+      return null;
+  }
 }
 
-const List<_LebenEntscheidung> _lebenEntscheidungen = [
-  _LebenEntscheidung(
-    titel: 'Morgenroutine',
-    beschreibung: 'Der Wecker klingelt um 6 Uhr. Du hast heute einen wichtigen Tag.',
-    icon: Icons.wb_sunny_outlined,
-    optionA: 'Früh aufstehen und meditieren',
-    optionB: 'Noch eine Stunde ausschlafen',
-    karmaA: {KarmaDimension.weisheit: 4.0, KarmaDimension.mut: 2.0},
-    karmaB: {KarmaDimension.weisheit: -1.0},
-    gesundheitA: 8,
-    gesundheitB: 2,
-  ),
-  _LebenEntscheidung(
-    titel: 'Mittagspause',
-    beschreibung: 'Du hast 30 Minuten Pause. Der Döner-Stand riecht verlockend.',
-    icon: Icons.lunch_dining_outlined,
-    optionA: 'Gesund kochen – Salat und Vollkorn',
-    optionB: 'Fast Food – schnell und lecker',
-    karmaA: {KarmaDimension.weisheit: 3.0},
-    karmaB: {KarmaDimension.weisheit: -2.0},
-    gesundheitA: 10,
-    gesundheitB: -5,
-  ),
-  _LebenEntscheidung(
-    titel: 'Feierabend',
-    beschreibung: 'Nach einem langen Tag: Sport oder Netflix?',
-    icon: Icons.sports_gymnastics,
-    optionA: 'Laufen gehen – 30 Minuten Bewegung',
-    optionB: 'Serie schauen und entspannen',
-    karmaA: {KarmaDimension.mut: 3.0, KarmaDimension.weisheit: 2.0},
-    karmaB: {KarmaDimension.weisheit: 1.0},
-    gesundheitA: 15,
-    gesundheitB: -2,
-  ),
-  _LebenEntscheidung(
-    titel: 'Wochenendritual',
-    beschreibung: 'Samstag frei – wie nutzt du die Zeit?',
-    icon: Icons.weekend_outlined,
-    optionA: 'Natur erkunden, frische Luft tanken',
-    optionB: 'Freunde treffen, Spaß haben',
-    karmaA: {KarmaDimension.weisheit: 4.0, KarmaDimension.liebe: 2.0},
-    karmaB: {KarmaDimension.liebe: 6.0, KarmaDimension.mitgefuehl: 3.0},
-    gesundheitA: 12,
-    gesundheitB: 5,
-  ),
-];
-
-/// Ein Karrierepfad mit Beschreibung und Karma-Profil.
-class _KarrierePfad {
-  final String titel;
-  final String beschreibung;
-  final IconData icon;
-  final Color farbe;
-  final Map<KarmaDimension, double> karmaBonus;
-  final String zeitalterHinweis;
-
-  const _KarrierePfad({
-    required this.titel,
-    required this.beschreibung,
-    required this.icon,
-    required this.farbe,
-    required this.karmaBonus,
-    required this.zeitalterHinweis,
-  });
+/// Parst ein 'voraussetzungAttribute'/'mindestAttribute'-Objekt.
+Map<String, num> _attributeVonJson(dynamic roh) {
+  final map = roh as Map<String, dynamic>? ?? {};
+  return map.map((k, v) => MapEntry(k, v as num));
 }
 
-const List<_KarrierePfad> _karrierePfade = [
-  _KarrierePfad(
-    titel: 'Heiler',
-    beschreibung: 'Arzt, Pfleger oder Therapeut – du rettest Leben.',
-    icon: Icons.medical_services_outlined,
-    farbe: Color(0xFF4CAF50),
-    karmaBonus: {KarmaDimension.mitgefuehl: 15.0, KarmaDimension.weisheit: 8.0},
-    zeitalterHinweis: 'Zeitlos, in jedem Zeitalter gefragt',
-  ),
-  _KarrierePfad(
-    titel: 'Künstler',
-    beschreibung: 'Schriftsteller, Maler, Musiker – du schenkst Schönheit.',
-    icon: Icons.palette_outlined,
-    farbe: Color(0xFF9C27B0),
-    karmaBonus: {KarmaDimension.liebe: 12.0, KarmaDimension.ehrlichkeit: 8.0},
-    zeitalterHinweis: 'Floriert in Renaissance und Moderne',
-  ),
-  _KarrierePfad(
-    titel: 'Händler',
-    beschreibung: 'Kaufmann, Unternehmer, Trader – du akkumulierst Reichtum.',
-    icon: Icons.storefront_outlined,
-    farbe: Color(0xFFFFD700),
-    karmaBonus: {KarmaDimension.grosszuegigkeit: 5.0, KarmaDimension.weisheit: 6.0},
-    zeitalterHinweis: 'Besonders mächtig im Industriezeitalter',
-  ),
-  _KarrierePfad(
-    titel: 'Gelehrter',
-    beschreibung: 'Wissenschaftler, Lehrer, Philosoph – du weitest Wissen aus.',
-    icon: Icons.school_outlined,
-    farbe: Color(0xFF2196F3),
-    karmaBonus: {KarmaDimension.weisheit: 18.0, KarmaDimension.ehrlichkeit: 6.0},
-    zeitalterHinweis: 'Entfaltet sich in Moderne und Zukunft',
-  ),
-  _KarrierePfad(
-    titel: 'Krieger',
-    beschreibung: 'Soldat, Polizist, Kämpfer – du schützt oder zerstörst.',
-    icon: Icons.shield_outlined,
-    farbe: Color(0xFFF44336),
-    karmaBonus: {KarmaDimension.mut: 15.0, KarmaDimension.ehrlichkeit: 5.0},
-    zeitalterHinweis: 'Dominiert in Mittelalter und Industriezeit',
-  ),
-];
+/// Ein Lebensabschnitt (Kapitel) der Erwachsenen-Phase.
+class _Lebensabschnitt {
+  final String id;
+  final String name;
+  final int alterVon;
+  final int alterBis;
 
-/// Eine Karriere-Entscheidung (Ethik-Dilemma oder Beförderung).
-class _KarriereEntscheidung {
-  final String situation;
-  final String optionA;
-  final String optionB;
-  final Map<KarmaDimension, double> karmaA;
-  final Map<KarmaDimension, double> karmaB;
-
-  const _KarriereEntscheidung({
-    required this.situation,
-    required this.optionA,
-    required this.optionB,
-    required this.karmaA,
-    required this.karmaB,
+  const _Lebensabschnitt({
+    required this.id,
+    required this.name,
+    required this.alterVon,
+    required this.alterBis,
   });
+
+  factory _Lebensabschnitt.fromJson(Map<String, dynamic> json) {
+    return _Lebensabschnitt(
+      id: json['id'] as String,
+      name: json['name'] as String,
+      alterVon: (json['alterVon'] as num).toInt(),
+      alterBis: (json['alterBis'] as num).toInt(),
+    );
+  }
 }
 
-const List<_KarriereEntscheidung> _karriereEntscheidungen = [
-  _KarriereEntscheidung(
-    situation:
-        'Beförderung: Dein Chef fragt, ob du eine Kollegin übergehen würdest, die eigentlich besser qualifiziert ist.',
-    optionA: 'Nein – ich empfehle sie stattdessen.',
-    optionB: 'Ja – die Chance nehme ich.',
-    karmaA: {KarmaDimension.ehrlichkeit: 10.0, KarmaDimension.mitgefuehl: 8.0},
-    karmaB: {KarmaDimension.grosszuegigkeit: -8.0, KarmaDimension.ehrlichkeit: -6.0},
-  ),
-  _KarriereEntscheidung(
-    situation:
-        'Ethik-Dilemma: Du entdeckst, dass dein Unternehmen heimlich Daten verkauft.',
-    optionA: 'Whistleblowing – du meldest es öffentlich.',
-    optionB: 'Schweigen – du brauchst den Job.',
-    karmaA: {KarmaDimension.mut: 12.0, KarmaDimension.ehrlichkeit: 10.0},
-    karmaB: {KarmaDimension.ehrlichkeit: -9.0, KarmaDimension.mut: -6.0},
-  ),
-  _KarriereEntscheidung(
-    situation:
-        'Überstunden: Ein Kollege braucht Hilfe, du hast aber eigene Deadlines.',
-    optionA: 'Du hilfst – auch wenn du länger bleibst.',
-    optionB: 'Du fokussierst dich auf deine Arbeit.',
-    karmaA: {KarmaDimension.mitgefuehl: 7.0, KarmaDimension.liebe: 5.0},
-    karmaB: {KarmaDimension.weisheit: 3.0, KarmaDimension.mitgefuehl: -3.0},
-  ),
-];
+/// Eine Karriere-Stufe (Beförderung ab X Berufsjahren).
+class _KarriereStufe {
+  final String name;
+  final int abJahren;
+  final double gehaltFaktor;
 
-/// Beziehungskandidat für den Beziehungs-Tab.
-class _BeziehungsKandidat {
+  const _KarriereStufe({
+    required this.name,
+    required this.abJahren,
+    required this.gehaltFaktor,
+  });
+
+  factory _KarriereStufe.fromJson(Map<String, dynamic> json) {
+    return _KarriereStufe(
+      name: json['name'] as String,
+      abJahren: (json['abJahren'] as num).toInt(),
+      gehaltFaktor: (json['gehaltFaktor'] as num).toDouble(),
+    );
+  }
+}
+
+/// Eine Karriere mit Attribut-Gates, Gehalt, Stress und Stufen.
+class _Karriere {
+  final String id;
   final String name;
   final String beschreibung;
-  final List<String> pros;
-  final List<String> contras;
-  final IconData icon;
-  final Color farbe;
-  final Map<KarmaDimension, double> karmaBonus;
+  final List<String> zeitalter;
+  final Map<String, num> mindestAttribute;
+  final double einstiegsGehalt;
+  final double stressProJahr;
+  final List<_KarriereStufe> stufen;
 
-  const _BeziehungsKandidat({
+  const _Karriere({
+    required this.id,
     required this.name,
     required this.beschreibung,
-    required this.pros,
-    required this.contras,
-    required this.icon,
-    required this.farbe,
-    required this.karmaBonus,
+    required this.zeitalter,
+    required this.mindestAttribute,
+    required this.einstiegsGehalt,
+    required this.stressProJahr,
+    required this.stufen,
   });
+
+  factory _Karriere.fromJson(Map<String, dynamic> json) {
+    final stufenRoh = json['stufen'] as List<dynamic>? ?? [];
+    return _Karriere(
+      id: json['id'] as String,
+      name: json['name'] as String,
+      beschreibung: json['beschreibung'] as String? ?? '',
+      zeitalter: (json['zeitalter'] as List<dynamic>? ?? []).cast<String>(),
+      mindestAttribute: _attributeVonJson(json['mindestAttribute']),
+      einstiegsGehalt: (json['einstiegsGehalt'] as num?)?.toDouble() ?? 500.0,
+      stressProJahr: (json['stressProJahr'] as num?)?.toDouble() ?? 0.3,
+      stufen: stufenRoh
+          .map((s) => _KarriereStufe.fromJson(s as Map<String, dynamic>))
+          .toList()
+        ..sort((a, b) => a.abJahren.compareTo(b.abJahren)),
+    );
+  }
+
+  /// Immer verfügbare Rückfall-Karriere (verhindert Softlock, wenn kein
+  /// Karrierepfad die Attribut-Gates erfüllt).
+  static const _Karriere einfacheArbeit = _Karriere(
+    id: 'einfache_arbeit',
+    name: 'Einfache Arbeit',
+    beschreibung:
+        'Gelegenheitsarbeiten, wo immer Hände gebraucht werden. Kein Ruhm, '
+        'aber ein ehrliches Auskommen – in jedem Zeitalter.',
+    zeitalter: [],
+    mindestAttribute: {},
+    einstiegsGehalt: 550,
+    stressProJahr: 0.3,
+    stufen: [
+      _KarriereStufe(name: 'Gehilfe', abJahren: 0, gehaltFaktor: 1.0),
+      _KarriereStufe(
+          name: 'Erfahrene Kraft', abJahren: 6, gehaltFaktor: 1.3),
+      _KarriereStufe(name: 'Altgeselle', abJahren: 14, gehaltFaktor: 1.6),
+    ],
+  );
+
+  /// Gilt die Karriere im gegebenen Zeitalter? (leer = immer)
+  bool passtZuZeitalter(String zeitalterName) {
+    if (zeitalter.isEmpty) return true;
+    return zeitalter.contains(zeitalterName);
+  }
+
+  /// Index der höchsten erreichten Stufe nach [berufsjahre] Jahren.
+  int stufeFuer(int berufsjahre) {
+    var index = 0;
+    for (var i = 0; i < stufen.length; i++) {
+      if (berufsjahre >= stufen[i].abJahren) index = i;
+    }
+    return index;
+  }
 }
 
-const List<_BeziehungsKandidat> _kandidaten = [
-  _BeziehungsKandidat(
-    name: 'Das Freie Herz',
-    beschreibung: 'Leidenschaftlich, ungebunden, intensiv. Liebt das Abenteuer.',
-    pros: ['Aufregend', 'Inspirierend', 'Lebendig'],
-    contras: ['Unzuverlässig', 'Konfliktreich', 'Instabil'],
-    icon: Icons.local_fire_department_outlined,
-    farbe: Color(0xFFFF5722),
-    karmaBonus: {KarmaDimension.liebe: 12.0, KarmaDimension.mut: 5.0},
-  ),
-  _BeziehungsKandidat(
-    name: 'Der stille Begleiter',
-    beschreibung: 'Ruhig, verlässlich, treu. Gibt Stabilität und Geborgenheit.',
-    pros: ['Vertrauenswürdig', 'Stabil', 'Fürsorglich'],
-    contras: ['Wenig Aufregung', 'Introvertiert', 'Manchmal langweilig'],
-    icon: Icons.anchor_outlined,
-    farbe: Color(0xFF2196F3),
-    karmaBonus: {KarmaDimension.liebe: 8.0, KarmaDimension.mitgefuehl: 10.0},
-  ),
-  _BeziehungsKandidat(
-    name: 'Der weise Spiegel',
-    beschreibung: 'Klug, wachstumsorientiert, herausfordernd. Bringt dich voran.',
-    pros: ['Inspiriert Wachstum', 'Tiefgründig', 'Ehrlich'],
-    contras: ['Fordernd', 'Wenig Romantik', 'Kritisch'],
-    icon: Icons.auto_stories_outlined,
-    farbe: Color(0xFF9C27B0),
-    karmaBonus: {KarmaDimension.weisheit: 12.0, KarmaDimension.ehrlichkeit: 7.0},
-  ),
-];
-
-/// Eine Konflikt-Situation im Beziehungs-Tab.
-class _BeziehungsKonflikt {
-  final String situation;
-  final String optionLoesen;
-  final String optionIgnorieren;
-  final Map<KarmaDimension, double> karmaLoesen;
-  final Map<KarmaDimension, double> karmaIgnorieren;
-
-  const _BeziehungsKonflikt({
-    required this.situation,
-    required this.optionLoesen,
-    required this.optionIgnorieren,
-    required this.karmaLoesen,
-    required this.karmaIgnorieren,
-  });
-}
-
-const List<_BeziehungsKonflikt> _konflikte = [
-  _BeziehungsKonflikt(
-    situation: 'Dein Partner fühlt sich vernachlässigt. Ein großes Gespräch steht an.',
-    optionLoesen: 'Offen reden, zuhören, Verantwortung übernehmen',
-    optionIgnorieren: 'Ablenken – die Zeit heilt alles',
-    karmaLoesen: {KarmaDimension.liebe: 9.0, KarmaDimension.ehrlichkeit: 7.0},
-    karmaIgnorieren: {KarmaDimension.liebe: -8.0, KarmaDimension.mut: -4.0},
-  ),
-  _BeziehungsKonflikt(
-    situation: 'Ein enger Freund hat dich belogen. Du hast es herausgefunden.',
-    optionLoesen: 'Konfrontation mit Mitgefühl – du gibst ihm eine Chance',
-    optionIgnorieren: 'Stille ziehen – du distanzierst dich ohne Erklärung',
-    karmaLoesen: {KarmaDimension.mut: 8.0, KarmaDimension.mitgefuehl: 7.0},
-    karmaIgnorieren: {KarmaDimension.ehrlichkeit: -5.0, KarmaDimension.liebe: -4.0},
-  ),
-];
-
-/// Eine Seelen-Aktivität im Seele-Tab.
-class _SeelenAktivitaet {
+/// Ein Zufallsereignis (nur die Felder, die Phase 5 zum Würfeln braucht –
+/// Anzeige und Effekt-Anwendung übernimmt der Ereignis-Screen).
+class _ErwachsenEreignis {
+  final String id;
   final String name;
-  final String beschreibung;
-  final IconData icon;
-  final Color farbe;
-  final Map<KarmaDimension, double> karmaBonus;
-  final String wirkung;
+  final double wahrscheinlichkeit;
+  final int alterVon;
+  final int alterBis;
+  final double stress;
+  final List<String>? zeitalter;
 
-  const _SeelenAktivitaet({
+  const _ErwachsenEreignis({
+    required this.id,
     required this.name,
-    required this.beschreibung,
-    required this.icon,
-    required this.farbe,
-    required this.karmaBonus,
-    required this.wirkung,
+    required this.wahrscheinlichkeit,
+    required this.alterVon,
+    required this.alterBis,
+    required this.stress,
+    required this.zeitalter,
   });
+
+  factory _ErwachsenEreignis.fromJson(Map<String, dynamic> json) {
+    final effekte = json['effekte'] as Map<String, dynamic>? ?? {};
+    return _ErwachsenEreignis(
+      id: json['id'] as String,
+      name: json['name'] as String,
+      wahrscheinlichkeit:
+          (json['wahrscheinlichkeit'] as num?)?.toDouble() ?? 0.0,
+      alterVon: (json['alterVon'] as num?)?.toInt() ?? 0,
+      alterBis: (json['alterBis'] as num?)?.toInt() ?? 120,
+      stress: (effekte['stress'] as num?)?.toDouble() ?? 0.0,
+      zeitalter: (json['zeitalter'] as List<dynamic>?)?.cast<String>(),
+    );
+  }
+
+  bool passtZu(int alter, String zeitalterName) {
+    if (alter < alterVon || alter > alterBis) return false;
+    final z = zeitalter;
+    if (z == null || z.isEmpty) return true;
+    return z.contains(zeitalterName);
+  }
 }
 
-const List<_SeelenAktivitaet> _seelenAktivitaeten = [
-  _SeelenAktivitaet(
-    name: 'Meditation',
-    beschreibung: '20 Minuten Stille. Der Atem beruhigt sich. Trauma-Schatten verblassen.',
-    icon: Icons.self_improvement,
-    farbe: Color(0xFF9C27B0),
-    karmaBonus: {KarmaDimension.weisheit: 6.0, KarmaDimension.liebe: 4.0},
-    wirkung: 'Heilt Trauma-Dämonen',
-  ),
-  _SeelenAktivitaet(
-    name: 'Spirituelle Praxis',
-    beschreibung: 'Gebet, Ritual oder Zeremonie – du verbindest dich mit dem Größeren.',
-    icon: Icons.brightness_5,
-    farbe: Color(0xFFFFD700),
-    karmaBonus: {KarmaDimension.grosszuegigkeit: 5.0, KarmaDimension.weisheit: 7.0},
-    wirkung: '+Karma durch spirituelle Verbindung',
-  ),
-  _SeelenAktivitaet(
-    name: 'Erinnerungen schreiben',
-    beschreibung: 'Du hältst ein Erlebnis fest. Die Seele verarbeitet und erinnert.',
-    icon: Icons.edit_note,
-    farbe: Color(0xFF4CAF50),
-    karmaBonus: {KarmaDimension.ehrlichkeit: 6.0, KarmaDimension.weisheit: 5.0},
-    wirkung: 'Generiert Gedanken für die Bibliothek',
-  ),
-  _SeelenAktivitaet(
-    name: 'Dankbarkeit kultivieren',
-    beschreibung: 'Drei Dinge, für die du heute dankbar bist. Einfach, aber transformativ.',
-    icon: Icons.favorite_border,
-    farbe: Color(0xFFE91E63),
-    karmaBonus: {KarmaDimension.liebe: 7.0, KarmaDimension.mitgefuehl: 5.0},
-    wirkung: '+Liebe und +Mitgefühl',
-  ),
-];
+/// Eine Antwort-Option einer Erwachsenen-Entscheidung.
+class _ErwachsenOption {
+  final String id;
+  final String text;
+  final Map<KarmaDimension, double> karma;
+  final List<String> sofortigeKonsequenzen;
+  final Map<String, num> voraussetzungAttribute;
+
+  const _ErwachsenOption({
+    required this.id,
+    required this.text,
+    required this.karma,
+    required this.sofortigeKonsequenzen,
+    required this.voraussetzungAttribute,
+  });
+
+  factory _ErwachsenOption.fromJson(Map<String, dynamic> json) {
+    final karmaRoh = json['karma'] as Map<String, dynamic>? ?? {};
+    final karmaParsed = <KarmaDimension, double>{};
+    karmaRoh.forEach((schluessel, wert) {
+      final dim = _dimensionVonString(schluessel);
+      if (dim != null) karmaParsed[dim] = (wert as num).toDouble();
+    });
+    return _ErwachsenOption(
+      id: json['id'] as String,
+      text: json['text'] as String,
+      karma: karmaParsed,
+      sofortigeKonsequenzen:
+          (json['sofortigeKonsequenzen'] as List<dynamic>? ?? [])
+              .cast<String>(),
+      voraussetzungAttribute:
+          _attributeVonJson(json['voraussetzungAttribute']),
+    );
+  }
+}
+
+/// Eine Erwachsenen-Entscheidung aus der JSON-Datei.
+class _ErwachsenEntscheidung {
+  final String id;
+  final int alter;
+  final String? abschnitt;
+  final List<String>? zeitalter;
+  final String kontext;
+  final String frage;
+  final List<_ErwachsenOption> optionen;
+
+  const _ErwachsenEntscheidung({
+    required this.id,
+    required this.alter,
+    required this.abschnitt,
+    required this.zeitalter,
+    required this.kontext,
+    required this.frage,
+    required this.optionen,
+  });
+
+  factory _ErwachsenEntscheidung.fromJson(Map<String, dynamic> json) {
+    return _ErwachsenEntscheidung(
+      id: json['id'] as String,
+      alter: (json['alter'] as num?)?.toInt() ?? 19,
+      abschnitt: json['abschnitt'] as String?,
+      zeitalter: (json['zeitalter'] as List<dynamic>?)?.cast<String>(),
+      kontext: json['kontext'] as String? ?? '',
+      frage: json['frage'] as String? ?? '',
+      optionen: (json['optionen'] as List<dynamic>? ?? [])
+          .map((o) => _ErwachsenOption.fromJson(o as Map<String, dynamic>))
+          .toList(),
+    );
+  }
+
+  bool passtZuZeitalter(String zeitalterName) {
+    final z = zeitalter;
+    if (z == null || z.isEmpty) return true;
+    return z.contains(zeitalterName);
+  }
+}
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Riverpod-Provider für Phase-5-Zustand
+// Phase 5 Screen – volle Lebenssimulation
 // ─────────────────────────────────────────────────────────────────────────────
 
-/// Aktuelles Alter des Charakters in Phase 5 (20–60).
-final _p5AlterProvider = StateProvider<int>((ref) => 20);
-
-/// Gesundheits-Wert in Phase 5 (0–100).
-final _p5GesundheitProvider = StateProvider<int>((ref) => 75);
-
-/// Gewählter Karrierepfad in Phase 5 (null = noch nicht gewählt).
-final _p5KarriereProvider = StateProvider<_KarrierePfad?>((ref) => null);
-
-/// Gewählter Beziehungskandidat in Phase 5 (null = noch nicht gewählt).
-final _p5BeziehungProvider = StateProvider<_BeziehungsKandidat?>((ref) => null);
-
-/// Anzahl absolvierter Seelen-Aktivitäten in Phase 5.
-final _p5SeelenAktivitaetenProvider = StateProvider<int>((ref) => 0);
-
-// ─────────────────────────────────────────────────────────────────────────────
-// Phase 5 Screen – Hauptscreen mit Tab-Navigation
-// ─────────────────────────────────────────────────────────────────────────────
-
-/// Erwachsenen-Phase (20–60 Jahre) als Grand-Strategy mit 4 Tabs.
+/// Erwachsenen-Phase (19–60 Jahre): Karriere, Familie, Finanzen, Gesundheit,
+/// Zufallsereignisse und die großen Lebens-Entscheidungen.
 class Phase5ErwachsenScreen extends ConsumerStatefulWidget {
   const Phase5ErwachsenScreen({super.key});
 
@@ -375,83 +325,398 @@ class Phase5ErwachsenScreen extends ConsumerStatefulWidget {
       _Phase5ErwachsenScreenState();
 }
 
-class _Phase5ErwachsenScreenState
-    extends ConsumerState<Phase5ErwachsenScreen>
-    with TickerProviderStateMixin {
-  late final TabController _tabController;
+class _Phase5ErwachsenScreenState extends ConsumerState<Phase5ErwachsenScreen> {
+  // ── Kumulierter Stress, ab dem das Burnout-Dilemma erzwungen wird ─────────
+  static const double _burnoutSchwelle = 3.0;
 
-  // Welche Entscheidungen bereits getroffen wurden
-  final Set<int> _getroffeneLebenEntscheidungen = {};
-  final Set<int> _getroffeneKarriereEntscheidungen = {};
-  final Set<int> _getroffeneKonflikte = {};
+  // ── Geladene JSON-Daten ────────────────────────────────────────────────────
+  bool _laedt = true;
+  List<_Lebensabschnitt> _abschnitte = [];
+  List<_Karriere> _karrieren = [];
+  List<_ErwachsenEreignis> _ereignisse = []; // Index = extra für den Ereignis-Screen
+  List<_ErwachsenEntscheidung> _entscheidungen = [];
+
+  // ── Lebens-Zustand (lokal, ersetzt die alten globalen StateProvider) ──────
+  double _geld = 800.0;
+  _Karriere? _karriere;
+  int _berufsjahre = 0;
+  int _stufenIndex = 0;
+  bool _kuerzerGetreten = false;
+  double _kumStress = 0.0;
+  bool _verheiratet = false;
+  int _kinderAnzahl = 0;
+  bool _burnoutErlitten = false;
+  bool _burnoutFrageOffen = false;
+
+  // ── Ablauf-Zustand ─────────────────────────────────────────────────────────
+  _ErwachsenEntscheidung? _aktuelleEntscheidung;
+  final Set<String> _erledigteEntscheidungen = <String>{};
+  final List<String> _chronik = <String>[];
+  bool _jahrLaeuft = false;
 
   // Feedback-Nachricht (erscheint kurz nach Aktionen)
   String? _feedbackNachricht;
   Color _feedbackFarbe = AppFarben.karmaPositiv;
 
+  final math.Random _zufall = math.Random();
+
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 4, vsync: this);
-  }
+    _datenLaden();
 
-  @override
-  void dispose() {
-    _tabController.dispose();
-    super.dispose();
-  }
-
-  // Alter um 5 Jahre erhöhen (max. 60)
-  void _alterErhoehen() {
-    final alter = ref.read(_p5AlterProvider);
-    if (alter < 60) {
-      ref.read(_p5AlterProvider.notifier).state = alter + 5;
-    }
-  }
-
-  // Karma und Gesundheit anpassen + Feedback anzeigen
-  void _karmaUndGesundheitAnpassen({
-    required Map<KarmaDimension, double> karma,
-    int gesundheitsDelta = 0,
-    required String feedback,
-    bool positiv = true,
-  }) {
-    // Karma-Änderungen auf alle Dimensionen anwenden
-    karma.forEach((dim, delta) {
-      ref.read(karmaProvider.notifier).dimensionAendern(dim, delta);
+    // Startalter der Phase sicherstellen (19 Jahre)
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final zustand = ref.read(spielProvider);
+      if (zustand.aktuellerZyklus != null && zustand.aktuellesAlter < 19) {
+        await ref.read(spielProvider.notifier).alterSetzen(19);
+      }
     });
+  }
 
-    // Gesundheit anpassen
-    if (gesundheitsDelta != 0) {
-      final aktuelleGesundheit = ref.read(_p5GesundheitProvider);
-      ref.read(_p5GesundheitProvider.notifier).state =
-          (aktuelleGesundheit + gesundheitsDelta).clamp(0, 100);
+  // ── JSON laden ─────────────────────────────────────────────────────────────
+
+  Future<void> _datenLaden() async {
+    try {
+      final jsonString = await rootBundle
+          .loadString('assets/data/entscheidungen/erwachsen.json');
+      if (!mounted) return;
+
+      final jsonDaten = jsonDecode(jsonString) as Map<String, dynamic>;
+
+      final abschnitte = (jsonDaten['lebensabschnitte'] as List<dynamic>? ?? [])
+          .map((e) => _Lebensabschnitt.fromJson(e as Map<String, dynamic>))
+          .toList();
+      final karrieren = (jsonDaten['karrieren'] as List<dynamic>? ?? [])
+          .map((e) => _Karriere.fromJson(e as Map<String, dynamic>))
+          .toList();
+      final ereignisse = (jsonDaten['zufallsereignisse'] as List<dynamic>? ?? [])
+          .map((e) => _ErwachsenEreignis.fromJson(e as Map<String, dynamic>))
+          .toList();
+      final entscheidungen =
+          (jsonDaten['entscheidungen'] as List<dynamic>? ?? [])
+              .map((e) =>
+                  _ErwachsenEntscheidung.fromJson(e as Map<String, dynamic>))
+              .toList()
+            ..sort((a, b) => a.alter.compareTo(b.alter));
+
+      setState(() {
+        _abschnitte = abschnitte;
+        _karrieren = karrieren;
+        _ereignisse = ereignisse;
+        _entscheidungen = entscheidungen;
+        _laedt = false;
+      });
+    } catch (_) {
+      if (!mounted) return;
+      setState(() => _laedt = false);
     }
+  }
 
-    // Alter langsam vorschreiten lassen
-    _alterErhoehen();
+  // ── Ableitungen ────────────────────────────────────────────────────────────
 
-    // Feedback-Nachricht kurz einblenden
+  String get _zeitalterName =>
+      ref.read(spielProvider).aktuellerZyklus?.zeitalter.name ?? 'moderne';
+
+  _Lebensabschnitt? _abschnittFuer(int alter) {
+    for (final a in _abschnitte) {
+      if (alter >= a.alterVon && alter <= a.alterBis) return a;
+    }
+    return _abschnitte.isNotEmpty ? _abschnitte.last : null;
+  }
+
+  /// Zeitalter-gefilterte Karrieren + immer verfügbare Rückfall-Karriere.
+  List<_Karriere> get _verfuegbareKarrieren {
+    final zeitalter = _zeitalterName;
+    return [
+      ..._karrieren.where((k) => k.passtZuZeitalter(zeitalter)),
+      _Karriere.einfacheArbeit,
+    ];
+  }
+
+  /// Nächste fällige, noch offene Entscheidung für [alter].
+  _ErwachsenEntscheidung? _naechsteFaelligeEntscheidung(int alter) {
+    final zeitalter = _zeitalterName;
+    for (final e in _entscheidungen) {
+      if (_erledigteEntscheidungen.contains(e.id)) continue;
+      if (e.alter > alter) continue;
+      if (!e.passtZuZeitalter(zeitalter)) continue;
+      return e;
+    }
+    return null;
+  }
+
+  bool _uebergangFrei(int alter, double gesundheit) =>
+      alter >= 60 || gesundheit < 15.0;
+
+  // ── Feedback-Einblendung ───────────────────────────────────────────────────
+
+  void _feedbackZeigen(String text, {bool positiv = true}) {
     setState(() {
-      _feedbackNachricht = feedback;
+      _feedbackNachricht = text;
       _feedbackFarbe = positiv ? AppFarben.karmaPositiv : AppFarben.karmaNegatv;
     });
-    Future.delayed(const Duration(milliseconds: 2500), () {
+    Future.delayed(const Duration(milliseconds: 3000), () {
       if (!mounted) return;
-      setState(() => _feedbackNachricht = null);
+      if (_feedbackNachricht == text) {
+        setState(() => _feedbackNachricht = null);
+      }
     });
   }
 
-  // Prüft, ob alle Pflichtentscheidungen getroffen wurden
-  bool get _kannWeiter {
-    final karriere = ref.read(_p5KarriereProvider);
-    return karriere != null && ref.read(_p5AlterProvider) >= 40;
+  void _chronikEintrag(String text) {
+    _chronik.insert(0, text);
+    if (_chronik.length > 8) _chronik.removeLast();
   }
+
+  // ── Karrierewahl ───────────────────────────────────────────────────────────
+
+  void _karriereWaehlen(_Karriere karriere) {
+    if (_karriere != null) return;
+    final code = ref.read(spielProvider).aktuellerZyklus?.genetischerCode;
+    if (code == null) return;
+    if (!erfuelltVoraussetzungen(karriere.mindestAttribute, code)) return;
+
+    HapticFeedback.mediumImpact();
+    setState(() {
+      _karriere = karriere;
+      _berufsjahre = 0;
+      _stufenIndex = 0;
+      _chronikEintrag(
+          'Karriere begonnen: ${karriere.name} (${karriere.stufen.first.name})');
+    });
+    _feedbackZeigen('Du beginnst als ${karriere.stufen.first.name} – '
+        '${karriere.name}.');
+  }
+
+  // ── Jahres-Loop ────────────────────────────────────────────────────────────
+
+  Future<void> _naechstesJahr() async {
+    if (_jahrLaeuft || _laedt) return;
+    if (_karriere == null ||
+        _burnoutFrageOffen ||
+        _aktuelleEntscheidung != null) {
+      return;
+    }
+
+    final zustand = ref.read(spielProvider);
+    final zyklus = zustand.aktuellerZyklus;
+    if (zyklus == null) return;
+    if (_uebergangFrei(
+        zustand.aktuellesAlter, ref.read(gesundheitProzentProvider))) {
+      return;
+    }
+
+    setState(() => _jahrLaeuft = true);
+    HapticFeedback.selectionClick();
+
+    // (a) Alter erhöhen (persistiert). Jenseits des Phasen-Maximums (50)
+    //     via alterSetzen, damit KEIN vorzeitiger Phasenwechsel ausgelöst wird.
+    final spielNotifier = ref.read(spielProvider.notifier);
+    final neuesAlter = zustand.aktuellesAlter + 1;
+    if (neuesAlter <= GamePhase.erwachsen.maxAlter) {
+      await spielNotifier.alterErhoehen();
+    } else {
+      await spielNotifier.alterSetzen(neuesAlter);
+    }
+    if (!mounted) return;
+
+    // (b) Körper-Simulation mit genetischem Code des Zyklus
+    ref.read(koerperProvider.notifier).jahrSimulieren(
+          neuesAlter,
+          aktivierteGene: zyklus.genetischerCode.aktivierteGene,
+          krankheitsrisiken: zyklus.genetischerCode.krankheitsrisiken,
+        );
+
+    // (c) Finanzen: Gehalt (mit Stufe/Beförderung) minus Lebenshaltung
+    final karriere = _karriere!;
+    _berufsjahre++;
+    final neueStufe = karriere.stufeFuer(_berufsjahre);
+    final befoerdert = neueStufe > _stufenIndex;
+    _stufenIndex = neueStufe;
+
+    final gehaltFaktor = karriere.stufen[_stufenIndex].gehaltFaktor *
+        (_kuerzerGetreten ? 0.7 : 1.0);
+    final jahresGehalt = karriere.einstiegsGehalt * gehaltFaktor;
+    final lebenshaltung =
+        600.0 + (_verheiratet ? 150.0 : 0.0) + _kinderAnzahl * 250.0;
+    _geld += jahresGehalt - lebenshaltung;
+
+    _chronikEintrag('Alter $neuesAlter: +${jahresGehalt.toStringAsFixed(0)} '
+        'Gehalt, −${lebenshaltung.toStringAsFixed(0)} Lebenshaltung');
+
+    if (befoerdert) {
+      HapticFeedback.mediumImpact();
+      final stufe = karriere.stufen[_stufenIndex];
+      _chronikEintrag('Beförderung: ${stufe.name}');
+      _feedbackZeigen(
+          'Beförderung! Du bist jetzt ${stufe.name} '
+          '(Gehalt ×${stufe.gehaltFaktor.toStringAsFixed(1)}).');
+    }
+
+    // Karriere-Stress kumulieren + Körper-Stresslevel nachführen
+    _kumStress += karriere.stressProJahr * (_kuerzerGetreten ? 0.5 : 1.0);
+    ref.read(koerperProvider.notifier).lebensstilAnpassen(
+          stressLevel: (0.15 + _kumStress * 0.12).clamp(0.0, 1.0),
+        );
+
+    // (d) Zufallsereignis würfeln (max. 1 pro Jahr):
+    //     gefilterte Kandidaten mischen, jedes mit eigener Wahrscheinlichkeit.
+    final zeitalter = _zeitalterName;
+    final kandidaten = <int>[
+      for (var i = 0; i < _ereignisse.length; i++)
+        if (_ereignisse[i].passtZu(neuesAlter, zeitalter)) i,
+    ]..shuffle(_zufall);
+
+    int? getroffenerIndex;
+    for (final i in kandidaten) {
+      if (_zufall.nextDouble() < _ereignisse[i].wahrscheinlichkeit) {
+        getroffenerIndex = i;
+        break;
+      }
+    }
+
+    if (getroffenerIndex != null) {
+      final ereignis = _ereignisse[getroffenerIndex];
+      HapticFeedback.heavyImpact();
+      // extra = Index im GESAMT-zufallsereignisse-Array; der Ereignis-Screen
+      // löst ihn auf und liefert das Geld-Delta über pop zurück.
+      final ergebnis =
+          await context.push('/phase/5/ereignis', extra: getroffenerIndex);
+      if (!mounted) return;
+      if (ergebnis is num) _geld += ergebnis.toDouble();
+      _kumStress = (_kumStress + ereignis.stress).clamp(0.0, 99.0);
+      _chronikEintrag('Ereignis: ${ereignis.name}');
+    }
+
+    // Burnout-Prüfung: kumulierter Stress über der Schwelle → Pflicht-Dilemma
+    if (!_burnoutFrageOffen && !_burnoutErlitten && _kumStress > _burnoutSchwelle) {
+      _burnoutFrageOffen = true;
+      HapticFeedback.heavyImpact();
+    }
+
+    // (e) Fällige Abschnitts-Entscheidung präsentieren
+    _aktuelleEntscheidung ??= _naechsteFaelligeEntscheidung(neuesAlter);
+
+    setState(() => _jahrLaeuft = false);
+  }
+
+  // ── Burnout-Pflichtentscheidung ────────────────────────────────────────────
+
+  void _burnoutEntscheiden(bool kuerzertreten) {
+    HapticFeedback.mediumImpact();
+    if (kuerzertreten) {
+      _kuerzerGetreten = true;
+      _kumStress = 1.0;
+      ref.read(koerperProvider.notifier).lebensstilAnpassen(stressLevel: 0.3);
+      _feedbackZeigen(
+          'Du trittst kürzer: −30 % Gehalt, aber dein Kopf wird wieder klar.');
+      _chronikEintrag('Kürzergetreten – weniger Gehalt, weniger Stress');
+    } else {
+      _burnoutErlitten = true;
+      _kumStress = 2.0;
+      // Weitermachen = dauerhaft hoher Stress → Gesundheitsrisiko in der
+      // Körper-Simulation (Depression/Herz leiden unter stressLevel > 0.7)
+      ref.read(koerperProvider.notifier).lebensstilAnpassen(stressLevel: 0.95);
+      _feedbackZeigen(
+          'Du machst weiter. Dein Körper wird die Rechnung stellen.',
+          positiv: false);
+      _chronikEintrag('Burnout ignoriert – Gesundheitsrisiko steigt');
+    }
+    setState(() => _burnoutFrageOffen = false);
+  }
+
+  // ── Entscheidungen aus JSON ────────────────────────────────────────────────
+
+  Future<void> _entscheidungWaehlen(
+      _ErwachsenEntscheidung entscheidung, int optionIndex) async {
+    final code = ref.read(spielProvider).aktuellerZyklus?.genetischerCode;
+    final option = entscheidung.optionen[optionIndex];
+    if (code == null) return;
+    if (!erfuelltVoraussetzungen(option.voraussetzungAttribute, code)) return;
+
+    HapticFeedback.mediumImpact();
+
+    // Karma anwenden (persistiert der KarmaNotifier automatisch)
+    final karmaNotifier = ref.read(karmaProvider.notifier);
+    for (final eintrag in option.karma.entries) {
+      karmaNotifier.dimensionAendern(eintrag.key, eintrag.value);
+    }
+
+    // Entscheidung im Spiel-Protokoll persistieren
+    await ref
+        .read(spielProvider.notifier)
+        .entscheidungTreffen(entscheidung.id, optionIndex);
+    if (!mounted) return;
+
+    // Familien-/Geld-Auswirkungen anhand der konkreten Entscheidungs-IDs
+    _familienEffektAnwenden(entscheidung.id, optionIndex);
+    _geldEffektAnwenden(entscheidung.id, optionIndex);
+
+    final konsequenz = option.sofortigeKonsequenzen.isNotEmpty
+        ? option.sofortigeKonsequenzen.first
+        : 'Die Wahl ist gefallen.';
+
+    setState(() {
+      _erledigteEntscheidungen.add(entscheidung.id);
+      _aktuelleEntscheidung = null;
+      _chronikEintrag('Entschieden: ${entscheidung.frage}');
+    });
+    _feedbackZeigen(konsequenz);
+  }
+
+  /// Heirat/Kinder/Trennung aus den JSON-Entscheidungs-IDs ableiten.
+  void _familienEffektAnwenden(String entscheidungId, int optionIndex) {
+    switch (entscheidungId) {
+      case 'erwachsen_007': // "Sollten wir heiraten?"
+        // a: Ja (mit Zweifel), b: ehrliches Fundament → Ehe; c: Nein
+        if (optionIndex == 0 || optionIndex == 1) _verheiratet = true;
+      case 'erwachsen_004': // Partner möchte Kinder
+        // a: zustimmen, b: gemeinsamer Weg → Kind; c: kategorisch ablehnen
+        if (optionIndex == 0 || optionIndex == 1) _kinderAnzahl++;
+      case 'erwachsen_010': // "Euer zweites Kind ist unterwegs"
+        _kinderAnzahl = _kinderAnzahl < 2 ? 2 : _kinderAnzahl + 1;
+      case 'erwachsen_014': // Leere-Nest-Krise
+        // a: Trennung ausgesprochen
+        if (optionIndex == 0) _verheiratet = false;
+    }
+  }
+
+  /// Direkte Geld-Auswirkungen markanter Entscheidungen.
+  void _geldEffektAnwenden(String entscheidungId, int optionIndex) {
+    switch (entscheidungId) {
+      case 'erwachsen_009': // Freund bittet um 4000 Erspartes
+        if (optionIndex == 0) _geld -= 4000;
+        if (optionIndex == 1) _geld -= 2000;
+      case 'erwachsen_008': // Hauskauf
+        if (optionIndex == 0) _geld -= 5000;
+        if (optionIndex == 2) _geld -= 2500;
+    }
+  }
+
+  // ── Übergang zu Phase 6 ────────────────────────────────────────────────────
+
+  Future<void> _zurReifeWechseln() async {
+    HapticFeedback.mediumImpact();
+    final notifier = ref.read(spielProvider.notifier);
+    if (ref.read(spielProvider).aktuellePhase.nummer <
+        GamePhase.reife.nummer) {
+      await notifier.phasWechseln(GamePhase.reife);
+    }
+    if (!mounted) return;
+    context.go('/phase/6');
+  }
+
+  // ── Build ──────────────────────────────────────────────────────────────────
 
   @override
   Widget build(BuildContext context) {
-    final alter = ref.watch(_p5AlterProvider);
-    final gesundheit = ref.watch(_p5GesundheitProvider);
+    final spielZustand = ref.watch(spielProvider);
+    final alter = spielZustand.aktuellesAlter;
+    final gesundheit = ref.watch(gesundheitProzentProvider);
+    final abschnitt = _abschnittFuer(alter);
+    final code = spielZustand.aktuellerZyklus?.genetischerCode;
+    final uebergangFrei = _uebergangFrei(alter, gesundheit);
 
     return Scaffold(
       backgroundColor: AppFarben.kosmischSchwarz,
@@ -462,120 +727,97 @@ class _Phase5ErwachsenScreenState
           SafeArea(
             child: Column(
               children: [
-                // Kopfzeile: Titel + Gesundheit + Feedback
-                _ErwachsenenKopfzeile(
+                // Kopfzeile: Abschnitt + Alter + Gesundheit + Geld + Stress
+                _LebensKopfzeile(
+                  abschnittName: abschnitt?.name ?? 'Erwachsenenleben',
                   alter: alter,
                   gesundheit: gesundheit,
+                  geld: _geld,
+                  kumStress: _kumStress,
+                  burnoutSchwelle: _burnoutSchwelle,
                   feedbackNachricht: _feedbackNachricht,
                   feedbackFarbe: _feedbackFarbe,
                 ),
 
-                // Tab-Bar mit 4 Registerkarten
-                _ErwachsenenTabBar(controller: _tabController),
-
-                // Tab-Inhalte
+                // Hauptinhalt
                 Expanded(
-                  child: TabBarView(
-                    controller: _tabController,
-                    children: [
-                      // Tab 1: Leben – Tagesroutine-Entscheidungen
-                      _LebenTab(
-                        getroffene: _getroffeneLebenEntscheidungen,
-                        onEntscheidung: (index, optionA) {
-                          final e = _lebenEntscheidungen[index];
-                          _getroffeneLebenEntscheidungen.add(index);
-                          _karmaUndGesundheitAnpassen(
-                            karma: optionA ? e.karmaA : e.karmaB,
-                            gesundheitsDelta:
-                                optionA ? e.gesundheitA : e.gesundheitB,
-                            feedback: optionA
-                                ? '${e.optionA} gewählt'
-                                : '${e.optionB} gewählt',
-                            positiv: optionA
-                                ? e.gesundheitA > 0
-                                : e.gesundheitB > 0,
-                          );
-                        },
-                      ),
+                  child: _laedt
+                      ? const Center(
+                          child: CircularProgressIndicator(
+                            valueColor: AlwaysStoppedAnimation<Color>(
+                              AppFarben.phaseBluete,
+                            ),
+                          ),
+                        )
+                      : SingleChildScrollView(
+                          padding: const EdgeInsets.all(16),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              // Kapitel-Karte des Lebensabschnitts
+                              if (abschnitt != null)
+                                _AbschnittsBanner(abschnitt: abschnitt),
+                              const SizedBox(height: 14),
 
-                      // Tab 2: Karriere – Pfadwahl + Dilemmas
-                      _KarriereTab(
-                        gewaehltePfad: ref.watch(_p5KarriereProvider),
-                        getroffeneEntscheidungen: _getroffeneKarriereEntscheidungen,
-                        onPfadWaehlen: (pfad) {
-                          ref.read(_p5KarriereProvider.notifier).state = pfad;
-                          _karmaUndGesundheitAnpassen(
-                            karma: pfad.karmaBonus,
-                            feedback: 'Karrierepfad: ${pfad.titel}',
-                          );
-                        },
-                        onEntscheidung: (index, optionA) {
-                          final e = _karriereEntscheidungen[index];
-                          _getroffeneKarriereEntscheidungen.add(index);
-                          _karmaUndGesundheitAnpassen(
-                            karma: optionA ? e.karmaA : e.karmaB,
-                            feedback: optionA ? e.optionA : e.optionB,
-                            positiv: optionA,
-                          );
-                        },
-                      ),
+                              // Karrierewahl (Pflicht zu Beginn, Alter 19–21)
+                              if (_karriere == null && code != null)
+                                _KarriereWahlSektion(
+                                  karrieren: _verfuegbareKarrieren,
+                                  code: code,
+                                  onWaehlen: _karriereWaehlen,
+                                )
+                              else if (_karriere != null) ...[
+                                _KarriereStatusKarte(
+                                  karriere: _karriere!,
+                                  stufenIndex: _stufenIndex,
+                                  berufsjahre: _berufsjahre,
+                                  kuerzerGetreten: _kuerzerGetreten,
+                                  verheiratet: _verheiratet,
+                                  kinderAnzahl: _kinderAnzahl,
+                                  burnoutErlitten: _burnoutErlitten,
+                                ),
+                              ],
 
-                      // Tab 3: Beziehungen – Kandidatenwahl + Konflikte
-                      _BeziehungenTab(
-                        gewaehltKandidat: ref.watch(_p5BeziehungProvider),
-                        getroffeneKonflikte: _getroffeneKonflikte,
-                        onKandidatWaehlen: (kandidat) {
-                          ref.read(_p5BeziehungProvider.notifier).state = kandidat;
-                          _karmaUndGesundheitAnpassen(
-                            karma: kandidat.karmaBonus,
-                            gesundheitsDelta: 5,
-                            feedback: '${kandidat.name} – Beziehung begonnen',
-                          );
-                        },
-                        onKonflikt: (index, loesen) {
-                          final k = _konflikte[index];
-                          _getroffeneKonflikte.add(index);
-                          _karmaUndGesundheitAnpassen(
-                            karma: loesen ? k.karmaLoesen : k.karmaIgnorieren,
-                            feedback: loesen
-                                ? 'Konflikt gelöst'
-                                : 'Konflikt ignoriert',
-                            positiv: loesen,
-                          );
-                        },
-                      ),
+                              // Burnout-Pflichtentscheidung
+                              if (_burnoutFrageOffen) ...[
+                                const SizedBox(height: 14),
+                                _BurnoutKarte(
+                                    onEntscheiden: _burnoutEntscheiden),
+                              ],
 
-                      // Tab 4: Seele – Meditation, Spiritualität, Erinnerungen
-                      _SeelenTab(
-                        aktivitaetenCount:
-                            ref.watch(_p5SeelenAktivitaetenProvider),
-                        onAktivitaet: (aktivitaet) {
-                          ref
-                              .read(_p5SeelenAktivitaetenProvider.notifier)
-                              .state++;
-                          _karmaUndGesundheitAnpassen(
-                            karma: aktivitaet.karmaBonus,
-                            gesundheitsDelta: 5,
-                            feedback:
-                                '${aktivitaet.name}: ${aktivitaet.wirkung}',
-                          );
-                        },
-                      ),
-                    ],
-                  ),
+                              // Fällige Lebens-Entscheidung
+                              if (_aktuelleEntscheidung != null &&
+                                  code != null) ...[
+                                const SizedBox(height: 14),
+                                _EntscheidungsKarte(
+                                  entscheidung: _aktuelleEntscheidung!,
+                                  code: code,
+                                  onWahl: (i) => _entscheidungWaehlen(
+                                      _aktuelleEntscheidung!, i),
+                                ),
+                              ],
+
+                              // Chronik der letzten Jahre
+                              if (_chronik.isNotEmpty) ...[
+                                const SizedBox(height: 18),
+                                _ChronikListe(eintraege: _chronik),
+                              ],
+                              const SizedBox(height: 12),
+                            ],
+                          ),
+                        ),
                 ),
 
-                // Unterer Bereich: Alters-Meter + Weiter-Button
-                _AltersUndWeiterLeiste(
+                // Unterer Bereich: Alters-Meter + Hauptaktion
+                _AltersUndAktionsLeiste(
                   alter: alter,
-                  kannWeiter: _kannWeiter,
-                  onWeiter: () {
-                    // Fortschritt persistieren, dann navigieren
-                    ref
-                        .read(spielProvider.notifier)
-                        .phasWechseln(GamePhase.reife);
-                    context.go('/phase/6');
-                  },
+                  laedt: _laedt || _jahrLaeuft,
+                  uebergangFrei: uebergangFrei,
+                  karriereGewaehlt: _karriere != null,
+                  entscheidungOffen:
+                      _aktuelleEntscheidung != null || _burnoutFrageOffen,
+                  onNaechstesJahr: _naechstesJahr,
+                  onWeiter: _zurReifeWechseln,
                 ),
               ],
             ),
@@ -587,28 +829,41 @@ class _Phase5ErwachsenScreenState
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// _ErwachsenenKopfzeile
+// _LebensKopfzeile – Abschnitt, Alter, Gesundheit, Geld, Stress
 // ─────────────────────────────────────────────────────────────────────────────
 
-class _ErwachsenenKopfzeile extends StatelessWidget {
+class _LebensKopfzeile extends StatelessWidget {
+  final String abschnittName;
   final int alter;
-  final int gesundheit;
+  final double gesundheit;
+  final double geld;
+  final double kumStress;
+  final double burnoutSchwelle;
   final String? feedbackNachricht;
   final Color feedbackFarbe;
 
-  const _ErwachsenenKopfzeile({
+  const _LebensKopfzeile({
+    required this.abschnittName,
     required this.alter,
     required this.gesundheit,
+    required this.geld,
+    required this.kumStress,
+    required this.burnoutSchwelle,
     required this.feedbackNachricht,
     required this.feedbackFarbe,
   });
 
   @override
   Widget build(BuildContext context) {
-    // Gesundheitsfarbe je nach Wert
     final gesundheitFarbe = gesundheit > 60
         ? AppFarben.karmaPositiv
         : gesundheit > 30
+            ? AppFarben.karmaNeutral
+            : AppFarben.karmaNegatv;
+    final stressAnteil = (kumStress / burnoutSchwelle).clamp(0.0, 1.0);
+    final stressFarbe = stressAnteil < 0.6
+        ? AppFarben.karmaPositiv
+        : stressAnteil < 0.9
             ? AppFarben.karmaNeutral
             : AppFarben.karmaNegatv;
 
@@ -629,30 +884,66 @@ class _ErwachsenenKopfzeile extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              // Phasentitel
-              Text(
-                'DAS ERWACHSENENLEBEN',
-                style: AppTextStyles.beschriftungGross.copyWith(
-                  color: AppFarben.phaseBluete,
-                  letterSpacing: 2,
+              // Abschnittsname + Alter
+              Expanded(
+                child: Text(
+                  '${abschnittName.toUpperCase()} · $alter JAHRE',
+                  style: AppTextStyles.beschriftungGross.copyWith(
+                    color: AppFarben.phaseBluete,
+                    letterSpacing: 1.5,
+                  ),
+                  overflow: TextOverflow.ellipsis,
                 ),
               ),
 
-              // Gesundheits-Anzeige
+              // Geld
               Row(
                 children: [
-                  Icon(
-                    Icons.favorite,
-                    color: gesundheitFarbe,
-                    size: 14,
-                  ),
-                  const SizedBox(width: 5),
+                  const Icon(Icons.payments_outlined,
+                      color: AppFarben.goldGlanz, size: 14),
+                  const SizedBox(width: 4),
                   Text(
-                    '$gesundheit%',
+                    geld.toStringAsFixed(0),
                     style: AppTextStyles.beschriftung
-                        .copyWith(color: gesundheitFarbe),
+                        .copyWith(color: AppFarben.goldGlanz),
                   ),
                 ],
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+
+          // Gesundheits-Balken
+          Row(
+            children: [
+              Icon(Icons.favorite, color: gesundheitFarbe, size: 13),
+              const SizedBox(width: 6),
+              Expanded(
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(3),
+                  child: LinearProgressIndicator(
+                    value: (gesundheit / 100.0).clamp(0.0, 1.0),
+                    minHeight: 6,
+                    backgroundColor:
+                        AppFarben.nebelGrau.withValues(alpha: 0.2),
+                    valueColor:
+                        AlwaysStoppedAnimation<Color>(gesundheitFarbe),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 6),
+              Text(
+                '${gesundheit.toStringAsFixed(0)}%',
+                style: AppTextStyles.mikro.copyWith(color: gesundheitFarbe),
+              ),
+              const SizedBox(width: 14),
+
+              // Stress-Anzeige
+              Icon(Icons.bolt, color: stressFarbe, size: 13),
+              const SizedBox(width: 4),
+              Text(
+                'Stress ${(stressAnteil * 100).toStringAsFixed(0)}%',
+                style: AppTextStyles.mikro.copyWith(color: stressFarbe),
               ),
             ],
           ),
@@ -662,9 +953,11 @@ class _ErwachsenenKopfzeile extends StatelessWidget {
             const SizedBox(height: 6),
             Text(
               feedbackNachricht!,
-              style: AppTextStyles.beschriftung
-                  .copyWith(color: feedbackFarbe),
-            ).animate().fadeIn().then().fadeOut(delay: 2000.ms),
+              style:
+                  AppTextStyles.beschriftung.copyWith(color: feedbackFarbe),
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+            ).animate().fadeIn(),
           ],
         ],
       ),
@@ -673,121 +966,319 @@ class _ErwachsenenKopfzeile extends StatelessWidget {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// _ErwachsenenTabBar
+// _AbschnittsBanner – Kapitel-Karte des aktuellen Lebensabschnitts
 // ─────────────────────────────────────────────────────────────────────────────
 
-class _ErwachsenenTabBar extends StatelessWidget {
-  final TabController controller;
+class _AbschnittsBanner extends StatelessWidget {
+  final _Lebensabschnitt abschnitt;
 
-  const _ErwachsenenTabBar({required this.controller});
+  const _AbschnittsBanner({required this.abschnitt});
 
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      color: AppFarben.oberflaecheErhoben,
-      child: TabBar(
-        controller: controller,
-        indicatorColor: AppFarben.goldGlanz,
-        indicatorWeight: 2,
-        labelColor: AppFarben.goldGlanz,
-        unselectedLabelColor: AppFarben.textSekundaer,
-        labelStyle: AppTextStyles.beschriftung.copyWith(
-          fontSize: 11,
-          fontWeight: FontWeight.w700,
-          letterSpacing: 0.8,
-        ),
-        tabs: const [
-          Tab(icon: Icon(Icons.home_outlined, size: 18), text: 'Leben'),
-          Tab(icon: Icon(Icons.work_outline, size: 18), text: 'Karriere'),
-          Tab(
-              icon: Icon(Icons.people_outline, size: 18),
-              text: 'Beziehungen'),
-          Tab(icon: Icon(Icons.spa_outlined, size: 18), text: 'Seele'),
-        ],
-      ),
-    );
+  String get _beschreibung {
+    switch (abschnitt.id) {
+      case 'aufbau':
+        return 'Ausbildung, erste Liebe, der Grundstein für alles Weitere.';
+      case 'mitte':
+        return 'Familie, Verantwortung und die Frage, wofür das alles ist.';
+      case 'umbruch':
+        return 'Bilanz ziehen, loslassen, noch einmal neu wagen.';
+      default:
+        return '';
+    }
   }
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
-// Tab 1: Leben – Tagesroutine-Entscheidungen
-// ─────────────────────────────────────────────────────────────────────────────
-
-class _LebenTab extends StatelessWidget {
-  final Set<int> getroffene;
-  final void Function(int index, bool optionA) onEntscheidung;
-
-  const _LebenTab({
-    required this.getroffene,
-    required this.onEntscheidung,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const SizedBox(height: 8),
-          Text(
-            'Tägliche Entscheidungen',
-            style: AppTextStyles.ueberschrift3,
-          ).animate().fadeIn(delay: 100.ms),
-          const SizedBox(height: 4),
-          Text(
-            'Kleine Entscheidungen, große Auswirkungen auf Gesundheit und Seele.',
-            style: AppTextStyles.koerperKlein,
-          ),
-          const SizedBox(height: 20),
-
-          ...List.generate(_lebenEntscheidungen.length, (i) {
-            final e = _lebenEntscheidungen[i];
-            final getroffen = getroffene.contains(i);
-
-            return Padding(
-              padding: const EdgeInsets.only(bottom: 14),
-              child: _TagesroutinenKarte(
-                entscheidung: e,
-                getroffen: getroffen,
-                onA: getroffen ? null : () => onEntscheidung(i, true),
-                onB: getroffen ? null : () => onEntscheidung(i, false),
-              ).animate().fadeIn(delay: Duration(milliseconds: 100 + i * 80)),
-            );
-          }),
-        ],
-      ),
-    );
-  }
-}
-
-/// Karte für eine Tagesroutinen-Entscheidung.
-class _TagesroutinenKarte extends StatelessWidget {
-  final _LebenEntscheidung entscheidung;
-  final bool getroffen;
-  final VoidCallback? onA;
-  final VoidCallback? onB;
-
-  const _TagesroutinenKarte({
-    required this.entscheidung,
-    required this.getroffen,
-    required this.onA,
-    required this.onB,
-  });
 
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: getroffen
-            ? AppFarben.oberflaeche.withValues(alpha: 0.5)
-            : AppFarben.oberflaeche,
+        color: AppFarben.phaseBluete.withValues(alpha: 0.08),
         borderRadius: BorderRadius.circular(10),
         border: Border.all(
-          color: getroffen
-              ? AppFarben.nebelGrau.withValues(alpha: 0.3)
-              : AppFarben.phaseBluete.withValues(alpha: 0.25),
+          color: AppFarben.phaseBluete.withValues(alpha: 0.3),
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Kapitel: ${abschnitt.name} '
+            '(${abschnitt.alterVon}–${abschnitt.alterBis})',
+            style: AppTextStyles.koerperKleinFett
+                .copyWith(color: AppFarben.phaseBluete),
+          ),
+          if (_beschreibung.isNotEmpty) ...[
+            const SizedBox(height: 4),
+            Text(_beschreibung, style: AppTextStyles.koerperKlein),
+          ],
+        ],
+      ),
+    ).animate().fadeIn(duration: 400.ms);
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Karrierewahl
+// ─────────────────────────────────────────────────────────────────────────────
+
+class _KarriereWahlSektion extends StatelessWidget {
+  final List<_Karriere> karrieren;
+  final GenetischerCodeModel code;
+  final void Function(_Karriere) onWaehlen;
+
+  const _KarriereWahlSektion({
+    required this.karrieren,
+    required this.code,
+    required this.onWaehlen,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text('Wähle deinen Weg', style: AppTextStyles.ueberschrift3)
+            .animate()
+            .fadeIn(delay: 100.ms),
+        const SizedBox(height: 4),
+        Text(
+          'Deine Karriere bestimmt Einkommen, Stress und Aufstieg. '
+          'Manche Wege verlangen besondere Anlagen.',
+          style: AppTextStyles.koerperKlein,
+        ),
+        const SizedBox(height: 14),
+        ...List.generate(karrieren.length, (i) {
+          final karriere = karrieren[i];
+          final erfuellt =
+              erfuelltVoraussetzungen(karriere.mindestAttribute, code);
+          return Padding(
+            padding: const EdgeInsets.only(bottom: 10),
+            child: _KarriereKarte(
+              karriere: karriere,
+              gesperrt: !erfuellt,
+              onWaehlen: erfuellt ? () => onWaehlen(karriere) : null,
+            ).animate().fadeIn(
+                  delay: Duration(milliseconds: 100 + i * 70),
+                ),
+          );
+        }),
+      ],
+    );
+  }
+}
+
+/// Karte für eine Karriere (ggf. gesperrt mit Voraussetzungs-Hinweis).
+class _KarriereKarte extends StatelessWidget {
+  final _Karriere karriere;
+  final bool gesperrt;
+  final VoidCallback? onWaehlen;
+
+  const _KarriereKarte({
+    required this.karriere,
+    required this.gesperrt,
+    required this.onWaehlen,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final farbe =
+        gesperrt ? AppFarben.nebelGrau : AppFarben.phaseBluete;
+
+    return Opacity(
+      opacity: gesperrt ? 0.55 : 1.0,
+      child: GestureDetector(
+        onTap: onWaehlen,
+        child: Container(
+          padding: const EdgeInsets.all(14),
+          decoration: BoxDecoration(
+            color: AppFarben.oberflaeche,
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(color: farbe.withValues(alpha: 0.35)),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Icon(
+                    gesperrt ? Icons.lock_outline : Icons.work_outline,
+                    color: farbe,
+                    size: 18,
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      karriere.name,
+                      style: AppTextStyles.koerperKleinFett
+                          .copyWith(color: gesperrt ? AppFarben.textSekundaer : AppFarben.text),
+                    ),
+                  ),
+                  Text(
+                    '${karriere.einstiegsGehalt.toStringAsFixed(0)}/Jahr',
+                    style: AppTextStyles.beschriftung
+                        .copyWith(color: AppFarben.goldGlanz),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 6),
+              Text(
+                karriere.beschreibung,
+                style: AppTextStyles.koerperKlein,
+                maxLines: 3,
+                overflow: TextOverflow.ellipsis,
+              ),
+              const SizedBox(height: 6),
+              if (gesperrt)
+                Text(
+                  'Voraussetzung: '
+                  '${voraussetzungenText(karriere.mindestAttribute)}',
+                  style: AppTextStyles.mikro
+                      .copyWith(color: AppFarben.karmaNegatv),
+                )
+              else
+                Text(
+                  'Stufen: '
+                  '${karriere.stufen.map((s) => s.name).join(' → ')}',
+                  style: AppTextStyles.mikro.copyWith(
+                    color: AppFarben.phaseBluete.withValues(alpha: 0.7),
+                  ),
+                ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Karriere-Status + Familie
+// ─────────────────────────────────────────────────────────────────────────────
+
+class _KarriereStatusKarte extends StatelessWidget {
+  final _Karriere karriere;
+  final int stufenIndex;
+  final int berufsjahre;
+  final bool kuerzerGetreten;
+  final bool verheiratet;
+  final int kinderAnzahl;
+  final bool burnoutErlitten;
+
+  const _KarriereStatusKarte({
+    required this.karriere,
+    required this.stufenIndex,
+    required this.berufsjahre,
+    required this.kuerzerGetreten,
+    required this.verheiratet,
+    required this.kinderAnzahl,
+    required this.burnoutErlitten,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final stufe = karriere.stufen[stufenIndex];
+    final chips = <Widget>[
+      _StatusChip(
+        icon: Icons.work_outline,
+        text: '${karriere.name} · ${stufe.name}',
+        farbe: AppFarben.phaseBluete,
+      ),
+      _StatusChip(
+        icon: Icons.timelapse,
+        text: '$berufsjahre Berufsjahre',
+        farbe: AppFarben.textSekundaer,
+      ),
+      if (verheiratet)
+        const _StatusChip(
+          icon: Icons.favorite,
+          text: 'Verheiratet',
+          farbe: AppFarben.emotionVerliebt,
+        ),
+      if (kinderAnzahl > 0)
+        _StatusChip(
+          icon: Icons.child_care,
+          text: kinderAnzahl == 1 ? '1 Kind' : '$kinderAnzahl Kinder',
+          farbe: AppFarben.karmaPositiv,
+        ),
+      if (kuerzerGetreten)
+        const _StatusChip(
+          icon: Icons.self_improvement,
+          text: 'Kürzergetreten',
+          farbe: AppFarben.karmaNeutral,
+        ),
+      if (burnoutErlitten)
+        const _StatusChip(
+          icon: Icons.local_fire_department,
+          text: 'Burnout',
+          farbe: AppFarben.karmaNegatv,
+        ),
+    ];
+
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: AppFarben.oberflaeche.withValues(alpha: 0.85),
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(
+          color: AppFarben.goldGlanz.withValues(alpha: 0.2),
+        ),
+      ),
+      child: Wrap(spacing: 8, runSpacing: 8, children: chips),
+    );
+  }
+}
+
+class _StatusChip extends StatelessWidget {
+  final IconData icon;
+  final String text;
+  final Color farbe;
+
+  const _StatusChip({
+    required this.icon,
+    required this.text,
+    required this.farbe,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+      decoration: BoxDecoration(
+        color: farbe.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: farbe.withValues(alpha: 0.35)),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: 12, color: farbe),
+          const SizedBox(width: 5),
+          Text(text, style: AppTextStyles.mikro.copyWith(color: farbe)),
+        ],
+      ),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Burnout-Pflichtentscheidung
+// ─────────────────────────────────────────────────────────────────────────────
+
+class _BurnoutKarte extends StatelessWidget {
+  final void Function(bool kuerzertreten) onEntscheiden;
+
+  const _BurnoutKarte({required this.onEntscheiden});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: AppFarben.karmaNegatv.withValues(alpha: 0.08),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: AppFarben.karmaNegatv.withValues(alpha: 0.45),
+          width: 1.5,
         ),
       ),
       child: Column(
@@ -795,839 +1286,60 @@ class _TagesroutinenKarte extends StatelessWidget {
         children: [
           Row(
             children: [
-              Icon(
-                entscheidung.icon,
-                color: getroffen
-                    ? AppFarben.textSekundaer
-                    : AppFarben.phaseBluete,
-                size: 18,
-              ),
+              const Icon(Icons.local_fire_department,
+                  color: AppFarben.karmaNegatv, size: 20),
               const SizedBox(width: 8),
-              Expanded(
-                child: Text(
-                  entscheidung.titel,
-                  style: AppTextStyles.koerperKleinFett.copyWith(
-                    color: getroffen
-                        ? AppFarben.textSekundaer
-                        : AppFarben.text,
-                  ),
-                ),
+              Text(
+                'AM RANDE DES BURNOUTS',
+                style: AppTextStyles.beschriftungGross
+                    .copyWith(color: AppFarben.karmaNegatv),
               ),
-              if (getroffen)
-                const Icon(
-                  Icons.check_circle,
-                  color: AppFarben.karmaPositiv,
-                  size: 16,
-                ),
             ],
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: 10),
           Text(
-            entscheidung.beschreibung,
-            style: AppTextStyles.koerperKlein.copyWith(
-              color: getroffen
-                  ? AppFarben.textTertiaer
-                  : AppFarben.textSekundaer,
-            ),
-          ),
-
-          // Optionen (nur wenn noch nicht getroffen)
-          if (!getroffen) ...[
-            const SizedBox(height: 12),
-            Row(
-              children: [
-                Expanded(
-                  child: _AktionsSchaltflaeche(
-                    text: entscheidung.optionA,
-                    positiv: true,
-                    gesundheitsDelta: entscheidung.gesundheitA,
-                    onTap: onA,
-                  ),
-                ),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: _AktionsSchaltflaeche(
-                    text: entscheidung.optionB,
-                    positiv: entscheidung.gesundheitB > 0,
-                    gesundheitsDelta: entscheidung.gesundheitB,
-                    onTap: onB,
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ],
-      ),
-    );
-  }
-}
-
-/// Kleine Aktionsschaltfläche mit Gesundheits-Preview.
-class _AktionsSchaltflaeche extends StatelessWidget {
-  final String text;
-  final bool positiv;
-  final int gesundheitsDelta;
-  final VoidCallback? onTap;
-
-  const _AktionsSchaltflaeche({
-    required this.text,
-    required this.positiv,
-    required this.gesundheitsDelta,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final farbe = positiv ? AppFarben.karmaPositiv : AppFarben.karmaNeutral;
-    final prefix = gesundheitsDelta >= 0 ? '+' : '';
-
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-        decoration: BoxDecoration(
-          color: farbe.withValues(alpha: 0.08),
-          borderRadius: BorderRadius.circular(7),
-          border: Border.all(color: farbe.withValues(alpha: 0.4)),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              text,
-              style: AppTextStyles.koerperKlein
-                  .copyWith(color: AppFarben.text),
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-            ),
-            const SizedBox(height: 4),
-            Text(
-              '$prefix$gesundheitsDelta Gesundheit',
-              style: AppTextStyles.mikro.copyWith(color: farbe),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
-// Tab 2: Karriere
-// ─────────────────────────────────────────────────────────────────────────────
-
-class _KarriereTab extends StatelessWidget {
-  final _KarrierePfad? gewaehltePfad;
-  final Set<int> getroffeneEntscheidungen;
-  final void Function(_KarrierePfad) onPfadWaehlen;
-  final void Function(int index, bool optionA) onEntscheidung;
-
-  const _KarriereTab({
-    required this.gewaehltePfad,
-    required this.getroffeneEntscheidungen,
-    required this.onPfadWaehlen,
-    required this.onEntscheidung,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const SizedBox(height: 8),
-          Text(
-            'Deinen Karrierepfad wählen',
-            style: AppTextStyles.ueberschrift3,
-          ).animate().fadeIn(delay: 100.ms),
-          const SizedBox(height: 4),
-          Text(
-            'Was willst du der Welt geben?',
+            'Jahre unter Dauerdruck fordern ihren Tribut: Schlaflosigkeit, '
+            'Herzrasen, Leere. So kann es nicht weitergehen – du musst dich '
+            'entscheiden.',
             style: AppTextStyles.koerperKlein,
           ),
-          const SizedBox(height: 16),
-
-          // 5 Karrierepfade
-          ...List.generate(_karrierePfade.length, (i) {
-            final pfad = _karrierePfade[i];
-            final istGewaehlt = gewaehltePfad?.titel == pfad.titel;
-
-            return Padding(
-              padding: const EdgeInsets.only(bottom: 10),
-              child: _KarrierePfadKarte(
-                pfad: pfad,
-                gewaehlt: istGewaehlt,
-                andereGewaehlt: gewaehltePfad != null && !istGewaehlt,
-                onWaehlen: gewaehltePfad == null
-                    ? () => onPfadWaehlen(pfad)
-                    : null,
-              ).animate().fadeIn(
-                    delay: Duration(milliseconds: 100 + i * 80),
-                  ),
-            );
-          }),
-
-          // Ethik-Dilemmas (nur nach Karrierewahl sichtbar)
-          if (gewaehltePfad != null) ...[
-            const SizedBox(height: 24),
-            Text(
-              'Karriere-Dilemmas',
-              style: AppTextStyles.ueberschrift3,
-            ).animate().fadeIn(),
-            const SizedBox(height: 4),
-            Text(
-              'Entscheidungen, die deinen Ruf prägen.',
-              style: AppTextStyles.koerperKlein,
-            ),
-            const SizedBox(height: 16),
-
-            ...List.generate(_karriereEntscheidungen.length, (i) {
-              final e = _karriereEntscheidungen[i];
-              final getroffen = getroffeneEntscheidungen.contains(i);
-
-              return Padding(
-                padding: const EdgeInsets.only(bottom: 14),
-                child: _DilemmaKarte(
-                  situation: e.situation,
-                  optionA: e.optionA,
-                  optionB: e.optionB,
-                  getroffen: getroffen,
-                  onA: getroffen ? null : () => onEntscheidung(i, true),
-                  onB: getroffen ? null : () => onEntscheidung(i, false),
-                ).animate().fadeIn(
-                      delay: Duration(milliseconds: 200 + i * 100),
-                    ),
-              );
-            }),
-          ],
-        ],
-      ),
-    );
-  }
-}
-
-/// Karte für einen Karrierepfad.
-class _KarrierePfadKarte extends StatelessWidget {
-  final _KarrierePfad pfad;
-  final bool gewaehlt;
-  final bool andereGewaehlt;
-  final VoidCallback? onWaehlen;
-
-  const _KarrierePfadKarte({
-    required this.pfad,
-    required this.gewaehlt,
-    required this.andereGewaehlt,
-    required this.onWaehlen,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return AnimatedOpacity(
-      duration: const Duration(milliseconds: 300),
-      opacity: andereGewaehlt ? 0.4 : 1.0,
-      child: GestureDetector(
-        onTap: onWaehlen,
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 200),
-          padding: const EdgeInsets.all(14),
-          decoration: BoxDecoration(
-            color: gewaehlt
-                ? pfad.farbe.withValues(alpha: 0.12)
-                : AppFarben.oberflaeche,
-            borderRadius: BorderRadius.circular(10),
-            border: Border.all(
-              color: gewaehlt
-                  ? pfad.farbe
-                  : pfad.farbe.withValues(alpha: 0.3),
-              width: gewaehlt ? 2 : 1,
-            ),
-          ),
-          child: Row(
+          const SizedBox(height: 14),
+          Row(
             children: [
-              // Icon-Kreis
-              Container(
-                width: 42,
-                height: 42,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: pfad.farbe.withValues(alpha: 0.15),
-                ),
-                child: Icon(pfad.icon, color: pfad.farbe, size: 20),
-              ),
-              const SizedBox(width: 12),
-
-              // Details
               Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      pfad.titel,
-                      style: AppTextStyles.koerperKleinFett
-                          .copyWith(color: pfad.farbe),
-                    ),
-                    Text(
-                      pfad.beschreibung,
-                      style: AppTextStyles.koerperKlein,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    const SizedBox(height: 2),
-                    Text(
-                      pfad.zeitalterHinweis,
-                      style: AppTextStyles.mikro.copyWith(
-                        color: pfad.farbe.withValues(alpha: 0.6),
-                      ),
-                    ),
-                  ],
+                child: _BurnoutOption(
+                  text: 'Kürzertreten',
+                  untertitel: '−30 % Gehalt, −Stress',
+                  positiv: true,
+                  onTap: () => onEntscheiden(true),
                 ),
               ),
-
-              if (gewaehlt)
-                const Icon(
-                  Icons.check_circle,
-                  color: AppFarben.karmaPositiv,
-                  size: 20,
+              const SizedBox(width: 10),
+              Expanded(
+                child: _BurnoutOption(
+                  text: 'Weitermachen',
+                  untertitel: 'Volles Gehalt, Gesundheitsrisiko',
+                  positiv: false,
+                  onTap: () => onEntscheiden(false),
                 ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
-// Tab 3: Beziehungen
-// ─────────────────────────────────────────────────────────────────────────────
-
-class _BeziehungenTab extends StatelessWidget {
-  final _BeziehungsKandidat? gewaehltKandidat;
-  final Set<int> getroffeneKonflikte;
-  final void Function(_BeziehungsKandidat) onKandidatWaehlen;
-  final void Function(int index, bool loesen) onKonflikt;
-
-  const _BeziehungenTab({
-    required this.gewaehltKandidat,
-    required this.getroffeneKonflikte,
-    required this.onKandidatWaehlen,
-    required this.onKonflikt,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const SizedBox(height: 8),
-          Text(
-            'Den richtigen Menschen finden',
-            style: AppTextStyles.ueberschrift3,
-          ).animate().fadeIn(delay: 100.ms),
-          const SizedBox(height: 4),
-          Text(
-            'Wen lässt du in dein Herz?',
-            style: AppTextStyles.koerperKlein,
-          ),
-          const SizedBox(height: 16),
-
-          // Kandidaten
-          ...List.generate(_kandidaten.length, (i) {
-            final kandidat = _kandidaten[i];
-            final istGewaehlt =
-                gewaehltKandidat?.name == kandidat.name;
-
-            return Padding(
-              padding: const EdgeInsets.only(bottom: 12),
-              child: _KandidatenKarte(
-                kandidat: kandidat,
-                gewaehlt: istGewaehlt,
-                andereGewaehlt:
-                    gewaehltKandidat != null && !istGewaehlt,
-                onWaehlen: gewaehltKandidat == null
-                    ? () => onKandidatWaehlen(kandidat)
-                    : null,
-              ).animate().fadeIn(
-                    delay: Duration(milliseconds: 100 + i * 100),
-                  ),
-            );
-          }),
-
-          // Konflikte (nach Kandidatenwahl)
-          if (gewaehltKandidat != null) ...[
-            const SizedBox(height: 24),
-            Text(
-              'Konflikte & Entscheidungen',
-              style: AppTextStyles.ueberschrift3,
-            ).animate().fadeIn(),
-            const SizedBox(height: 4),
-            Text(
-              'Jede Beziehung bringt Reibung. Wie gehst du damit um?',
-              style: AppTextStyles.koerperKlein,
-            ),
-            const SizedBox(height: 16),
-
-            ...List.generate(_konflikte.length, (i) {
-              final k = _konflikte[i];
-              final getroffen = getroffeneKonflikte.contains(i);
-
-              return Padding(
-                padding: const EdgeInsets.only(bottom: 14),
-                child: _DilemmaKarte(
-                  situation: k.situation,
-                  optionA: k.optionLoesen,
-                  optionB: k.optionIgnorieren,
-                  getroffen: getroffen,
-                  onA: getroffen ? null : () => onKonflikt(i, true),
-                  onB: getroffen ? null : () => onKonflikt(i, false),
-                ).animate().fadeIn(
-                      delay: Duration(milliseconds: 200 + i * 100),
-                    ),
-              );
-            }),
-          ],
-        ],
-      ),
-    );
-  }
-}
-
-/// Kandidaten-Karte mit Pro/Contra-Liste.
-class _KandidatenKarte extends StatelessWidget {
-  final _BeziehungsKandidat kandidat;
-  final bool gewaehlt;
-  final bool andereGewaehlt;
-  final VoidCallback? onWaehlen;
-
-  const _KandidatenKarte({
-    required this.kandidat,
-    required this.gewaehlt,
-    required this.andereGewaehlt,
-    required this.onWaehlen,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return AnimatedOpacity(
-      duration: const Duration(milliseconds: 300),
-      opacity: andereGewaehlt ? 0.4 : 1.0,
-      child: GestureDetector(
-        onTap: onWaehlen,
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 200),
-          padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            color: gewaehlt
-                ? kandidat.farbe.withValues(alpha: 0.1)
-                : AppFarben.oberflaeche,
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(
-              color: gewaehlt
-                  ? kandidat.farbe
-                  : kandidat.farbe.withValues(alpha: 0.3),
-              width: gewaehlt ? 2 : 1,
-            ),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  Icon(kandidat.icon, color: kandidat.farbe, size: 22),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          kandidat.name,
-                          style: AppTextStyles.koerperKleinFett
-                              .copyWith(color: kandidat.farbe),
-                        ),
-                        Text(
-                          kandidat.beschreibung,
-                          style: AppTextStyles.koerperKlein,
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ],
-                    ),
-                  ),
-                  if (gewaehlt)
-                    const Icon(
-                      Icons.favorite,
-                      color: AppFarben.emotionVerliebt,
-                      size: 18,
-                    ),
-                ],
-              ),
-              const SizedBox(height: 10),
-
-              // Pro/Contra-Liste
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: kandidat.pros
-                          .map((p) => _ProContraZeile(text: p, positiv: true))
-                          .toList(),
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: kandidat.contras
-                          .map((c) => _ProContraZeile(text: c, positiv: false))
-                          .toList(),
-                    ),
-                  ),
-                ],
               ),
             ],
           ),
-        ),
+        ],
       ),
-    );
+    ).animate().fadeIn(duration: 400.ms).shake(hz: 3, duration: 500.ms);
   }
 }
 
-/// Pro/Contra-Zeile mit farblichem Marker.
-class _ProContraZeile extends StatelessWidget {
+class _BurnoutOption extends StatelessWidget {
   final String text;
+  final String untertitel;
   final bool positiv;
+  final VoidCallback onTap;
 
-  const _ProContraZeile({required this.text, required this.positiv});
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 2),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(
-            positiv ? Icons.add : Icons.remove,
-            size: 10,
-            color:
-                positiv ? AppFarben.karmaPositiv : AppFarben.karmaNegatv,
-          ),
-          const SizedBox(width: 3),
-          Flexible(
-            child: Text(
-              text,
-              style: AppTextStyles.mikro.copyWith(
-                color: positiv
-                    ? AppFarben.karmaPositivHell
-                    : AppFarben.karmaNegatv.withValues(alpha: 0.7),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
-// Tab 4: Seele
-// ─────────────────────────────────────────────────────────────────────────────
-
-class _SeelenTab extends StatelessWidget {
-  final int aktivitaetenCount;
-  final void Function(_SeelenAktivitaet) onAktivitaet;
-
-  const _SeelenTab({
-    required this.aktivitaetenCount,
-    required this.onAktivitaet,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const SizedBox(height: 8),
-          Text(
-            'Die innere Welt pflegen',
-            style: AppTextStyles.ueberschrift3,
-          ).animate().fadeIn(delay: 100.ms),
-          const SizedBox(height: 4),
-          Text(
-            'Was du im Inneren kultivierst, prägt alles andere.',
-            style: AppTextStyles.koerperKlein,
-          ),
-          const SizedBox(height: 4),
-          Text(
-            '${aktivitaetenCount}× praktiziert',
-            style: AppTextStyles.beschriftung.copyWith(
-              color: AppFarben.emotionSpirituell,
-            ),
-          ),
-          const SizedBox(height: 20),
-
-          // Seelen-Aktivitäten
-          ...List.generate(_seelenAktivitaeten.length, (i) {
-            final akt = _seelenAktivitaeten[i];
-            return Padding(
-              padding: const EdgeInsets.only(bottom: 12),
-              child: _SeelenAktivitaetenKarte(
-                aktivitaet: akt,
-                onAktivieren: () => onAktivitaet(akt),
-              ).animate().fadeIn(
-                    delay: Duration(milliseconds: 100 + i * 100),
-                  ),
-            );
-          }),
-
-          // Abschlusszitat
-          const SizedBox(height: 16),
-          Container(
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: AppFarben.mystischLila.withValues(alpha: 0.08),
-              borderRadius: BorderRadius.circular(10),
-              border: Border.all(
-                color: AppFarben.mystischLila.withValues(alpha: 0.2),
-              ),
-            ),
-            child: Text(
-              '„Das Außen spiegelt das Innen.\n'
-              'Kultiviere die Stille, und die Welt wird stiller."',
-              style: AppTextStyles.zitat,
-              textAlign: TextAlign.center,
-            ),
-          ).animate().fadeIn(delay: 600.ms),
-        ],
-      ),
-    );
-  }
-}
-
-/// Karte für eine Seelen-Aktivität (mehrfach aktivierbar).
-class _SeelenAktivitaetenKarte extends StatefulWidget {
-  final _SeelenAktivitaet aktivitaet;
-  final VoidCallback onAktivieren;
-
-  const _SeelenAktivitaetenKarte({
-    required this.aktivitaet,
-    required this.onAktivieren,
-  });
-
-  @override
-  State<_SeelenAktivitaetenKarte> createState() =>
-      _SeelenAktivitaetenKarteState();
-}
-
-class _SeelenAktivitaetenKarteState extends State<_SeelenAktivitaetenKarte> {
-  bool _aktiv = false;
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        widget.onAktivieren();
-        setState(() => _aktiv = true);
-        Future.delayed(
-          const Duration(seconds: 2),
-          () {
-            if (mounted) setState(() => _aktiv = false);
-          },
-        );
-      },
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 300),
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: _aktiv
-              ? widget.aktivitaet.farbe.withValues(alpha: 0.15)
-              : AppFarben.oberflaeche,
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(
-            color: _aktiv
-                ? widget.aktivitaet.farbe
-                : widget.aktivitaet.farbe.withValues(alpha: 0.3),
-            width: _aktiv ? 2 : 1,
-          ),
-          boxShadow: _aktiv
-              ? [
-                  BoxShadow(
-                    color: widget.aktivitaet.farbe.withValues(alpha: 0.25),
-                    blurRadius: 14,
-                  ),
-                ]
-              : null,
-        ),
-        child: Row(
-          children: [
-            // Aktivitäts-Icon im Kreis
-            Container(
-              width: 46,
-              height: 46,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                gradient: RadialGradient(
-                  colors: [
-                    widget.aktivitaet.farbe.withValues(alpha: 0.3),
-                    widget.aktivitaet.farbe.withValues(alpha: 0.05),
-                  ],
-                ),
-              ),
-              child: Icon(
-                widget.aktivitaet.icon,
-                color: widget.aktivitaet.farbe,
-                size: 22,
-              ),
-            ),
-
-            const SizedBox(width: 14),
-
-            // Details
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    widget.aktivitaet.name,
-                    style: AppTextStyles.koerperKleinFett.copyWith(
-                      color: widget.aktivitaet.farbe,
-                    ),
-                  ),
-                  const SizedBox(height: 3),
-                  Text(
-                    widget.aktivitaet.beschreibung,
-                    style: AppTextStyles.koerperKlein,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  const SizedBox(height: 3),
-                  Text(
-                    widget.aktivitaet.wirkung,
-                    style: AppTextStyles.mikro.copyWith(
-                      color: widget.aktivitaet.farbe.withValues(alpha: 0.7),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-
-            // Aktivierungs-Kreis
-            AnimatedContainer(
-              duration: const Duration(milliseconds: 200),
-              width: 32,
-              height: 32,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: _aktiv
-                    ? widget.aktivitaet.farbe
-                    : widget.aktivitaet.farbe.withValues(alpha: 0.15),
-              ),
-              child: Icon(
-                _aktiv ? Icons.check : Icons.play_arrow,
-                color: _aktiv ? Colors.white : widget.aktivitaet.farbe,
-                size: 16,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
-// Gemeinsames Dilemma-Widget (Karriere + Beziehungen)
-// ─────────────────────────────────────────────────────────────────────────────
-
-class _DilemmaKarte extends StatelessWidget {
-  final String situation;
-  final String optionA;
-  final String optionB;
-  final bool getroffen;
-  final VoidCallback? onA;
-  final VoidCallback? onB;
-
-  const _DilemmaKarte({
-    required this.situation,
-    required this.optionA,
-    required this.optionB,
-    required this.getroffen,
-    required this.onA,
-    required this.onB,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-        color: getroffen
-            ? AppFarben.oberflaeche.withValues(alpha: 0.5)
-            : AppFarben.oberflaecheErhoben,
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(
-          color: getroffen
-              ? AppFarben.nebelGrau.withValues(alpha: 0.3)
-              : AppFarben.mystischLila.withValues(alpha: 0.3),
-        ),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            situation,
-            style: AppTextStyles.koerperKursiv,
-          ),
-
-          if (!getroffen) ...[
-            const SizedBox(height: 12),
-            Row(
-              children: [
-                Expanded(
-                  child: _DilemmaSchaltflaeche(
-                    text: optionA,
-                    positiv: true,
-                    onTap: onA,
-                  ),
-                ),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: _DilemmaSchaltflaeche(
-                    text: optionB,
-                    positiv: false,
-                    onTap: onB,
-                  ),
-                ),
-              ],
-            ),
-          ] else ...[
-            const SizedBox(height: 6),
-            Text(
-              'Entscheidung getroffen.',
-              style: AppTextStyles.beschriftung
-                  .copyWith(color: AppFarben.karmaPositiv),
-            ),
-          ],
-        ],
-      ),
-    );
-  }
-}
-
-class _DilemmaSchaltflaeche extends StatelessWidget {
-  final String text;
-  final bool positiv;
-  final VoidCallback? onTap;
-
-  const _DilemmaSchaltflaeche({
+  const _BurnoutOption({
     required this.text,
+    required this.untertitel,
     required this.positiv,
     required this.onTap,
   });
@@ -1635,22 +1347,30 @@ class _DilemmaSchaltflaeche extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final farbe = positiv ? AppFarben.karmaPositiv : AppFarben.karmaNegatv;
-
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 9),
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
         decoration: BoxDecoration(
           color: farbe.withValues(alpha: 0.08),
-          borderRadius: BorderRadius.circular(7),
-          border: Border.all(color: farbe.withValues(alpha: 0.4)),
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(color: farbe.withValues(alpha: 0.45)),
         ),
-        child: Text(
-          text,
-          style: AppTextStyles.koerperKlein.copyWith(color: AppFarben.text),
-          textAlign: TextAlign.center,
-          maxLines: 3,
-          overflow: TextOverflow.ellipsis,
+        child: Column(
+          children: [
+            Text(
+              text,
+              style: AppTextStyles.koerperKleinFett.copyWith(color: farbe),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 3),
+            Text(
+              untertitel,
+              style: AppTextStyles.mikro
+                  .copyWith(color: AppFarben.textSekundaer),
+              textAlign: TextAlign.center,
+            ),
+          ],
         ),
       ),
     );
@@ -1658,24 +1378,243 @@ class _DilemmaSchaltflaeche extends StatelessWidget {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// _AltersUndWeiterLeiste – Alter-Meter + Weiter-Button
+// Entscheidungs-Karte (aus JSON, mit Attribut-Gates auf Optionen)
 // ─────────────────────────────────────────────────────────────────────────────
 
-class _AltersUndWeiterLeiste extends StatelessWidget {
+class _EntscheidungsKarte extends StatelessWidget {
+  final _ErwachsenEntscheidung entscheidung;
+  final GenetischerCodeModel code;
+  final void Function(int optionIndex) onWahl;
+
+  const _EntscheidungsKarte({
+    required this.entscheidung,
+    required this.code,
+    required this.onWahl,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: AppFarben.oberflaecheErhoben,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: AppFarben.mystischLila.withValues(alpha: 0.4),
+          width: 1.5,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: AppFarben.mystischLila.withValues(alpha: 0.12),
+            blurRadius: 16,
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'EINE ENTSCHEIDUNG STEHT AN (${entscheidung.alter})',
+            style: AppTextStyles.beschriftungGross
+                .copyWith(color: AppFarben.mystischLila),
+          ),
+          const SizedBox(height: 10),
+          Text(entscheidung.kontext, style: AppTextStyles.koerperKursiv),
+          const SizedBox(height: 8),
+          Text(
+            entscheidung.frage,
+            style: AppTextStyles.koerperKleinFett,
+          ),
+          const SizedBox(height: 12),
+          ...List.generate(entscheidung.optionen.length, (i) {
+            final option = entscheidung.optionen[i];
+            final erfuellt = erfuelltVoraussetzungen(
+                option.voraussetzungAttribute, code);
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 8),
+              child: _OptionsZeile(
+                index: i,
+                option: option,
+                gesperrt: !erfuellt,
+                onTap: erfuellt ? () => onWahl(i) : null,
+              ),
+            );
+          }),
+        ],
+      ),
+    ).animate().fadeIn(duration: 450.ms).slideY(begin: 0.04, end: 0);
+  }
+}
+
+class _OptionsZeile extends StatelessWidget {
+  final int index;
+  final _ErwachsenOption option;
+  final bool gesperrt;
+  final VoidCallback? onTap;
+
+  const _OptionsZeile({
+    required this.index,
+    required this.option,
+    required this.gesperrt,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final farbe =
+        gesperrt ? AppFarben.nebelGrau : AppFarben.mystischLila;
+
+    return Opacity(
+      opacity: gesperrt ? 0.5 : 1.0,
+      child: GestureDetector(
+        onTap: onTap,
+        child: Container(
+          padding: const EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            color: AppFarben.oberflaeche,
+            borderRadius: BorderRadius.circular(8),
+            border: Border.all(color: farbe.withValues(alpha: 0.4)),
+          ),
+          child: Row(
+            children: [
+              // Optionsbuchstabe (A, B, C)
+              Container(
+                width: 26,
+                height: 26,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(color: farbe.withValues(alpha: 0.5)),
+                  color: farbe.withValues(alpha: 0.1),
+                ),
+                child: Center(
+                  child: Text(
+                    String.fromCharCode(65 + index),
+                    style: AppTextStyles.mikro.copyWith(color: farbe),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(option.text, style: AppTextStyles.koerperKlein),
+                    if (gesperrt) ...[
+                      const SizedBox(height: 3),
+                      Text(
+                        'Voraussetzung: '
+                        '${voraussetzungenText(option.voraussetzungAttribute)}',
+                        style: AppTextStyles.mikro
+                            .copyWith(color: AppFarben.karmaNegatv),
+                      ),
+                    ],
+                  ],
+                ),
+              ),
+              if (gesperrt)
+                const Icon(Icons.lock_outline,
+                    size: 14, color: AppFarben.nebelGrau),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Chronik (Jahres-Log)
+// ─────────────────────────────────────────────────────────────────────────────
+
+class _ChronikListe extends StatelessWidget {
+  final List<String> eintraege;
+
+  const _ChronikListe({required this.eintraege});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: AppFarben.oberflaeche.withValues(alpha: 0.6),
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(
+          color: AppFarben.nebelGrau.withValues(alpha: 0.25),
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'CHRONIK',
+            style: AppTextStyles.beschriftungGross
+                .copyWith(color: AppFarben.textTertiaer),
+          ),
+          const SizedBox(height: 8),
+          ...eintraege.map(
+            (e) => Padding(
+              padding: const EdgeInsets.only(bottom: 4),
+              child: Text(
+                '· $e',
+                style: AppTextStyles.mikro
+                    .copyWith(color: AppFarben.textSekundaer),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// _AltersUndAktionsLeiste – Alters-Meter (19–60) + Hauptaktion
+// ─────────────────────────────────────────────────────────────────────────────
+
+class _AltersUndAktionsLeiste extends StatelessWidget {
   final int alter;
-  final bool kannWeiter;
+  final bool laedt;
+  final bool uebergangFrei;
+  final bool karriereGewaehlt;
+  final bool entscheidungOffen;
+  final VoidCallback onNaechstesJahr;
   final VoidCallback onWeiter;
 
-  const _AltersUndWeiterLeiste({
+  const _AltersUndAktionsLeiste({
     required this.alter,
-    required this.kannWeiter,
+    required this.laedt,
+    required this.uebergangFrei,
+    required this.karriereGewaehlt,
+    required this.entscheidungOffen,
+    required this.onNaechstesJahr,
     required this.onWeiter,
   });
 
   @override
   Widget build(BuildContext context) {
-    // Fortschritt von 20 bis 60 (0.0 – 1.0)
-    final alterFortschritt = ((alter - 20) / 40.0).clamp(0.0, 1.0);
+    // Fortschritt von 19 bis 60 (0.0 – 1.0)
+    final alterFortschritt = ((alter - 19) / 41.0).clamp(0.0, 1.0);
+
+    // Beschriftung + Aktion der Hauptschaltfläche bestimmen
+    final String buttonText;
+    final VoidCallback? onTap;
+    if (laedt) {
+      buttonText = 'DAS LEBEN ORDNET SICH …';
+      onTap = null;
+    } else if (uebergangFrei) {
+      buttonText = 'DAS LEBEN REIFT WEITER';
+      onTap = onWeiter;
+    } else if (!karriereGewaehlt) {
+      buttonText = 'WÄHLE ZUERST DEINE KARRIERE';
+      onTap = null;
+    } else if (entscheidungOffen) {
+      buttonText = 'TRIFF ZUERST DEINE ENTSCHEIDUNG';
+      onTap = null;
+    } else {
+      buttonText = 'NÄCHSTES JAHR (${alter + 1})';
+      onTap = onNaechstesJahr;
+    }
+    final aktiv = onTap != null;
 
     return Container(
       padding: const EdgeInsets.fromLTRB(16, 10, 16, 14),
@@ -1694,7 +1633,7 @@ class _AltersUndWeiterLeiste extends StatelessWidget {
           Row(
             children: [
               Text(
-                '20',
+                '19',
                 style: AppTextStyles.mikro
                     .copyWith(color: AppFarben.textTertiaer),
               ),
@@ -1737,34 +1676,32 @@ class _AltersUndWeiterLeiste extends StatelessWidget {
 
           const SizedBox(height: 10),
 
-          // Weiter-Button
+          // Hauptaktion
           SizedBox(
             width: double.infinity,
             child: GestureDetector(
-              onTap: kannWeiter ? onWeiter : null,
+              onTap: onTap,
               child: AnimatedContainer(
                 duration: const Duration(milliseconds: 200),
                 padding: const EdgeInsets.symmetric(vertical: 12),
                 decoration: BoxDecoration(
-                  color: kannWeiter
+                  color: aktiv
                       ? AppFarben.phaseBluete.withValues(alpha: 0.15)
                       : AppFarben.nebelGrau.withValues(alpha: 0.08),
                   borderRadius: BorderRadius.circular(8),
                   border: Border.all(
-                    color: kannWeiter
+                    color: aktiv
                         ? AppFarben.phaseBluete.withValues(alpha: 0.6)
                         : AppFarben.nebelGrau.withValues(alpha: 0.2),
                   ),
                 ),
                 child: Text(
-                  kannWeiter
-                      ? 'DAS LEBEN REIFT WEITER'
-                      : 'KARRIEREPFAD WÄHLEN & ALTER 40 ERREICHEN',
+                  buttonText,
                   style: AppTextStyles.buttonPrimaer.copyWith(
-                    color: kannWeiter
+                    color: aktiv
                         ? AppFarben.phaseBluete
                         : AppFarben.textTertiaer,
-                    fontSize: kannWeiter ? 13 : 10,
+                    fontSize: aktiv ? 13 : 11,
                     letterSpacing: 1.5,
                   ),
                   textAlign: TextAlign.center,
