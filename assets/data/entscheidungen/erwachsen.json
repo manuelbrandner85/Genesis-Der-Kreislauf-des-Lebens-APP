@@ -6,30 +6,60 @@
       "kontext": "Dein Vorgesetzter bittet dich, falsche Zahlen in einem Bericht zu unterschreiben. Dein Job hängt davon ab.",
       "frage": "Was tust du?",
       "typ": "ethik_beruf",
-      "systemEinfluesse": ["karrieredruck", "existenzangst"],
+      "systemEinfluesse": [
+        "karrieredruck",
+        "existenzangst"
+      ],
       "optionen": [
         {
           "id": "erwachsen_001_a",
           "text": "Du unterschreibst. Dein Job ist wichtiger als Prinzipien.",
-          "karma": { "ehrlichkeit": -12, "mut": -8, "weisheit": -5 },
-          "sofortigeKonsequenzen": ["Job gesichert, aber dein Gewissen lässt dich nicht schlafen"],
-          "verzoegerteKonsequenzen": ["erwachsen_betrug_folgen", "erwachsen_gewissensqual"],
+          "karma": {
+            "ehrlichkeit": -12,
+            "mut": -8,
+            "weisheit": -5
+          },
+          "sofortigeKonsequenzen": [
+            "Job gesichert, aber dein Gewissen lässt dich nicht schlafen"
+          ],
+          "verzoegerteKonsequenzen": [
+            "erwachsen_betrug_folgen",
+            "erwachsen_gewissensqual"
+          ],
           "egoistischAltruistisch": 0.0
         },
         {
           "id": "erwachsen_001_b",
           "text": "Du lehnst ab und meldest den Vorfall anonym der Personalabteilung.",
-          "karma": { "ehrlichkeit": 8, "mut": 6, "weisheit": 5 },
-          "sofortigeKonsequenzen": ["Spannungen mit dem Vorgesetzten, aber du hast deine Integrität bewahrt"],
-          "verzoegerteKonsequenzen": ["erwachsen_respekt_kollegen", "erwachsen_befoerderung"],
+          "karma": {
+            "ehrlichkeit": 8,
+            "mut": 6,
+            "weisheit": 5
+          },
+          "sofortigeKonsequenzen": [
+            "Spannungen mit dem Vorgesetzten, aber du hast deine Integrität bewahrt"
+          ],
+          "verzoegerteKonsequenzen": [
+            "erwachsen_respekt_kollegen",
+            "erwachsen_befoerderung"
+          ],
           "egoistischAltruistisch": 0.7
         },
         {
           "id": "erwachsen_001_c",
           "text": "Du kündest und erstattst Anzeige.",
-          "karma": { "ehrlichkeit": 15, "mut": 12, "grosszuegigkeit": 5 },
-          "sofortigeKonsequenzen": ["Verlust des Jobs, aber du schützt andere vor dem Betrug"],
-          "verzoegerteKonsequenzen": ["erwachsen_held_kollegen", "erwachsen_neuer_job"],
+          "karma": {
+            "ehrlichkeit": 15,
+            "mut": 12,
+            "grosszuegigkeit": 5
+          },
+          "sofortigeKonsequenzen": [
+            "Verlust des Jobs, aber du schützt andere vor dem Betrug"
+          ],
+          "verzoegerteKonsequenzen": [
+            "erwachsen_held_kollegen",
+            "erwachsen_neuer_job"
+          ],
           "egoistischAltruistisch": 1.0
         }
       ]
@@ -40,22 +70,42 @@
       "kontext": "Du hast die Wahl zwischen einem gutbezahlten Job ohne Sinn oder einem sinnvollen Job mit niedrigem Gehalt.",
       "frage": "Für welchen entscheidest du dich?",
       "typ": "lebensweg",
-      "systemEinfluesse": ["gesellschaftlicher_druck", "materielle_sicherheit"],
+      "systemEinfluesse": [
+        "gesellschaftlicher_druck",
+        "materielle_sicherheit"
+      ],
       "optionen": [
         {
           "id": "erwachsen_002_a",
           "text": "Der gutbezahlte Job – Sicherheit geht vor.",
-          "karma": { "weisheit": -3, "mut": -4 },
-          "sofortigeKonsequenzen": ["Finanzieller Komfort, aber eine innere Leere"],
-          "verzoegerteKonsequenzen": ["erwachsen_burnout_risiko", "erwachsen_reichtum"],
+          "karma": {
+            "weisheit": -3,
+            "mut": -4
+          },
+          "sofortigeKonsequenzen": [
+            "Finanzieller Komfort, aber eine innere Leere"
+          ],
+          "verzoegerteKonsequenzen": [
+            "erwachsen_burnout_risiko",
+            "erwachsen_reichtum"
+          ],
           "egoistischAltruistisch": 0.2
         },
         {
           "id": "erwachsen_002_b",
           "text": "Der sinnvolle Job – Bedeutung ist wichtiger als Geld.",
-          "karma": { "weisheit": 8, "mut": 6, "mitgefuehl": 5 },
-          "sofortigeKonsequenzen": ["Finanzielle Einschränkungen, aber tiefe Erfüllung"],
-          "verzoegerteKonsequenzen": ["erwachsen_sinn_gefunden", "erwachsen_inspiration_andere"],
+          "karma": {
+            "weisheit": 8,
+            "mut": 6,
+            "mitgefuehl": 5
+          },
+          "sofortigeKonsequenzen": [
+            "Finanzielle Einschränkungen, aber tiefe Erfüllung"
+          ],
+          "verzoegerteKonsequenzen": [
+            "erwachsen_sinn_gefunden",
+            "erwachsen_inspiration_andere"
+          ],
           "egoistischAltruistisch": 0.8
         }
       ]
@@ -66,30 +116,56 @@
       "kontext": "Ein obdachloser Mann bittet dich um Geld. Du eilst zu einem wichtigen Meeting.",
       "frage": "Was tust du?",
       "typ": "mitgefuehl",
-      "systemEinfluesse": ["zeitdruck", "soziale_normen"],
+      "systemEinfluesse": [
+        "zeitdruck",
+        "soziale_normen"
+      ],
       "optionen": [
         {
           "id": "erwachsen_003_a",
           "text": "Du gehst vorbei. Für das Meeting ist keine Zeit.",
-          "karma": { "mitgefuehl": -8, "grosszuegigkeit": -5 },
-          "sofortigeKonsequenzen": ["Meeting pünktlich, der Mann bleibt hungrig"],
-          "verzoegerteKonsequenzen": ["erwachsen_kalt_werden"],
+          "karma": {
+            "mitgefuehl": -8,
+            "grosszuegigkeit": -5
+          },
+          "sofortigeKonsequenzen": [
+            "Meeting pünktlich, der Mann bleibt hungrig"
+          ],
+          "verzoegerteKonsequenzen": [
+            "erwachsen_kalt_werden"
+          ],
           "egoistischAltruistisch": 0.0
         },
         {
           "id": "erwachsen_003_b",
           "text": "Du gibst ihm etwas Geld und gehst dann schnell weiter.",
-          "karma": { "mitgefuehl": 6, "grosszuegigkeit": 7 },
-          "sofortigeKonsequenzen": ["Du kommst leicht zu spät, aber der Mann kann sich etwas kaufen"],
-          "verzoegerteKonsequenzen": ["erwachsen_gutes_gefuehl"],
+          "karma": {
+            "mitgefuehl": 6,
+            "grosszuegigkeit": 7
+          },
+          "sofortigeKonsequenzen": [
+            "Du kommst leicht zu spät, aber der Mann kann sich etwas kaufen"
+          ],
+          "verzoegerteKonsequenzen": [
+            "erwachsen_gutes_gefuehl"
+          ],
           "egoistischAltruistisch": 0.7
         },
         {
           "id": "erwachsen_003_c",
           "text": "Du brichst das Meeting ab und begleitest ihn zur nächsten Hilfseinrichtung.",
-          "karma": { "mitgefuehl": 15, "grosszuegigkeit": 12, "ehrlichkeit": 5 },
-          "sofortigeKonsequenzen": ["Meeting verpasst, aber ein Leben möglicherweise verändert"],
-          "verzoegerteKonsequenzen": ["erwachsen_tiefe_verbindung", "erwachsen_job_risiko"],
+          "karma": {
+            "mitgefuehl": 15,
+            "grosszuegigkeit": 12,
+            "ehrlichkeit": 5
+          },
+          "sofortigeKonsequenzen": [
+            "Meeting verpasst, aber ein Leben möglicherweise verändert"
+          ],
+          "verzoegerteKonsequenzen": [
+            "erwachsen_tiefe_verbindung",
+            "erwachsen_job_risiko"
+          ],
           "egoistischAltruistisch": 1.0
         }
       ]
@@ -100,30 +176,58 @@
       "kontext": "Dein Partner möchte Kinder. Du bist unsicher, ob du bereit bist.",
       "frage": "Wie gehst du damit um?",
       "typ": "beziehung",
-      "systemEinfluesse": ["gesellschaftliche_erwartungen", "biologische_uhr"],
+      "systemEinfluesse": [
+        "gesellschaftliche_erwartungen",
+        "biologische_uhr"
+      ],
       "optionen": [
         {
           "id": "erwachsen_004_a",
           "text": "Du stimmst zu, auch wenn du noch nicht wirklich bereit bist.",
-          "karma": { "ehrlichkeit": -6, "liebe": -3, "mut": -4 },
-          "sofortigeKonsequenzen": ["Der Partner ist glücklich, du trägst Zweifel mit dir"],
-          "verzoegerteKonsequenzen": ["erwachsen_eltern_konflikt", "erwachsen_kind_wirft_alles_um"],
+          "karma": {
+            "ehrlichkeit": -6,
+            "liebe": -3,
+            "mut": -4
+          },
+          "sofortigeKonsequenzen": [
+            "Der Partner ist glücklich, du trägst Zweifel mit dir"
+          ],
+          "verzoegerteKonsequenzen": [
+            "erwachsen_eltern_konflikt",
+            "erwachsen_kind_wirft_alles_um"
+          ],
           "egoistischAltruistisch": 0.3
         },
         {
           "id": "erwachsen_004_b",
           "text": "Du sprichst ehrlich über deine Bedenken und sucht gemeinsam einen Weg.",
-          "karma": { "ehrlichkeit": 10, "liebe": 8, "weisheit": 7 },
-          "sofortigeKonsequenzen": ["Ein tiefes Gespräch, das eure Beziehung stärkt"],
-          "verzoegerteKonsequenzen": ["erwachsen_tiefe_partnerschaft", "erwachsen_gemeinsame_entscheidung"],
+          "karma": {
+            "ehrlichkeit": 10,
+            "liebe": 8,
+            "weisheit": 7
+          },
+          "sofortigeKonsequenzen": [
+            "Ein tiefes Gespräch, das eure Beziehung stärkt"
+          ],
+          "verzoegerteKonsequenzen": [
+            "erwachsen_tiefe_partnerschaft",
+            "erwachsen_gemeinsame_entscheidung"
+          ],
           "egoistischAltruistisch": 0.8
         },
         {
           "id": "erwachsen_004_c",
           "text": "Du lehnst kategorisch ab. Kinder passen nicht in dein Leben.",
-          "karma": { "ehrlichkeit": 5, "liebe": -8 },
-          "sofortigeKonsequenzen": ["Klare Grenze gesetzt, Beziehungskrise möglich"],
-          "verzoegerteKonsequenzen": ["erwachsen_trennung_oder_akzeptanz"],
+          "karma": {
+            "ehrlichkeit": 5,
+            "liebe": -8
+          },
+          "sofortigeKonsequenzen": [
+            "Klare Grenze gesetzt, Beziehungskrise möglich"
+          ],
+          "verzoegerteKonsequenzen": [
+            "erwachsen_trennung_oder_akzeptanz"
+          ],
           "egoistischAltruistisch": 0.4
         }
       ]
@@ -134,32 +238,1524 @@
       "kontext": "Du entdeckst, dass ein enger Freund seit Jahren hinter deinem Rücken schlecht über dich spricht.",
       "frage": "Was tust du?",
       "typ": "freundschaft",
-      "systemEinfluesse": ["vertrauen", "soziales_netzwerk"],
+      "systemEinfluesse": [
+        "vertrauen",
+        "soziales_netzwerk"
+      ],
       "optionen": [
         {
           "id": "erwachsen_005_a",
           "text": "Du konfrontierst ihn direkt und forderst eine Erklärung.",
-          "karma": { "mut": 9, "ehrlichkeit": 8 },
-          "sofortigeKonsequenzen": ["Unangenehme Konfrontation, aber endlich Klarheit"],
-          "verzoegerteKonsequenzen": ["erwachsen_freundschaft_klaerung_oder_ende"],
+          "karma": {
+            "mut": 9,
+            "ehrlichkeit": 8
+          },
+          "sofortigeKonsequenzen": [
+            "Unangenehme Konfrontation, aber endlich Klarheit"
+          ],
+          "verzoegerteKonsequenzen": [
+            "erwachsen_freundschaft_klaerung_oder_ende"
+          ],
           "egoistischAltruistisch": 0.6
         },
         {
           "id": "erwachsen_005_b",
           "text": "Du sagst nichts, distanzierst dich aber langsam.",
-          "karma": { "mut": -5, "ehrlichkeit": -3 },
-          "sofortigeKonsequenzen": ["Kein Streit, aber der Schmerz bleibt"],
-          "verzoegerteKonsequenzen": ["erwachsen_innere_verbitterung"],
+          "karma": {
+            "mut": -5,
+            "ehrlichkeit": -3
+          },
+          "sofortigeKonsequenzen": [
+            "Kein Streit, aber der Schmerz bleibt"
+          ],
+          "verzoegerteKonsequenzen": [
+            "erwachsen_innere_verbitterung"
+          ],
           "egoistischAltruistisch": 0.2
         },
         {
           "id": "erwachsen_005_c",
           "text": "Du vergibst ihm und sprichst ihn auf sein Verhalten an, ohne Vorwürfe.",
-          "karma": { "mitgefuehl": 10, "weisheit": 8, "liebe": 6 },
-          "sofortigeKonsequenzen": ["Schwieriges Gespräch, aber die Chance auf echte Heilung"],
-          "verzoegerteKonsequenzen": ["erwachsen_tiefere_freundschaft", "erwachsen_vergebung_kraft"],
+          "karma": {
+            "mitgefuehl": 10,
+            "weisheit": 8,
+            "liebe": 6
+          },
+          "sofortigeKonsequenzen": [
+            "Schwieriges Gespräch, aber die Chance auf echte Heilung"
+          ],
+          "verzoegerteKonsequenzen": [
+            "erwachsen_tiefere_freundschaft",
+            "erwachsen_vergebung_kraft"
+          ],
           "egoistischAltruistisch": 0.9
         }
+      ]
+    },
+    {
+      "id": "erwachsen_006",
+      "alter": 24,
+      "abschnitt": "aufbau",
+      "kontext": "Dir wird eine Stelle im Ausland angeboten – der Karrieresprung, von dem du geträumt hast. Deine Partnerin kann nicht mit: Ihre kranke Mutter braucht sie hier.",
+      "frage": "Was entscheidest du?",
+      "typ": "lebensweg",
+      "systemEinfluesse": [
+        "karrieredruck",
+        "beziehung"
+      ],
+      "optionen": [
+        {
+          "id": "erwachsen_006_a",
+          "text": "Du gehst – solche Chancen kommen nicht zweimal.",
+          "karma": {
+            "mut": 6,
+            "liebe": -6
+          },
+          "sofortigeKonsequenzen": [
+            "Am Flughafen hält sie deine Hand bis zur Sicherheitskontrolle. Die Videoanrufe werden kürzer, die Pausen dazwischen länger."
+          ],
+          "verzoegerteKonsequenzen": [
+            "erwachsen_fernbeziehung_zerreissprobe"
+          ],
+          "egoistischAltruistisch": 0.25
+        },
+        {
+          "id": "erwachsen_006_b",
+          "text": "Du bleibst – Menschen sind wichtiger als Meilensteine.",
+          "karma": {
+            "liebe": 8,
+            "grosszuegigkeit": 5,
+            "mut": -2
+          },
+          "sofortigeKonsequenzen": [
+            "Die Stelle bekommt jemand anderes. Manchmal, in stillen Momenten, rechnest du nach, was sie gekostet hat – und was sie wert war."
+          ],
+          "verzoegerteKonsequenzen": [
+            "erwachsen_geblieben_fuer_liebe"
+          ],
+          "egoistischAltruistisch": 0.8
+        },
+        {
+          "id": "erwachsen_006_c",
+          "text": "Du verhandelst: ein Jahr im Ausland, mit festem Rückkehrdatum und monatlichen Besuchen.",
+          "karma": {
+            "weisheit": 7,
+            "mut": 4,
+            "ehrlichkeit": 5
+          },
+          "sofortigeKonsequenzen": [
+            "Es wird das anstrengendste Jahr eures Lebens – Flüge, Zeitzonen, Sehnsucht. Aber ihr habt einen Plan, und ihr haltet ihn."
+          ],
+          "verzoegerteKonsequenzen": [
+            "erwachsen_kompromiss_ausland"
+          ],
+          "egoistischAltruistisch": 0.55
+        }
+      ]
+    },
+    {
+      "id": "erwachsen_007",
+      "alter": 26,
+      "abschnitt": "aufbau",
+      "kontext": "Nach drei gemeinsamen Jahren fragt dich dein Partner beim Abendessen, fast beiläufig: \"Sollten wir heiraten?\" Du liebst ihn – und spürst doch ein Zögern, das du nicht benennen kannst.",
+      "frage": "Was antwortest du?",
+      "typ": "beziehung",
+      "systemEinfluesse": [
+        "gesellschaftliche_erwartungen",
+        "bindungsangst"
+      ],
+      "optionen": [
+        {
+          "id": "erwachsen_007_a",
+          "text": "\"Ja.\" Das Zögern wird schon vergehen.",
+          "karma": {
+            "liebe": 4,
+            "ehrlichkeit": -5
+          },
+          "sofortigeKonsequenzen": [
+            "Er strahlt, ruft sofort seine Eltern an. Dein Zögern verschwindet nicht – es zieht nur in ein hinteres Zimmer deines Kopfes."
+          ],
+          "verzoegerteKonsequenzen": [
+            "erwachsen_heirat_mit_zweifel"
+          ],
+          "egoistischAltruistisch": 0.5
+        },
+        {
+          "id": "erwachsen_007_b",
+          "text": "Du sprichst dein Zögern offen aus – auch auf die Gefahr hin, ihn zu verletzen.",
+          "karma": {
+            "ehrlichkeit": 9,
+            "mut": 7,
+            "liebe": 3
+          },
+          "sofortigeKonsequenzen": [
+            "Es wird ein langer Abend mit kaltem Essen. Aber zum ersten Mal redet ihr über das, worüber ihr nie geredet habt."
+          ],
+          "verzoegerteKonsequenzen": [
+            "erwachsen_ehrliches_fundament"
+          ],
+          "egoistischAltruistisch": 0.65
+        },
+        {
+          "id": "erwachsen_007_c",
+          "text": "\"Nein – ich glaube nicht an die Ehe. Aber an uns.\"",
+          "karma": {
+            "ehrlichkeit": 6,
+            "mut": 5,
+            "liebe": -2
+          },
+          "sofortigeKonsequenzen": [
+            "Er nickt langsam und räumt den Tisch ab. In den nächsten Wochen beobachtest du ihn beim leisen Umdeuten seiner Zukunft."
+          ],
+          "verzoegerteKonsequenzen": [
+            "erwachsen_ehe_abgelehnt"
+          ],
+          "egoistischAltruistisch": 0.4
+        }
+      ]
+    },
+    {
+      "id": "erwachsen_008",
+      "alter": 27,
+      "abschnitt": "aufbau",
+      "kontext": "Die Bank hat den Kredit bewilligt: Das kleine Haus am Stadtrand könnte euch gehören – mit dreißig Jahren Schulden. Deine Freunde ziehen derweil mit Rucksäcken durch die Welt.",
+      "frage": "Kaufst du das Haus?",
+      "typ": "lebensweg",
+      "systemEinfluesse": [
+        "materielle_sicherheit",
+        "gesellschaftlicher_druck"
+      ],
+      "optionen": [
+        {
+          "id": "erwachsen_008_a",
+          "text": "Ja – Wurzeln sind keine Fesseln.",
+          "karma": {
+            "weisheit": 4,
+            "mut": 3
+          },
+          "sofortigeKonsequenzen": [
+            "Der Schlüssel fühlt sich schwerer an, als er ist. Abends streichst du Wände und rechnest Zinsen – und nennst es trotzdem Zuhause."
+          ],
+          "verzoegerteKonsequenzen": [
+            "erwachsen_haus_gekauft"
+          ],
+          "egoistischAltruistisch": 0.5
+        },
+        {
+          "id": "erwachsen_008_b",
+          "text": "Nein – du willst frei bleiben, komme was wolle.",
+          "karma": {
+            "mut": 6,
+            "weisheit": 2
+          },
+          "sofortigeKonsequenzen": [
+            "Du kündigst die Wohnung und buchst ein One-Way-Ticket. Die Freiheit riecht nach fremden Städten – und manchmal nach Einsamkeit."
+          ],
+          "verzoegerteKonsequenzen": [
+            "erwachsen_freiheit_gewaehlt"
+          ],
+          "egoistischAltruistisch": 0.35
+        },
+        {
+          "id": "erwachsen_008_c",
+          "text": "Du kaufst mit einem Freund gemeinsam – geteiltes Risiko, geteiltes Dach.",
+          "karma": {
+            "weisheit": 6,
+            "grosszuegigkeit": 4,
+            "mut": 3
+          },
+          "sofortigeKonsequenzen": [
+            "Der Notar schaut zweimal auf den Vertrag. Es ist unkonventionell – wie fast alles, was bei euch funktioniert."
+          ],
+          "verzoegerteKonsequenzen": [
+            "erwachsen_gemeinschaftskauf"
+          ],
+          "egoistischAltruistisch": 0.6
+        }
+      ]
+    },
+    {
+      "id": "erwachsen_009",
+      "alter": 22,
+      "abschnitt": "aufbau",
+      "kontext": "Dein bester Freund steckt in echten Schwierigkeiten und bittet dich um dein gesamtes Erspartes – 4000, die du für deine Weiterbildung zurückgelegt hast. Er verspricht Rückzahlung, aber ihr wisst beide, wie es um ihn steht.",
+      "frage": "Was tust du?",
+      "typ": "freundschaft",
+      "systemEinfluesse": [
+        "loyalitaet",
+        "selbstschutz"
+      ],
+      "optionen": [
+        {
+          "id": "erwachsen_009_a",
+          "text": "Du gibst ihm alles – Freundschaft rechnet nicht.",
+          "karma": {
+            "grosszuegigkeit": 10,
+            "liebe": 6,
+            "weisheit": -3
+          },
+          "sofortigeKonsequenzen": [
+            "Er umarmt dich, den Tränen nah. Deine Weiterbildung verschiebt sich auf unbestimmte Zeit – wie seine Rückzahlung."
+          ],
+          "verzoegerteKonsequenzen": [
+            "erwachsen_geld_verliehen_alles"
+          ],
+          "egoistischAltruistisch": 0.95
+        },
+        {
+          "id": "erwachsen_009_b",
+          "text": "Du gibst die Hälfte – und hilfst ihm, einen Schuldnerberater zu finden.",
+          "karma": {
+            "grosszuegigkeit": 6,
+            "weisheit": 8,
+            "mitgefuehl": 5
+          },
+          "sofortigeKonsequenzen": [
+            "Er ist kurz enttäuscht, dann erleichtert: Zum ersten Mal hat sein Problem einen Plan statt nur ein Pflaster."
+          ],
+          "verzoegerteKonsequenzen": [
+            "erwachsen_kluge_hilfe"
+          ],
+          "egoistischAltruistisch": 0.7
+        },
+        {
+          "id": "erwachsen_009_c",
+          "text": "Du lehnst ab – du hast zu hart dafür gearbeitet.",
+          "karma": {
+            "grosszuegigkeit": -6,
+            "ehrlichkeit": 3
+          },
+          "sofortigeKonsequenzen": [
+            "Er sagt, er verstehe das. Ihr telefoniert danach seltener, und keiner von euch spricht aus, warum."
+          ],
+          "verzoegerteKonsequenzen": [
+            "erwachsen_hilfe_verweigert"
+          ],
+          "egoistischAltruistisch": 0.15
+        }
+      ]
+    },
+    {
+      "id": "erwachsen_010",
+      "alter": 33,
+      "abschnitt": "mitte",
+      "kontext": "Euer zweites Kind ist unterwegs, dein Beruf verlangt alles – und dein Arbeitgeber bietet dir ausgerechnet jetzt die Leitung eines Großprojekts an: zwei Jahre, kaum Wochenenden.",
+      "frage": "Wie entscheidest du dich?",
+      "typ": "lebensweg",
+      "systemEinfluesse": [
+        "karrieredruck",
+        "familienverantwortung"
+      ],
+      "optionen": [
+        {
+          "id": "erwachsen_010_a",
+          "text": "Du nimmst das Projekt an – finanzielle Sicherheit ist auch Fürsorge.",
+          "karma": {
+            "mut": 3,
+            "liebe": -5
+          },
+          "sofortigeKonsequenzen": [
+            "Das Konto wächst, das Babyfon bleibt auf der Seite deines Partners. Die ersten Schritte deines Kindes siehst du als Video."
+          ],
+          "verzoegerteKonsequenzen": [
+            "erwachsen_karriere_ueber_familie"
+          ],
+          "egoistischAltruistisch": 0.3
+        },
+        {
+          "id": "erwachsen_010_b",
+          "text": "Du lehnst ab und nimmst Elternzeit.",
+          "karma": {
+            "liebe": 9,
+            "mut": 6,
+            "grosszuegigkeit": 4
+          },
+          "sofortigeKonsequenzen": [
+            "Dein Chef sagt 'mutig', und es klingt wie 'dumm'. Drei Monate später kennst du jedes Gähnen deines Kindes – und bereust keines."
+          ],
+          "verzoegerteKonsequenzen": [
+            "erwachsen_elternzeit_gewaehlt"
+          ],
+          "egoistischAltruistisch": 0.8
+        },
+        {
+          "id": "erwachsen_010_c",
+          "text": "Du schlägst eine geteilte Projektleitung vor – Karriere neu gedacht.",
+          "karma": {
+            "weisheit": 8,
+            "mut": 5,
+            "ehrlichkeit": 4
+          },
+          "sofortigeKonsequenzen": [
+            "Die Geschäftsführung zögert, stimmt dann zu. Es wird ein Experiment, über das die halbe Firma redet – und das funktioniert."
+          ],
+          "verzoegerteKonsequenzen": [
+            "erwachsen_neue_arbeitsmodelle"
+          ],
+          "egoistischAltruistisch": 0.6
+        }
+      ]
+    },
+    {
+      "id": "erwachsen_011",
+      "alter": 38,
+      "abschnitt": "mitte",
+      "kontext": "Auf einer Konferenz begegnest du einem Menschen, der dich versteht, wie es dein Partner seit Jahren nicht mehr tut. Nichts ist geschehen – noch nicht. Aber ihr schreibt euch täglich.",
+      "frage": "Was tust du?",
+      "typ": "beziehung",
+      "systemEinfluesse": [
+        "entfremdung",
+        "sehnsucht"
+      ],
+      "optionen": [
+        {
+          "id": "erwachsen_011_a",
+          "text": "Du lässt dich auf die Affäre ein.",
+          "karma": {
+            "ehrlichkeit": -10,
+            "liebe": -6
+          },
+          "sofortigeKonsequenzen": [
+            "Es fühlt sich lebendig an und falsch zugleich. Du beginnst, dein Handy mit dem Bildschirm nach unten abzulegen."
+          ],
+          "verzoegerteKonsequenzen": [
+            "erwachsen_affaere_begonnen",
+            "erwachsen_doppelleben_last"
+          ],
+          "egoistischAltruistisch": 0.1
+        },
+        {
+          "id": "erwachsen_011_b",
+          "text": "Du brichst den Kontakt ab und kämpfst um deine Ehe.",
+          "karma": {
+            "ehrlichkeit": 7,
+            "liebe": 7,
+            "mut": 6
+          },
+          "sofortigeKonsequenzen": [
+            "Die letzte Nachricht zu schreiben tut weh. Am Abend fragst du deinen Partner Dinge, die du seit Jahren nicht mehr gefragt hast."
+          ],
+          "verzoegerteKonsequenzen": [
+            "erwachsen_ehe_gekaempft"
+          ],
+          "egoistischAltruistisch": 0.7
+        },
+        {
+          "id": "erwachsen_011_c",
+          "text": "Du gestehst deinem Partner die Gefühle, bevor mehr daraus wird.",
+          "karma": {
+            "ehrlichkeit": 10,
+            "mut": 8,
+            "liebe": 2
+          },
+          "sofortigeKonsequenzen": [
+            "Dein Partner schweigt lange. Dann sagt er: 'Danke, dass du es sagst, bevor es zu spät ist.' Es ist der Anfang von etwas – Heilung oder Abschied."
+          ],
+          "verzoegerteKonsequenzen": [
+            "erwachsen_gefuehle_gestanden"
+          ],
+          "egoistischAltruistisch": 0.6
+        }
+      ]
+    },
+    {
+      "id": "erwachsen_012",
+      "alter": 41,
+      "abschnitt": "mitte",
+      "kontext": "Du wachst nachts mit Herzrasen auf, die Arbeit stapelt sich ungelesen, und beim Zähneputzen fragst du dich, wann du zuletzt etwas gefühlt hast. Dein Arzt spricht das Wort aus: Burnout.",
+      "frage": "Wie gehst du damit um?",
+      "typ": "lebensweg",
+      "systemEinfluesse": [
+        "leistungsgesellschaft",
+        "selbstbild"
+      ],
+      "optionen": [
+        {
+          "id": "erwachsen_012_a",
+          "text": "Du funktionierst weiter – andere schaffen das doch auch.",
+          "karma": {
+            "weisheit": -7,
+            "mut": -4
+          },
+          "sofortigeKonsequenzen": [
+            "Drei Monate später sitzt du im Auto auf dem Firmenparkplatz und schaffst es nicht, auszusteigen. Dein Körper trifft die Entscheidung, die du verweigert hast."
+          ],
+          "verzoegerteKonsequenzen": [
+            "erwachsen_zusammenbruch"
+          ],
+          "egoistischAltruistisch": 0.3
+        },
+        {
+          "id": "erwachsen_012_b",
+          "text": "Du ziehst die Reißleine: Krankschreibung, Therapie, Ehrlichkeit.",
+          "karma": {
+            "mut": 9,
+            "weisheit": 8,
+            "ehrlichkeit": 6
+          },
+          "sofortigeKonsequenzen": [
+            "Das Wort 'Burnout' im Kollegenkreis auszusprechen kostet mehr Mut als jede Präsentation. Danach schreiben dir zwei Kollegen: 'Ich auch.'"
+          ],
+          "verzoegerteKonsequenzen": [
+            "erwachsen_heilung_begonnen"
+          ],
+          "egoistischAltruistisch": 0.55
+        },
+        {
+          "id": "erwachsen_012_c",
+          "text": "Du reduzierst still auf Teilzeit und erzählst niemandem den wahren Grund.",
+          "karma": {
+            "weisheit": 4,
+            "ehrlichkeit": -3
+          },
+          "sofortigeKonsequenzen": [
+            "Die freien Nachmittage helfen. Aber die Fassade zu pflegen ist selbst ein halber Job."
+          ],
+          "verzoegerteKonsequenzen": [
+            "erwachsen_stille_reduktion"
+          ],
+          "egoistischAltruistisch": 0.4
+        }
+      ]
+    },
+    {
+      "id": "erwachsen_013",
+      "alter": 44,
+      "abschnitt": "mitte",
+      "kontext": "Dein Vater kann nicht mehr allein leben. Deine Geschwister wohnen weit weg und überweisen lieber Geld. Die Entscheidung – und die Last – liegt bei dir.",
+      "frage": "Was tust du?",
+      "typ": "familie",
+      "systemEinfluesse": [
+        "familienpflicht",
+        "eigene_grenzen"
+      ],
+      "optionen": [
+        {
+          "id": "erwachsen_013_a",
+          "text": "Du nimmst ihn bei dir auf und pflegst ihn selbst.",
+          "karma": {
+            "mitgefuehl": 10,
+            "liebe": 9,
+            "grosszuegigkeit": 7
+          },
+          "sofortigeKonsequenzen": [
+            "Er widerspricht erst heftig, dann weint er vor Erleichterung. Dein Leben wird enger – und auf eine stille Art reicher."
+          ],
+          "verzoegerteKonsequenzen": [
+            "erwachsen_vater_gepflegt",
+            "erwachsen_eigene_erschoepfung"
+          ],
+          "egoistischAltruistisch": 0.9
+        },
+        {
+          "id": "erwachsen_013_b",
+          "text": "Du organisierst einen Pflegedienst und besuchst ihn jeden zweiten Tag.",
+          "karma": {
+            "weisheit": 7,
+            "mitgefuehl": 5,
+            "liebe": 4
+          },
+          "sofortigeKonsequenzen": [
+            "Fremde Hände im Haus deines Vaters – er hasst es zuerst. Aber deine Besuche gehören nur euch, nicht der Pflege."
+          ],
+          "verzoegerteKonsequenzen": [
+            "erwachsen_pflege_organisiert"
+          ],
+          "egoistischAltruistisch": 0.65
+        },
+        {
+          "id": "erwachsen_013_c",
+          "text": "Du berufst einen Familienrat ein und zwingst deine Geschwister an den Tisch.",
+          "karma": {
+            "mut": 7,
+            "ehrlichkeit": 8,
+            "weisheit": 5
+          },
+          "sofortigeKonsequenzen": [
+            "Es wird laut, alte Wunden platzen auf. Am Ende steht ein Plan, den zum ersten Mal alle tragen – nicht nur du."
+          ],
+          "verzoegerteKonsequenzen": [
+            "erwachsen_geschwister_eingebunden"
+          ],
+          "egoistischAltruistisch": 0.6
+        }
+      ]
+    },
+    {
+      "id": "erwachsen_014",
+      "alter": 48,
+      "abschnitt": "umbruch",
+      "kontext": "Die Kinder sind aus dem Haus, und im plötzlich stillen Wohnzimmer sitzt ihr euch gegenüber wie zwei höfliche Fremde. Zwanzig gemeinsame Jahre – und die Frage, ob noch etwas übrig ist außer Gewohnheit.",
+      "frage": "Was tust du?",
+      "typ": "beziehung",
+      "systemEinfluesse": [
+        "gewohnheit",
+        "angst_vor_einsamkeit"
+      ],
+      "optionen": [
+        {
+          "id": "erwachsen_014_a",
+          "text": "Du sprichst die Trennung aus, die ihr beide längst denkt.",
+          "karma": {
+            "ehrlichkeit": 8,
+            "mut": 8,
+            "liebe": -3
+          },
+          "sofortigeKonsequenzen": [
+            "Kein Streit, nur ein langes, trauriges Nicken. Beim Kistenpacken lacht ihr einmal zusammen – zum ersten Mal seit Monaten."
+          ],
+          "verzoegerteKonsequenzen": [
+            "erwachsen_trennung_wuerdevoll"
+          ],
+          "egoistischAltruistisch": 0.5
+        },
+        {
+          "id": "erwachsen_014_b",
+          "text": "Du schlägst vor, noch einmal ganz neu anzufangen – Paartherapie, Reisen, echte Gespräche.",
+          "karma": {
+            "liebe": 8,
+            "mut": 7,
+            "weisheit": 6
+          },
+          "sofortigeKonsequenzen": [
+            "Die erste Therapiestunde ist quälend. In der dritten erzählt dein Partner etwas, das du in zwanzig Jahren nie gehört hast."
+          ],
+          "verzoegerteKonsequenzen": [
+            "erwachsen_beziehung_neubeginn"
+          ],
+          "egoistischAltruistisch": 0.7
+        },
+        {
+          "id": "erwachsen_014_c",
+          "text": "Du bleibst und richtest dich im Nebeneinander ein – es ist bequem genug.",
+          "karma": {
+            "ehrlichkeit": -5,
+            "mut": -5
+          },
+          "sofortigeKonsequenzen": [
+            "Ihr teilt Haus, Kalender und Schweigen. Es ist nicht schlimm. Es ist nur nie wieder schön."
+          ],
+          "verzoegerteKonsequenzen": [
+            "erwachsen_nebeneinander_arrangiert"
+          ],
+          "egoistischAltruistisch": 0.35
+        }
+      ]
+    },
+    {
+      "id": "erwachsen_015",
+      "alter": 51,
+      "abschnitt": "umbruch",
+      "kontext": "Nach 25 Jahren im selben Beruf spürst du: So kann es nicht bis zur Rente weitergehen. Ein alter Traum meldet sich zurück – die kleine Werkstatt, das eigene Café, das Studium, das nie war.",
+      "frage": "Wagst du den Neuanfang?",
+      "typ": "lebensweg",
+      "systemEinfluesse": [
+        "sicherheitsdenken",
+        "torschlusspanik"
+      ],
+      "optionen": [
+        {
+          "id": "erwachsen_015_a",
+          "text": "Du kündigst und fängst noch einmal ganz von vorn an.",
+          "karma": {
+            "mut": 10,
+            "weisheit": 5
+          },
+          "sofortigeKonsequenzen": [
+            "Deine Kollegen halten dich für verrückt, deine Kinder sind zum ersten Mal seit Jahren stolz. Das Erspartenkonto beginnt zu schrumpfen."
+          ],
+          "verzoegerteKonsequenzen": [
+            "erwachsen_neuanfang_gewagt"
+          ],
+          "egoistischAltruistisch": 0.45
+        },
+        {
+          "id": "erwachsen_015_b",
+          "text": "Du bleibst im Beruf, verwirklichst den Traum aber nebenher im Kleinen.",
+          "karma": {
+            "weisheit": 7,
+            "mut": 3
+          },
+          "sofortigeKonsequenzen": [
+            "Samstags gehört die Garage deinem Traum. Es ist weniger, als du wolltest – und mehr, als du je hattest."
+          ],
+          "verzoegerteKonsequenzen": [
+            "erwachsen_traum_nebenher"
+          ],
+          "egoistischAltruistisch": 0.5
+        },
+        {
+          "id": "erwachsen_015_c",
+          "text": "Du begräbst den Traum endgültig – Träume sind etwas für Menschen ohne Verpflichtungen.",
+          "karma": {
+            "mut": -6,
+            "weisheit": -3
+          },
+          "sofortigeKonsequenzen": [
+            "Der Gedanke kommt seltener, dann fast nie mehr. Nur manchmal, an Sonntagen, ist da dieses Ziehen."
+          ],
+          "verzoegerteKonsequenzen": [
+            "erwachsen_traum_begraben"
+          ],
+          "egoistischAltruistisch": 0.4
+        }
+      ]
+    },
+    {
+      "id": "erwachsen_016",
+      "alter": 54,
+      "abschnitt": "umbruch",
+      "kontext": "Dein erwachsener Sohn hat sich vor zwei Jahren nach einem heftigen Streit von dir abgewandt. Nun heiratet er – du erfährst es über Umwege. Eine Einladung kam nicht.",
+      "frage": "Was tust du?",
+      "typ": "familie",
+      "systemEinfluesse": [
+        "stolz",
+        "verlustangst"
+      ],
+      "optionen": [
+        {
+          "id": "erwachsen_016_a",
+          "text": "Du schreibst ihm einen Brief, in dem du deinen Anteil am Streit eingestehst – ohne Bedingungen.",
+          "karma": {
+            "mut": 8,
+            "liebe": 9,
+            "ehrlichkeit": 7
+          },
+          "sofortigeKonsequenzen": [
+            "Wochenlang keine Antwort. Dann, eines Abends, sein Name auf dem Display. Das Gespräch dauert vier Minuten und verändert alles."
+          ],
+          "verzoegerteKonsequenzen": [
+            "erwachsen_versoehnung_angeboten"
+          ],
+          "egoistischAltruistisch": 0.8
+        },
+        {
+          "id": "erwachsen_016_b",
+          "text": "Du respektierst seine Distanz und wartest, bis er auf dich zukommt.",
+          "karma": {
+            "weisheit": 4,
+            "mut": -3
+          },
+          "sofortigeKonsequenzen": [
+            "Die Hochzeitsfotos siehst du bei Verwandten. Du sagst dir, dass Warten auch Liebe ist – an manchen Tagen glaubst du es."
+          ],
+          "verzoegerteKonsequenzen": [
+            "erwachsen_distanz_respektiert"
+          ],
+          "egoistischAltruistisch": 0.5
+        },
+        {
+          "id": "erwachsen_016_c",
+          "text": "Du erscheinst uneingeladen zur Hochzeit – das ist schließlich dein Kind.",
+          "karma": {
+            "mut": 5,
+            "weisheit": -5,
+            "liebe": 2
+          },
+          "sofortigeKonsequenzen": [
+            "Die Kirche verstummt, als du eintrittst. Was danach passiert, hängt an einem einzigen Blick zwischen euch – und der fällt nicht zu deinen Gunsten aus."
+          ],
+          "verzoegerteKonsequenzen": [
+            "erwachsen_grenze_ueberschritten"
+          ],
+          "egoistischAltruistisch": 0.3
+        }
+      ]
+    },
+    {
+      "id": "erwachsen_017",
+      "alter": 57,
+      "abschnitt": "umbruch",
+      "kontext": "Eine Routineuntersuchung, ein auffälliger Wert, zwei Wochen Warten auf Gewissheit. In diesen vierzehn Tagen sortiert sich dein Leben neu: Was zählt wirklich, wenn die Zeit endlich wird?",
+      "frage": "Die Entwarnung kommt. Was änderst du?",
+      "typ": "lebensweg",
+      "systemEinfluesse": [
+        "endlichkeit",
+        "gewohnheit"
+      ],
+      "optionen": [
+        {
+          "id": "erwachsen_017_a",
+          "text": "Alles bleibt beim Alten – der Schreck verblasst schneller als gedacht.",
+          "karma": {
+            "weisheit": -4
+          },
+          "sofortigeKonsequenzen": [
+            "Nach einem Monat ist der Kalender wieder voll und die Erkenntnis leer. Der Zettel mit deinen 'Ab jetzt'-Vorsätzen vergilbt in der Schublade."
+          ],
+          "verzoegerteKonsequenzen": [
+            "erwachsen_warnung_verdraengt"
+          ],
+          "egoistischAltruistisch": 0.4
+        },
+        {
+          "id": "erwachsen_017_b",
+          "text": "Du reparierst, was zu reparieren ist: Beziehungen, Gesundheit, Versäumtes.",
+          "karma": {
+            "weisheit": 9,
+            "liebe": 7,
+            "mut": 5
+          },
+          "sofortigeKonsequenzen": [
+            "Du rufst Menschen an, mit denen du jahrelang nicht gesprochen hast. Zwei Gespräche scheitern. Drei werden zu Neuanfängen."
+          ],
+          "verzoegerteKonsequenzen": [
+            "erwachsen_leben_aufgeraeumt"
+          ],
+          "egoistischAltruistisch": 0.7
+        },
+        {
+          "id": "erwachsen_017_c",
+          "text": "Du verkaufst, was dich hält, und lebst ab jetzt nur noch für dich.",
+          "karma": {
+            "mut": 6,
+            "grosszuegigkeit": -4
+          },
+          "sofortigeKonsequenzen": [
+            "Das Wohnmobil steht vor der Tür, die Verwandtschaft schüttelt den Kopf. Irgendwo hinter der Grenze merkst du: Freiheit und Flucht sehen von außen gleich aus."
+          ],
+          "verzoegerteKonsequenzen": [
+            "erwachsen_radikaler_egoismus"
+          ],
+          "egoistischAltruistisch": 0.15
+        }
+      ]
+    }
+  ],
+  "lebensabschnitte": [
+    {
+      "id": "aufbau",
+      "name": "Aufbaujahre",
+      "alterVon": 19,
+      "alterBis": 28
+    },
+    {
+      "id": "mitte",
+      "name": "Lebensmitte",
+      "alterVon": 29,
+      "alterBis": 45
+    },
+    {
+      "id": "umbruch",
+      "name": "Umbruchjahre",
+      "alterVon": 46,
+      "alterBis": 60
+    }
+  ],
+  "karrieren": [
+    {
+      "id": "schmied",
+      "name": "Schmied",
+      "beschreibung": "Zwischen Esse und Amboss formst du Eisen zu Werkzeug und Waffen. Harte Arbeit, ehrlicher Lohn und der Respekt des ganzen Dorfes.",
+      "zeitalter": [
+        "mittelalter"
+      ],
+      "mindestAttribute": {
+        "kraft": 50,
+        "ausdauer": 40
+      },
+      "einstiegsGehalt": 900,
+      "stressProJahr": 0.35,
+      "stufen": [
+        {
+          "name": "Lehrling",
+          "abJahren": 0,
+          "gehaltFaktor": 1.0
+        },
+        {
+          "name": "Geselle",
+          "abJahren": 5,
+          "gehaltFaktor": 1.6
+        },
+        {
+          "name": "Meisterschmied",
+          "abJahren": 12,
+          "gehaltFaktor": 2.5
+        }
+      ]
+    },
+    {
+      "id": "ritter",
+      "name": "Ritter",
+      "beschreibung": "Im Dienst des Lehnsherrn reitest du für Ehre und Land. Ruhm und Beute locken – doch jeder Feldzug kann der letzte sein.",
+      "zeitalter": [
+        "mittelalter"
+      ],
+      "mindestAttribute": {
+        "kraft": 60,
+        "ausdauer": 50
+      },
+      "einstiegsGehalt": 1400,
+      "stressProJahr": 0.55,
+      "stufen": [
+        {
+          "name": "Knappe",
+          "abJahren": 0,
+          "gehaltFaktor": 1.0
+        },
+        {
+          "name": "Ritter",
+          "abJahren": 6,
+          "gehaltFaktor": 2.0
+        },
+        {
+          "name": "Bannerherr",
+          "abJahren": 15,
+          "gehaltFaktor": 3.2
+        }
+      ]
+    },
+    {
+      "id": "heiler",
+      "name": "Heiler",
+      "beschreibung": "Mit Kräutern, Erfahrung und ruhiger Hand kämpfst du gegen Fieber, Wunden und Aberglauben. Man braucht dich – und misstraut dir zugleich.",
+      "zeitalter": [
+        "mittelalter"
+      ],
+      "mindestAttribute": {
+        "empathie": 50,
+        "intuition": 45
+      },
+      "einstiegsGehalt": 700,
+      "stressProJahr": 0.4,
+      "stufen": [
+        {
+          "name": "Kräuterkundiger",
+          "abJahren": 0,
+          "gehaltFaktor": 1.0
+        },
+        {
+          "name": "Dorfheiler",
+          "abJahren": 4,
+          "gehaltFaktor": 1.5
+        },
+        {
+          "name": "Weiser Heiler",
+          "abJahren": 10,
+          "gehaltFaktor": 2.2
+        }
+      ]
+    },
+    {
+      "id": "kuenstler",
+      "name": "Künstler",
+      "beschreibung": "In der Bottega eines Meisters lernst du Fresko, Porträt und Perspektive. Wer einen Mäzen findet, wird unsterblich – wer keinen findet, hungert schön.",
+      "zeitalter": [
+        "renaissance"
+      ],
+      "mindestAttribute": {
+        "kreativitaet": 60
+      },
+      "einstiegsGehalt": 800,
+      "stressProJahr": 0.3,
+      "stufen": [
+        {
+          "name": "Werkstattgehilfe",
+          "abJahren": 0,
+          "gehaltFaktor": 1.0
+        },
+        {
+          "name": "Anerkannter Maler",
+          "abJahren": 6,
+          "gehaltFaktor": 2.0
+        },
+        {
+          "name": "Hofkünstler",
+          "abJahren": 14,
+          "gehaltFaktor": 3.5
+        }
+      ]
+    },
+    {
+      "id": "gelehrter",
+      "name": "Gelehrter",
+      "beschreibung": "Du übersetzt antike Schriften, vermisst den Himmel und stellst gefährliche Fragen. Wissen ist dein Kapital – und manchmal dein Risiko.",
+      "zeitalter": [
+        "renaissance"
+      ],
+      "mindestAttribute": {
+        "intelligenz": 60
+      },
+      "einstiegsGehalt": 850,
+      "stressProJahr": 0.25,
+      "stufen": [
+        {
+          "name": "Student",
+          "abJahren": 0,
+          "gehaltFaktor": 1.0
+        },
+        {
+          "name": "Magister",
+          "abJahren": 5,
+          "gehaltFaktor": 1.7
+        },
+        {
+          "name": "Universitätsgelehrter",
+          "abJahren": 12,
+          "gehaltFaktor": 2.6
+        }
+      ]
+    },
+    {
+      "id": "fabrikarbeiter",
+      "name": "Fabrikarbeiter",
+      "beschreibung": "Zwölf Stunden im Takt der Maschinen. Der Lohn ist karg, die Luft voller Ruß – aber wer durchhält, kann Vorarbeiter werden.",
+      "zeitalter": [
+        "industriezeitalter"
+      ],
+      "mindestAttribute": {
+        "ausdauer": 40
+      },
+      "einstiegsGehalt": 600,
+      "stressProJahr": 0.6,
+      "stufen": [
+        {
+          "name": "Hilfsarbeiter",
+          "abJahren": 0,
+          "gehaltFaktor": 1.0
+        },
+        {
+          "name": "Maschinenführer",
+          "abJahren": 4,
+          "gehaltFaktor": 1.4
+        },
+        {
+          "name": "Vorarbeiter",
+          "abJahren": 10,
+          "gehaltFaktor": 1.9
+        }
+      ]
+    },
+    {
+      "id": "ingenieur",
+      "name": "Ingenieur",
+      "beschreibung": "Brücken, Dampfmaschinen, Eisenbahnen – du entwirfst das Skelett des neuen Zeitalters. Fortschritt ruht auf deinen Berechnungen.",
+      "zeitalter": [
+        "industriezeitalter"
+      ],
+      "mindestAttribute": {
+        "intelligenz": 55,
+        "kreativitaet": 40
+      },
+      "einstiegsGehalt": 1600,
+      "stressProJahr": 0.45,
+      "stufen": [
+        {
+          "name": "Technischer Zeichner",
+          "abJahren": 0,
+          "gehaltFaktor": 1.0
+        },
+        {
+          "name": "Ingenieur",
+          "abJahren": 5,
+          "gehaltFaktor": 1.8
+        },
+        {
+          "name": "Chefingenieur",
+          "abJahren": 13,
+          "gehaltFaktor": 3.0
+        }
+      ]
+    },
+    {
+      "id": "arzt",
+      "name": "Arzt",
+      "beschreibung": "Langes Studium, lange Nächte, echte Verantwortung. Du hältst Leben in den Händen – und trägst jedes verlorene mit dir.",
+      "zeitalter": [
+        "moderne"
+      ],
+      "mindestAttribute": {
+        "intelligenz": 60,
+        "empathie": 50
+      },
+      "einstiegsGehalt": 3200,
+      "stressProJahr": 0.55,
+      "stufen": [
+        {
+          "name": "Assistenzarzt",
+          "abJahren": 0,
+          "gehaltFaktor": 1.0
+        },
+        {
+          "name": "Facharzt",
+          "abJahren": 6,
+          "gehaltFaktor": 1.8
+        },
+        {
+          "name": "Chefarzt",
+          "abJahren": 15,
+          "gehaltFaktor": 2.8
+        }
+      ]
+    },
+    {
+      "id": "lehrer",
+      "name": "Lehrer",
+      "beschreibung": "Du prägst hundert Leben pro Jahrgang. Kein Reichtum, aber Sinn – und manchmal, Jahre später, ein Brief: 'Sie haben alles verändert.'",
+      "zeitalter": [
+        "moderne"
+      ],
+      "mindestAttribute": {
+        "empathie": 50,
+        "intelligenz": 45
+      },
+      "einstiegsGehalt": 2600,
+      "stressProJahr": 0.4,
+      "stufen": [
+        {
+          "name": "Referendar",
+          "abJahren": 0,
+          "gehaltFaktor": 1.0
+        },
+        {
+          "name": "Studienrat",
+          "abJahren": 5,
+          "gehaltFaktor": 1.4
+        },
+        {
+          "name": "Schulleiter",
+          "abJahren": 14,
+          "gehaltFaktor": 2.0
+        }
+      ]
+    },
+    {
+      "id": "unternehmer",
+      "name": "Unternehmer",
+      "beschreibung": "Deine Idee, dein Risiko, dein Name an der Tür. Zwischen Insolvenzangst und Durchbruch liegt oft nur eine Entscheidung.",
+      "zeitalter": [
+        "moderne",
+        "zukunft"
+      ],
+      "mindestAttribute": {
+        "intuition": 55,
+        "kreativitaet": 45,
+        "ausdauer": 45
+      },
+      "einstiegsGehalt": 1800,
+      "stressProJahr": 0.65,
+      "stufen": [
+        {
+          "name": "Gründer",
+          "abJahren": 0,
+          "gehaltFaktor": 1.0
+        },
+        {
+          "name": "Etablierter Unternehmer",
+          "abJahren": 5,
+          "gehaltFaktor": 2.5
+        },
+        {
+          "name": "Branchenführer",
+          "abJahren": 12,
+          "gehaltFaktor": 4.5
+        }
+      ]
+    },
+    {
+      "id": "ki_ethiker",
+      "name": "KI-Ethiker",
+      "beschreibung": "Du entscheidest mit, was Maschinen dürfen – und was niemals. Zwischen Konzerninteressen und Menschenwürde ziehst du die Grenzen von morgen.",
+      "zeitalter": [
+        "zukunft"
+      ],
+      "mindestAttribute": {
+        "intelligenz": 60,
+        "empathie": 55
+      },
+      "einstiegsGehalt": 4200,
+      "stressProJahr": 0.45,
+      "stufen": [
+        {
+          "name": "Ethik-Analyst",
+          "abJahren": 0,
+          "gehaltFaktor": 1.0
+        },
+        {
+          "name": "Leitender KI-Ethiker",
+          "abJahren": 6,
+          "gehaltFaktor": 1.7
+        },
+        {
+          "name": "Ethikrats-Vorsitz",
+          "abJahren": 14,
+          "gehaltFaktor": 2.6
+        }
+      ]
+    },
+    {
+      "id": "terraformer",
+      "name": "Terraformer",
+      "beschreibung": "Auf Mars und Mond machst du toten Staub bewohnbar. Jahrelange Einsätze fern der Erde – dafür schreibst du buchstäblich Welten um.",
+      "zeitalter": [
+        "zukunft"
+      ],
+      "mindestAttribute": {
+        "ausdauer": 60,
+        "intelligenz": 50
+      },
+      "einstiegsGehalt": 5000,
+      "stressProJahr": 0.6,
+      "stufen": [
+        {
+          "name": "Habitat-Techniker",
+          "abJahren": 0,
+          "gehaltFaktor": 1.0
+        },
+        {
+          "name": "Missionsspezialist",
+          "abJahren": 5,
+          "gehaltFaktor": 1.8
+        },
+        {
+          "name": "Kolonie-Direktor",
+          "abJahren": 13,
+          "gehaltFaktor": 3.0
+        }
+      ]
+    }
+  ],
+  "zufallsereignisse": [
+    {
+      "id": "ereignis_erbschaft",
+      "name": "Unerwartete Erbschaft",
+      "beschreibung": "Ein entfernter Verwandter hinterlässt dir überraschend einen Teil seines Vermögens – und ein Bündel alter Briefe.",
+      "wahrscheinlichkeit": 0.04,
+      "alterVon": 25,
+      "alterBis": 60,
+      "effekte": {
+        "geld": 8000,
+        "stress": -0.05,
+        "karma": {
+          "weisheit": 2
+        }
+      }
+    },
+    {
+      "id": "ereignis_lottogewinn",
+      "name": "Lottogewinn",
+      "beschreibung": "Sechs Richtige. Für einen Moment steht die Welt still – dann klingelt das Telefon nicht mehr.",
+      "wahrscheinlichkeit": 0.01,
+      "alterVon": 19,
+      "alterBis": 60,
+      "effekte": {
+        "geld": 50000,
+        "stress": 0.1
+      },
+      "zeitalter": [
+        "moderne",
+        "zukunft"
+      ]
+    },
+    {
+      "id": "ereignis_befoerderung",
+      "name": "Beförderungschance",
+      "beschreibung": "Dein Einsatz ist aufgefallen. Man bietet dir mehr Verantwortung, mehr Geld – und deutlich weniger Schlaf.",
+      "wahrscheinlichkeit": 0.1,
+      "alterVon": 24,
+      "alterBis": 55,
+      "effekte": {
+        "geld": 4000,
+        "stress": 0.15,
+        "karma": {
+          "mut": 2
+        }
+      }
+    },
+    {
+      "id": "ereignis_mentor",
+      "name": "Begegnung mit einem Mentor",
+      "beschreibung": "Ein erfahrener Mensch nimmt sich deiner an – ohne Gegenleistung, aus reiner Überzeugung.",
+      "wahrscheinlichkeit": 0.08,
+      "alterVon": 19,
+      "alterBis": 40,
+      "effekte": {
+        "stress": -0.1,
+        "karma": {
+          "weisheit": 5
+        }
+      }
+    },
+    {
+      "id": "ereignis_wahre_freundschaft",
+      "name": "Eine Freundschaft fürs Leben",
+      "beschreibung": "Aus einer zufälligen Begegnung wird ein Mensch, der bleibt – durch alles hindurch.",
+      "wahrscheinlichkeit": 0.07,
+      "alterVon": 19,
+      "alterBis": 60,
+      "effekte": {
+        "gesundheit": 5,
+        "stress": -0.15,
+        "karma": {
+          "liebe": 4
+        }
+      }
+    },
+    {
+      "id": "ereignis_schwere_krankheit",
+      "name": "Schwere Krankheit",
+      "beschreibung": "Eine Diagnose verändert alles. Monate zwischen Hoffnung und Erschöpfung zwingen dich, das Wesentliche zu sehen.",
+      "wahrscheinlichkeit": 0.06,
+      "alterVon": 30,
+      "alterBis": 60,
+      "effekte": {
+        "gesundheit": -25,
+        "geld": -3000,
+        "stress": 0.3,
+        "karma": {
+          "weisheit": 3
+        }
+      }
+    },
+    {
+      "id": "ereignis_unfall",
+      "name": "Schwerer Unfall",
+      "beschreibung": "Ein Augenblick der Unachtsamkeit – deiner oder eines Fremden – und nichts ist mehr selbstverständlich.",
+      "wahrscheinlichkeit": 0.05,
+      "alterVon": 19,
+      "alterBis": 60,
+      "effekte": {
+        "gesundheit": -20,
+        "geld": -2000,
+        "stress": 0.25
+      }
+    },
+    {
+      "id": "ereignis_entlassung",
+      "name": "Entlassung",
+      "beschreibung": "\"Wir müssen uns leider von Ihnen trennen.\" Der Karton mit deinen Sachen ist kleiner, als du dachtest.",
+      "wahrscheinlichkeit": 0.07,
+      "alterVon": 22,
+      "alterBis": 58,
+      "effekte": {
+        "geld": -5000,
+        "stress": 0.35
+      }
+    },
+    {
+      "id": "ereignis_betrug",
+      "name": "Opfer eines Betrugs",
+      "beschreibung": "Jemand, dem du vertraut hast, hat dich systematisch hintergangen. Das Geld ist weg – das Vertrauen auch.",
+      "wahrscheinlichkeit": 0.05,
+      "alterVon": 20,
+      "alterBis": 60,
+      "effekte": {
+        "geld": -6000,
+        "stress": 0.25,
+        "karma": {
+          "weisheit": 2
+        }
+      }
+    },
+    {
+      "id": "ereignis_einbruch",
+      "name": "Einbruch",
+      "beschreibung": "Fremde Hände haben deine Räume durchwühlt. Was fehlt, ist ersetzbar – das Gefühl der Sicherheit nicht sofort.",
+      "wahrscheinlichkeit": 0.04,
+      "alterVon": 19,
+      "alterBis": 60,
+      "effekte": {
+        "geld": -1500,
+        "stress": 0.2
+      }
+    },
+    {
+      "id": "ereignis_pest",
+      "name": "Die Pest erreicht die Stadt",
+      "beschreibung": "Der Schwarze Tod zieht durch die Gassen. Wer bleibt, riskiert das Leben – wer flieht, verliert alles andere.",
+      "wahrscheinlichkeit": 0.08,
+      "alterVon": 19,
+      "alterBis": 60,
+      "effekte": {
+        "gesundheit": -35,
+        "geld": -1000,
+        "stress": 0.4,
+        "karma": {
+          "mitgefuehl": 2
+        }
+      },
+      "zeitalter": [
+        "mittelalter"
+      ]
+    },
+    {
+      "id": "ereignis_missernte",
+      "name": "Missernte",
+      "beschreibung": "Erst der Hagel, dann die Dürre. Die Scheune bleibt leer, der Winter wird lang und der Zehnt wird trotzdem fällig.",
+      "wahrscheinlichkeit": 0.1,
+      "alterVon": 19,
+      "alterBis": 60,
+      "effekte": {
+        "gesundheit": -10,
+        "geld": -800,
+        "stress": 0.25
+      },
+      "zeitalter": [
+        "mittelalter"
+      ]
+    },
+    {
+      "id": "ereignis_gute_ernte",
+      "name": "Reiche Ernte",
+      "beschreibung": "Die Felder tragen doppelt. Zum ersten Mal seit Jahren bleibt nach dem Zehnt genug für den Markt.",
+      "wahrscheinlichkeit": 0.09,
+      "alterVon": 19,
+      "alterBis": 60,
+      "effekte": {
+        "gesundheit": 5,
+        "geld": 1200,
+        "stress": -0.15,
+        "karma": {
+          "grosszuegigkeit": 2
+        }
+      },
+      "zeitalter": [
+        "mittelalter"
+      ]
+    },
+    {
+      "id": "ereignis_maezen",
+      "name": "Ein Mäzen wird auf dich aufmerksam",
+      "beschreibung": "Ein reicher Kaufmann will deinen Namen mit seinem verbinden. Sein Gold kauft dir Zeit – und ein wenig deiner Freiheit.",
+      "wahrscheinlichkeit": 0.06,
+      "alterVon": 20,
+      "alterBis": 50,
+      "effekte": {
+        "geld": 5000,
+        "stress": 0.05,
+        "karma": {
+          "weisheit": 2
+        }
+      },
+      "zeitalter": [
+        "renaissance"
+      ]
+    },
+    {
+      "id": "ereignis_inquisition",
+      "name": "Ins Visier der Inquisition",
+      "beschreibung": "Jemand hat deinen Namen genannt. Wochenlang wägst du jedes Wort – bis der Verdacht weiterzieht.",
+      "wahrscheinlichkeit": 0.05,
+      "alterVon": 20,
+      "alterBis": 60,
+      "effekte": {
+        "stress": 0.35,
+        "geld": -500,
+        "karma": {
+          "mut": 3
+        }
+      },
+      "zeitalter": [
+        "mittelalter",
+        "renaissance"
+      ]
+    },
+    {
+      "id": "ereignis_fabrikunfall",
+      "name": "Unfall an der Maschine",
+      "beschreibung": "Die Maschine kennt keine Müdigkeit – dein Körper schon. Ein Moment, und nichts ist wie zuvor.",
+      "wahrscheinlichkeit": 0.08,
+      "alterVon": 19,
+      "alterBis": 55,
+      "effekte": {
+        "gesundheit": -25,
+        "geld": -800,
+        "stress": 0.3
+      },
+      "zeitalter": [
+        "industriezeitalter"
+      ]
+    },
+    {
+      "id": "ereignis_cholera",
+      "name": "Cholera im Viertel",
+      "beschreibung": "Das Wasser aus dem Brunnen bringt die Krankheit in jede zweite Wohnung deiner Straße.",
+      "wahrscheinlichkeit": 0.07,
+      "alterVon": 19,
+      "alterBis": 60,
+      "effekte": {
+        "gesundheit": -20,
+        "stress": 0.25
+      },
+      "zeitalter": [
+        "industriezeitalter"
+      ]
+    },
+    {
+      "id": "ereignis_eisenbahn_boom",
+      "name": "Eisenbahn-Boom",
+      "beschreibung": "Die neue Bahnlinie führt direkt durch deine Stadt. Arbeit, Handel und Löhne ziehen an.",
+      "wahrscheinlichkeit": 0.06,
+      "alterVon": 19,
+      "alterBis": 60,
+      "effekte": {
+        "geld": 2500,
+        "stress": -0.05
+      },
+      "zeitalter": [
+        "industriezeitalter"
+      ]
+    },
+    {
+      "id": "ereignis_boersencrash",
+      "name": "Börsencrash",
+      "beschreibung": "Über Nacht sind die Kurse im freien Fall. Deine Ersparnisse schmelzen, während die Nachrichten von 'Korrektur' sprechen.",
+      "wahrscheinlichkeit": 0.06,
+      "alterVon": 25,
+      "alterBis": 60,
+      "effekte": {
+        "geld": -10000,
+        "stress": 0.3
+      },
+      "zeitalter": [
+        "moderne"
+      ]
+    },
+    {
+      "id": "ereignis_viraler_erfolg",
+      "name": "Viraler Erfolg",
+      "beschreibung": "Etwas, das du beiläufig geteilt hast, erreicht Millionen. Plötzlich wollen alle etwas von dir.",
+      "wahrscheinlichkeit": 0.03,
+      "alterVon": 19,
+      "alterBis": 45,
+      "effekte": {
+        "geld": 3000,
+        "stress": 0.2
+      },
+      "zeitalter": [
+        "moderne",
+        "zukunft"
+      ]
+    },
+    {
+      "id": "ereignis_solarsturm",
+      "name": "Solarsturm",
+      "beschreibung": "Der stärkste Sonnensturm seit Jahrzehnten legt Netze, Konten und Kommunikation tagelang lahm.",
+      "wahrscheinlichkeit": 0.05,
+      "alterVon": 19,
+      "alterBis": 60,
+      "effekte": {
+        "geld": -2000,
+        "stress": 0.25
+      },
+      "zeitalter": [
+        "zukunft"
+      ]
+    },
+    {
+      "id": "ereignis_gentherapie",
+      "name": "Durchbruch in der Gentherapie",
+      "beschreibung": "Eine neue Behandlung repariert, was dein Körper jahrelang mit sich trug. Du fühlst dich zehn Jahre jünger.",
+      "wahrscheinlichkeit": 0.04,
+      "alterVon": 30,
+      "alterBis": 60,
+      "effekte": {
+        "gesundheit": 20,
+        "geld": -4000,
+        "stress": -0.1
+      },
+      "zeitalter": [
+        "zukunft"
       ]
     }
   ]
