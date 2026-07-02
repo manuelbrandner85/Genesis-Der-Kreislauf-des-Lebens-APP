@@ -85,11 +85,15 @@ class NarbenSuchtNotifier extends StateNotifier<NarbenSuchtZustand> {
 
   Box<Map>? _box;
 
+  /// Zyklus-ID des zuletzt geladenen Standes – Schlüssel für die Persistenz.
+  String? _zyklusId;
+
   // ───────────────────────────────────────────────────────────────────────────
   // Laden
   // ───────────────────────────────────────────────────────────────────────────
 
   Future<void> laden(String zyklusId) async {
+    _zyklusId = zyklusId;
     _box ??= await Hive.openBox<Map>('narben_suchte');
 
     final narbenRoh = _box!.get('narben_$zyklusId');
@@ -226,8 +230,17 @@ class NarbenSuchtNotifier extends StateNotifier<NarbenSuchtZustand> {
   // ───────────────────────────────────────────────────────────────────────────
 
   Future<void> _speichern() async {
+    // Ohne geladenen Zyklus gibt es keinen Schlüssel zum Speichern.
+    final zyklusId = _zyklusId;
+    if (zyklusId == null) return;
+
     _box ??= await Hive.openBox<Map>('narben_suchte');
-    // Zyklusbasierte Speicherung – wird von außen mit zyklusId aufgerufen
+    await _box!.put('narben_$zyklusId', {
+      'narben': state.narben.map((n) => n.toJson()).toList(),
+    });
+    await _box!.put('suchte_$zyklusId', {
+      'suchte': state.suchte.map((s) => s.toJson()).toList(),
+    });
   }
 }
 

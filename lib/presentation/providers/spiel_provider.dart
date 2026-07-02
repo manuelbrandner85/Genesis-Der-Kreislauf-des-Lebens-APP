@@ -231,9 +231,37 @@ class SpielNotifier extends StateNotifier<SpielZustand> {
         .indexWhere((e) => e.id == entscheidungId);
 
     if (entscheidungIndex < 0) {
-      state = state.copyWith(
-        fehlerMeldung: 'Entscheidung nicht gefunden: $entscheidungId',
+      // Entscheidungen aus den JSON-Daten sind dem Zyklus anfangs unbekannt.
+      // Statt (wie früher) mit einem Fehler abzubrechen – wodurch KEINE
+      // Entscheidung je gespeichert wurde – wird die Wahl als neuer Eintrag
+      // protokolliert. Die Karma-Wirkung übernimmt der KarmaNotifier, der
+      // sie über karmaUebernehmen() ins Profil spiegelt.
+      final protokollEintrag = EntscheidungModel(
+        id: entscheidungId,
+        frage: entscheidungId,
+        kontext: '',
+        optionen: const [],
+        gewaehltOptionIndex: optionIndex,
+        istMikroEntscheidung: false,
+        hatParallelvorschau: false,
+        systemEinfluesse: const {},
       );
+
+      final aktualisiertZyklus = zyklus.copyWith(
+        getroffeneEntscheidungen: [
+          ...zyklus.getroffeneEntscheidungen,
+          protokollEintrag,
+        ],
+      );
+      final aktualisiertProfil =
+          profil.copyWith(letzterSpieltag: DateTime.now());
+
+      state = state.copyWith(
+        aktuellerZyklus: aktualisiertZyklus,
+        spielerProfil: aktualisiertProfil,
+        fehlerLoeschen: true,
+      );
+      await spielSpeichern();
       return;
     }
 
@@ -340,6 +368,35 @@ class SpielNotifier extends StateNotifier<SpielZustand> {
   /// Speichert den aktuellen Spielstand in Hive.
   ///
   /// Schreibt Spielerprofil und aktiven Zyklus unter ihren jeweiligen IDs.
+  /// Übernimmt einen extern (KarmaNotifier) geänderten Karma-Stand in
+  /// Profil und Zyklus und persistiert ihn. Ohne diese Brücke ging jede
+  /// Karma-Änderung der Phasen 3–9 beim App-Neustart verloren.
+  Future<void> karmaUebernehmen(KarmaProfilModel karma) async {
+    final profil = state.spielerProfil;
+    if (profil == null) return;
+
+    final aktualisiertProfil = profil.copyWith(
+      kumulativesKarma: karma,
+      letzterSpieltag: DateTime.now(),
+    );
+    final aktualisiertZyklus =
+        state.aktuellerZyklus?.copyWith(karmaAmEnde: karma);
+
+    state = state.copyWith(
+      spielerProfil: aktualisiertProfil,
+      aktuellerZyklus: aktualisiertZyklus,
+      emotionsWetter: _wetterAusKarma(karma),
+    );
+    await spielSpeichern();
+  }
+
+  /// Ersetzt den aktiven Zyklus (z. B. nach dem Spermien-Rennen mit neuem
+  /// genetischen Code) und persistiert den Stand.
+  Future<void> zyklusAktualisieren(ZyklusModel aktualisiertZyklus) async {
+    state = state.copyWith(aktuellerZyklus: aktualisiertZyklus);
+    await spielSpeichern();
+  }
+
   Future<void> spielSpeichern() async {
     final profil = state.spielerProfil;
     final zyklus = state.aktuellerZyklus;

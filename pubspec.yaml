@@ -12,6 +12,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  flutter_localizations:
+    sdk: flutter                     # Deutsche Material-/Widget-Lokalisierungen
 
   # ── Spiel-Engine ─────────────────────────────────────────────────────────
   flame: ^1.18.0                    # Hauptspiel-Engine für 2-D-Rendering

@@ -14,6 +14,7 @@ import 'package:genesis_kreislauf_des_lebens/core/theme/app_farben.dart';
 import 'package:genesis_kreislauf_des_lebens/core/theme/app_text_styles.dart';
 import 'package:genesis_kreislauf_des_lebens/data/models/karma_profil_model.dart';
 import 'package:genesis_kreislauf_des_lebens/presentation/providers/karma_provider.dart';
+import 'package:genesis_kreislauf_des_lebens/presentation/providers/spiel_provider.dart';
 import 'package:genesis_kreislauf_des_lebens/presentation/widgets/phasen_hintergrund.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -465,7 +466,13 @@ class _Phase4JugendScreenState extends ConsumerState<Phase4JugendScreen>
               child: _laedt
                   ? _LadeAnzeige()
                   : _phaseAbgeschlossen
-                      ? _PhaseAbschluss(onWeiter: () => context.go('/phase/5'))
+                      ? _PhaseAbschluss(onWeiter: () {
+                          // Fortschritt persistieren, dann navigieren
+                          ref
+                              .read(spielProvider.notifier)
+                              .phasWechseln(GamePhase.erwachsen);
+                          context.go('/phase/5');
+                        })
                       : Column(
                           children: [
                             // Kopfzeile: Phase-Titel + Stress-Meter

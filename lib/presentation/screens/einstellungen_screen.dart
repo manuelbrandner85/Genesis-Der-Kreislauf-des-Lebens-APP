@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
 import 'package:genesis_kreislauf_des_lebens/app/router.dart';
 import 'package:genesis_kreislauf_des_lebens/core/theme/app_farben.dart';
@@ -226,8 +227,36 @@ class EinstellungenScreen extends ConsumerWidget {
   }
 
   /// Wird nach der Bestätigung des Lösch-Dialogs aufgerufen.
+  ///
+  /// Leert alle bekannten Hive-Boxen – vorher zeigte diese Methode nur
+  /// eine Erfolgsmeldung, ohne irgendetwas zu löschen.
   Future<void> _dateiLoeschen(BuildContext context) async {
-    // Hier später: HiveDienst.allesDaten loeschen aufrufen
+    const boxNamen = [
+      'spielstand',
+      'einstellungen',
+      'karma_historie',
+      'seelen_zyklen',
+      'bibliothek',
+      'narben_suchte',
+      'ahnenreihe',
+    ];
+
+    for (final name in boxNamen) {
+      try {
+        final box = Hive.isBoxOpen(name)
+            ? Hive.box<Map>(name)
+            : await Hive.openBox<Map>(name);
+        await box.clear();
+      } catch (_) {
+        // Box mit anderem Typ (z. B. Box<int>) oder nicht vorhanden –
+        // generisch erneut versuchen, sonst überspringen.
+        try {
+          final box = await Hive.openBox(name);
+          await box.clear();
+        } catch (_) {/* Box existiert nicht – nichts zu löschen */}
+      }
+    }
+
     if (context.mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(

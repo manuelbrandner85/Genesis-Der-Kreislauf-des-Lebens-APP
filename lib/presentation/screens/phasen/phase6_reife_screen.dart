@@ -15,6 +15,7 @@ import 'package:genesis_kreislauf_des_lebens/core/theme/app_farben.dart';
 import 'package:genesis_kreislauf_des_lebens/core/theme/app_text_styles.dart';
 import 'package:genesis_kreislauf_des_lebens/data/models/karma_profil_model.dart';
 import 'package:genesis_kreislauf_des_lebens/presentation/providers/karma_provider.dart';
+import 'package:genesis_kreislauf_des_lebens/presentation/providers/spiel_provider.dart';
 import 'package:genesis_kreislauf_des_lebens/presentation/widgets/phasen_hintergrund.dart';
 
 /// Phase 6 – Reife: Das Sterbebett.
@@ -464,7 +465,11 @@ class _Phase6ReifeScreenState extends ConsumerState<Phase6ReifeScreen>
   Widget _baueLetzterAtemzug() {
     return Center(
       child: ElevatedButton(
-        onPressed: () => context.go('/tod-sequenz'),
+        onPressed: () {
+          // Das Leben endet: Phase auf Jenseits setzen und speichern
+          ref.read(spielProvider.notifier).phasWechseln(GamePhase.jenseits);
+          context.go('/tod-sequenz');
+        },
         style: ElevatedButton.styleFrom(
           backgroundColor: _tiefgolden,
           foregroundColor: _warmSepia,

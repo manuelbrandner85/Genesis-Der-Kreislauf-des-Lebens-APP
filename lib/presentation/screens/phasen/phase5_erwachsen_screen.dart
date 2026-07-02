@@ -19,6 +19,7 @@ import 'package:genesis_kreislauf_des_lebens/core/theme/app_farben.dart';
 import 'package:genesis_kreislauf_des_lebens/core/theme/app_text_styles.dart';
 import 'package:genesis_kreislauf_des_lebens/data/models/karma_profil_model.dart';
 import 'package:genesis_kreislauf_des_lebens/presentation/providers/karma_provider.dart';
+import 'package:genesis_kreislauf_des_lebens/presentation/providers/spiel_provider.dart';
 import 'package:genesis_kreislauf_des_lebens/presentation/widgets/phasen_hintergrund.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -568,7 +569,13 @@ class _Phase5ErwachsenScreenState
                 _AltersUndWeiterLeiste(
                   alter: alter,
                   kannWeiter: _kannWeiter,
-                  onWeiter: () => context.go('/phase/6'),
+                  onWeiter: () {
+                    // Fortschritt persistieren, dann navigieren
+                    ref
+                        .read(spielProvider.notifier)
+                        .phasWechseln(GamePhase.reife);
+                    context.go('/phase/6');
+                  },
                 ),
               ],
             ),
