@@ -7,7 +7,9 @@ import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
+import 'package:genesis_kreislauf_des_lebens/app/router.dart';
 import 'package:genesis_kreislauf_des_lebens/game/entstehung/entstehungs_controller.dart';
 import 'package:genesis_kreislauf_des_lebens/game/entstehung/entstehungs_spiel.dart';
 import 'package:genesis_kreislauf_des_lebens/game/entstehung/rennen_ergebnis.dart';
@@ -102,7 +104,9 @@ class _EntstehungSpielScreenState
           if (_spielZustand == EntstehungsSpielZustand.pausiert)
             _PauseOverlay(
               onFortsetzen: () => _spiel.pauseUmschalten(),
-              onAbbrechen: () => Navigator.of(context).pop(),
+              // GoRouter-Navigation: pop() würde crashen ("nothing to pop"),
+              // da alle Screens per go() ersetzt werden.
+              onAbbrechen: () => context.go(AppRouten.hauptMenue),
             ),
 
           // ── Spielende-Overlay (Niederlage) ─────────────────────────────────

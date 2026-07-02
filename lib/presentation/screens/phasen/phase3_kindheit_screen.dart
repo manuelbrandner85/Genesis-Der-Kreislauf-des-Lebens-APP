@@ -394,7 +394,13 @@ class _Phase3KindheitScreenState extends ConsumerState<Phase3KindheitScreen>
                 const SizedBox(height: 24),
                 GenesisButton(
                   text: 'Trotzdem weiterspielen',
-                  onPressed: () => context.go(AppRouten.phase4),
+                  onPressed: () {
+                    // Fortschritt persistieren, dann navigieren
+                    ref
+                        .read(spielProvider.notifier)
+                        .phasWechseln(GamePhase.jugend);
+                    context.go(AppRouten.phase4);
+                  },
                   typ: GenesisButtonTyp.sekundaer,
                 ),
               ],
@@ -439,7 +445,13 @@ class _Phase3KindheitScreenState extends ConsumerState<Phase3KindheitScreen>
                     onJahrWechseln: _jahrWechseln,
                     onEntscheidungStarten: _entscheidungStarten,
                     onMinigameStarten: _minigameStarten,
-                    onPhaseAbschliessen: () => context.go(AppRouten.phase4),
+                    onPhaseAbschliessen: () {
+                      // Fortschritt persistieren, dann navigieren
+                      ref
+                          .read(spielProvider.notifier)
+                          .phasWechseln(GamePhase.jugend);
+                      context.go(AppRouten.phase4);
+                    },
                   ),
               },
             ),

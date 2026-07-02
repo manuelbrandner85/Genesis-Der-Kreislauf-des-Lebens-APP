@@ -68,14 +68,12 @@ class EntstehungsController {
           ),
         );
 
-        // Zyklus mit neuem genetischem Code als lokale Variable merken
-        // ignore: unused_local_variable
+        // Zyklus mit neuem genetischen Code in den Zustand übernehmen
+        // und speichern – vorher wurde das Rennergebnis verworfen.
         final aktualisiertZyklus = aktuellerZyklus.copyWith(
           genetischerCode: neuerCode,
         );
-
-        // Spielstand speichern
-        await spielNotifier.spielSpeichern();
+        await spielNotifier.zyklusAktualisieren(aktualisiertZyklus);
       }
 
       // 4. Spielphase auf "Formung" (Phase 2) wechseln

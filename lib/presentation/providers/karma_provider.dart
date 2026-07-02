@@ -7,6 +7,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:genesis_kreislauf_des_lebens/data/models/karma_profil_model.dart';
 import 'package:genesis_kreislauf_des_lebens/data/models/zyklus_model.dart';
+import 'package:genesis_kreislauf_des_lebens/presentation/providers/spiel_provider.dart';
+import 'package:genesis_kreislauf_des_lebens/presentation/providers/spiel_zustand.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // KarmaHistorieEintrag – Typdefinition für einen einzelnen Historieeintrag
@@ -28,7 +30,10 @@ typedef KarmaHistorieEintrag = ({
 /// Berechnet Jenseitsreich und dominante Dimension reaktiv. Änderungen
 /// werden als Deltas übergeben und auf den Bereich [-100, +100] begrenzt.
 class KarmaNotifier extends StateNotifier<KarmaProfilModel> {
-  KarmaNotifier() : super(KarmaProfilModel.neutral());
+  KarmaNotifier(this._ref) : super(KarmaProfilModel.neutral());
+
+  /// Riverpod-Referenz für die Persistenz-Brücke zum SpielNotifier.
+  final Ref _ref;
 
   // ───────────────────────────────────────────────────────────────────────────
   // Öffentliche Methoden
@@ -51,6 +56,10 @@ class KarmaNotifier extends StateNotifier<KarmaProfilModel> {
 
     final neuerWert = (aktuellerWert + delta).clamp(-100.0, 100.0);
     state = state.dimensionAktualisieren(dim, neuerWert);
+
+    // Persistenz-Brücke: Karma ins Spielerprofil spiegeln und speichern.
+    // Ohne diesen Schritt war jedes Karma nach einem App-Neustart wieder 0.
+    _ref.read(spielProvider.notifier).karmaUebernehmen(state);
   }
 
   /// Setzt das Karma-Profil auf neutral zurück (für neuen Zyklus).
@@ -106,9 +115,30 @@ class KarmaNotifier extends StateNotifier<KarmaProfilModel> {
 // ─────────────────────────────────────────────────────────────────────────────
 
 /// Karma-Provider – verwaltet das aktive Karma-Profil des laufenden Zyklus.
+///
+/// Synchronisiert sich in beide Richtungen mit dem [spielProvider]:
+/// - Beim Laden/Neustart eines Profils wird dessen kumulatives Karma
+///   übernommen (vorher startete jede Session fälschlich bei 0).
+/// - Jede Karma-Änderung wird über karmaUebernehmen() persistiert.
 final karmaProvider =
     StateNotifierProvider<KarmaNotifier, KarmaProfilModel>((ref) {
-  return KarmaNotifier();
+  final notifier = KarmaNotifier(ref);
+
+  ref.listen<SpielZustand>(
+    spielProvider,
+    (vorher, nachher) {
+      final profil = nachher.spielerProfil;
+      // Nur bei Profilwechsel (Laden / neues Spiel) initialisieren –
+      // nicht bei jeder Zustandsänderung, sonst überschriebe der
+      // Rückkanal von karmaUebernehmen() laufende Berechnungen.
+      if (profil != null && vorher?.spielerProfil?.id != profil.id) {
+        notifier.karmaSetzen(profil.kumulativesKarma);
+      }
+    },
+    fireImmediately: true,
+  );
+
+  return notifier;
 });
 
 // ─────────────────────────────────────────────────────────────────────────────
