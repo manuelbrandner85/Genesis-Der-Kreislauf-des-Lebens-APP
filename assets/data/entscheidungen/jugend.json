@@ -6,32 +6,59 @@
       "kontext": "Deine Clique beginnt, einen Mitschüler regelmäßig zu mobben. Wenn du nichts sagst, wirst du als einer von ihnen akzeptiert.",
       "frage": "Was tust du?",
       "typ": "gruppenzwang",
-      "systemEinfluesse": ["gruppenzwang", "soziale_isolation_angst"],
+      "systemEinfluesse": [
+        "gruppenzwang",
+        "soziale_isolation_angst"
+      ],
       "optionen": [
         {
           "id": "jugend_001_a",
           "text": "Du machst beim Mobbing mit, um dazuzugehören.",
-          "karma": { "mitgefuehl": -10, "ehrlichkeit": -7 },
-          "sofortigeKonsequenzen": ["Du wirst vollständig in die Gruppe integriert, das Opfer leidet"],
-          "verzoegerteKonsequenzen": ["jugend_mobbing_taeter", "jugend_schuldgefuehle_spaeter"],
+          "karma": {
+            "mitgefuehl": -10,
+            "ehrlichkeit": -7
+          },
+          "sofortigeKonsequenzen": [
+            "Du wirst vollständig in die Gruppe integriert, das Opfer leidet"
+          ],
+          "verzoegerteKonsequenzen": [
+            "jugend_mobbing_taeter",
+            "jugend_schuldgefuehle_spaeter"
+          ],
           "egoistischAltruistisch": 0.0,
           "systemEinflussGewicht": 0.7
         },
         {
           "id": "jugend_001_b",
           "text": "Du schweigst und schaust zu, ohne teilzunehmen.",
-          "karma": { "mitgefuehl": -5, "mut": -4 },
-          "sofortigeKonsequenzen": ["Toleriert, aber nicht vollständig akzeptiert"],
-          "verzoegerteKonsequenzen": ["jugend_passiver_taeter_last"],
+          "karma": {
+            "mitgefuehl": -5,
+            "mut": -4
+          },
+          "sofortigeKonsequenzen": [
+            "Toleriert, aber nicht vollständig akzeptiert"
+          ],
+          "verzoegerteKonsequenzen": [
+            "jugend_passiver_taeter_last"
+          ],
           "egoistischAltruistisch": 0.25,
           "systemEinflussGewicht": 0.5
         },
         {
           "id": "jugend_001_c",
           "text": "Du verlässt die Gruppe und stellst dich schützend hinter das Opfer.",
-          "karma": { "mut": 10, "mitgefuehl": 10, "ehrlichkeit": 7 },
-          "sofortigeKonsequenzen": ["Soziale Isolation durch alte Gruppe, aber das Opfer ist endlich sicher"],
-          "verzoegerteKonsequenzen": ["jugend_neue_freundschaft_opfer", "jugend_mut_ruf"],
+          "karma": {
+            "mut": 10,
+            "mitgefuehl": 10,
+            "ehrlichkeit": 7
+          },
+          "sofortigeKonsequenzen": [
+            "Soziale Isolation durch alte Gruppe, aber das Opfer ist endlich sicher"
+          ],
+          "verzoegerteKonsequenzen": [
+            "jugend_neue_freundschaft_opfer",
+            "jugend_mut_ruf"
+          ],
           "egoistischAltruistisch": 1.0,
           "systemEinflussGewicht": 0.1
         }
@@ -43,32 +70,57 @@
       "kontext": "Auf einer Party bieten Freunde dir Alkohol an. Du bist noch nicht alt genug, aber alle trinken.",
       "frage": "Was entscheidest du?",
       "typ": "identitaet",
-      "systemEinfluesse": ["peers", "medien", "neugier"],
+      "systemEinfluesse": [
+        "peers",
+        "medien",
+        "neugier"
+      ],
       "optionen": [
         {
           "id": "jugend_002_a",
           "text": "Du trinkst mit – einmal kann nichts schaden.",
-          "karma": { "ehrlichkeit": -2, "mut": 2 },
-          "sofortigeKonsequenzen": ["Du wirst in die Gruppe integriert, schläfst danach schlecht"],
-          "verzoegerteKonsequenzen": ["jugend_alkohol_einstieg"],
+          "karma": {
+            "ehrlichkeit": -2,
+            "mut": 2
+          },
+          "sofortigeKonsequenzen": [
+            "Du wirst in die Gruppe integriert, schläfst danach schlecht"
+          ],
+          "verzoegerteKonsequenzen": [
+            "jugend_alkohol_einstieg"
+          ],
           "egoistischAltruistisch": 0.3,
           "systemEinflussGewicht": 0.65
         },
         {
           "id": "jugend_002_b",
           "text": "Du lehnst höflich ab und erklärst deine Gründe.",
-          "karma": { "mut": 6, "ehrlichkeit": 5, "weisheit": 4 },
-          "sofortigeKonsequenzen": ["Einige lachen, andere respektieren dich mehr"],
-          "verzoegerteKonsequenzen": ["jugend_eigene_grenze_durchgesetzt"],
+          "karma": {
+            "mut": 6,
+            "ehrlichkeit": 5,
+            "weisheit": 4
+          },
+          "sofortigeKonsequenzen": [
+            "Einige lachen, andere respektieren dich mehr"
+          ],
+          "verzoegerteKonsequenzen": [
+            "jugend_eigene_grenze_durchgesetzt"
+          ],
           "egoistischAltruistisch": 0.6,
           "systemEinflussGewicht": 0.2
         },
         {
           "id": "jugend_002_c",
           "text": "Du tust so als ob du trinkst, ohne es wirklich zu tun.",
-          "karma": { "ehrlichkeit": -4 },
-          "sofortigeKonsequenzen": ["Du wirst akzeptiert ohne wirkliche Konsequenzen"],
-          "verzoegerteKonsequenzen": ["jugend_versteckte_strategie"],
+          "karma": {
+            "ehrlichkeit": -4
+          },
+          "sofortigeKonsequenzen": [
+            "Du wirst akzeptiert ohne wirkliche Konsequenzen"
+          ],
+          "verzoegerteKonsequenzen": [
+            "jugend_versteckte_strategie"
+          ],
           "egoistischAltruistisch": 0.45,
           "systemEinflussGewicht": 0.4
         }
@@ -80,32 +132,57 @@
       "kontext": "Du hast dich in jemanden verliebt, der nicht in deine soziale Gruppe passt. Deine Freunde würden dich auslachen.",
       "frage": "Was tust du?",
       "typ": "erste_liebe",
-      "systemEinfluesse": ["soziale_normen", "peer_druck"],
+      "systemEinfluesse": [
+        "soziale_normen",
+        "peer_druck"
+      ],
       "optionen": [
         {
           "id": "jugend_003_a",
           "text": "Du gestehst deine Gefühle – egal was die anderen denken.",
-          "karma": { "mut": 8, "liebe": 9, "ehrlichkeit": 7 },
-          "sofortigeKonsequenzen": ["Freunde lachen kurz, du kannst nicht aufhören zu strahlen"],
-          "verzoegerteKonsequenzen": ["jugend_erste_liebe_mutig"],
+          "karma": {
+            "mut": 8,
+            "liebe": 9,
+            "ehrlichkeit": 7
+          },
+          "sofortigeKonsequenzen": [
+            "Freunde lachen kurz, du kannst nicht aufhören zu strahlen"
+          ],
+          "verzoegerteKonsequenzen": [
+            "jugend_erste_liebe_mutig"
+          ],
           "egoistischAltruistisch": 0.75,
           "systemEinflussGewicht": 0.15
         },
         {
           "id": "jugend_003_b",
           "text": "Du verbirgst deine Gefühle aus Angst vor Ablehnung.",
-          "karma": { "mut": -4, "liebe": -3 },
-          "sofortigeKonsequenzen": ["Die Gelegenheit verstreicht ungenutzt"],
-          "verzoegerteKonsequenzen": ["jugend_versaeumte_liebe_reue"],
+          "karma": {
+            "mut": -4,
+            "liebe": -3
+          },
+          "sofortigeKonsequenzen": [
+            "Die Gelegenheit verstreicht ungenutzt"
+          ],
+          "verzoegerteKonsequenzen": [
+            "jugend_versaeumte_liebe_reue"
+          ],
           "egoistischAltruistisch": 0.35,
           "systemEinflussGewicht": 0.6
         },
         {
           "id": "jugend_003_c",
           "text": "Du redest heimlich mit der Person, ohne es deinen Freunden zu sagen.",
-          "karma": { "liebe": 6, "ehrlichkeit": -2 },
-          "sofortigeKonsequenzen": ["Eine geheime Verbindung entsteht"],
-          "verzoegerteKonsequenzen": ["jugend_geheime_beziehung"],
+          "karma": {
+            "liebe": 6,
+            "ehrlichkeit": -2
+          },
+          "sofortigeKonsequenzen": [
+            "Eine geheime Verbindung entsteht"
+          ],
+          "verzoegerteKonsequenzen": [
+            "jugend_geheime_beziehung"
+          ],
           "egoistischAltruistisch": 0.55,
           "systemEinflussGewicht": 0.35
         }
@@ -117,32 +194,59 @@
       "kontext": "Dein bester Freund gesteht dir, dass er an schweren Depressionen leidet. Er macht dir Angst um ihn.",
       "frage": "Wie reagierst du?",
       "typ": "dilemma",
-      "systemEinfluesse": ["gesellschaftliches_stigma", "loyalitaet"],
+      "systemEinfluesse": [
+        "gesellschaftliches_stigma",
+        "loyalitaet"
+      ],
       "optionen": [
         {
           "id": "jugend_004_a",
           "text": "Du hörst zu, nimmst ihn ernst und sagst, er braucht professionelle Hilfe.",
-          "karma": { "mitgefuehl": 9, "weisheit": 8, "liebe": 7 },
-          "sofortigeKonsequenzen": ["Er ist anfangs abwehrend, aber lässt sich schließlich helfen"],
-          "verzoegerteKonsequenzen": ["jugend_freund_gerettet", "jugend_weisheit_mentalegesundheit"],
+          "karma": {
+            "mitgefuehl": 9,
+            "weisheit": 8,
+            "liebe": 7
+          },
+          "sofortigeKonsequenzen": [
+            "Er ist anfangs abwehrend, aber lässt sich schließlich helfen"
+          ],
+          "verzoegerteKonsequenzen": [
+            "jugend_freund_gerettet",
+            "jugend_weisheit_mentalegesundheit"
+          ],
           "egoistischAltruistisch": 0.9,
           "systemEinflussGewicht": 0.2
         },
         {
           "id": "jugend_004_b",
           "text": "Du versprichst es für dich zu behalten und versuchst alleine zu helfen.",
-          "karma": { "liebe": 5, "weisheit": -3 },
-          "sofortigeKonsequenzen": ["Er traut dir, doch die Last wird für euch beide zu groß"],
-          "verzoegerteKonsequenzen": ["jugend_geheimnis_zu_schwer"],
+          "karma": {
+            "liebe": 5,
+            "weisheit": -3
+          },
+          "sofortigeKonsequenzen": [
+            "Er traut dir, doch die Last wird für euch beide zu groß"
+          ],
+          "verzoegerteKonsequenzen": [
+            "jugend_geheimnis_zu_schwer"
+          ],
           "egoistischAltruistisch": 0.65,
           "systemEinflussGewicht": 0.4
         },
         {
           "id": "jugend_004_c",
           "text": "Du wirst überwältigt und erzählst es seinen Eltern ohne sein Einverständnis.",
-          "karma": { "liebe": 3, "ehrlichkeit": -3, "weisheit": 4 },
-          "sofortigeKonsequenzen": ["Er ist wütend auf dich, aber seine Eltern handeln"],
-          "verzoegerteKonsequenzen": ["jugend_vertrauen_gebrochen_gutes_ziel"],
+          "karma": {
+            "liebe": 3,
+            "ehrlichkeit": -3,
+            "weisheit": 4
+          },
+          "sofortigeKonsequenzen": [
+            "Er ist wütend auf dich, aber seine Eltern handeln"
+          ],
+          "verzoegerteKonsequenzen": [
+            "jugend_vertrauen_gebrochen_gutes_ziel"
+          ],
           "egoistischAltruistisch": 0.7,
           "systemEinflussGewicht": 0.3
         }
@@ -154,32 +258,59 @@
       "kontext": "Du hast eine wichtige Prüfung und ein Mitschüler bietet dir die Lösungen an, die er irgendwie bekommen hat.",
       "frage": "Was entscheidest du?",
       "typ": "schulstress",
-      "systemEinfluesse": ["leistungsdruck", "eltern_erwartungen"],
+      "systemEinfluesse": [
+        "leistungsdruck",
+        "eltern_erwartungen"
+      ],
       "optionen": [
         {
           "id": "jugend_005_a",
           "text": "Du nimmst die Lösungen – es ist einmalig.",
-          "karma": { "ehrlichkeit": -8, "weisheit": -4 },
-          "sofortigeKonsequenzen": ["Du bestehst die Prüfung, lernst aber nichts wirklich"],
-          "verzoegerteKonsequenzen": ["jugend_betrug_fundament", "jugend_wissen_luecke"],
+          "karma": {
+            "ehrlichkeit": -8,
+            "weisheit": -4
+          },
+          "sofortigeKonsequenzen": [
+            "Du bestehst die Prüfung, lernst aber nichts wirklich"
+          ],
+          "verzoegerteKonsequenzen": [
+            "jugend_betrug_fundament",
+            "jugend_wissen_luecke"
+          ],
           "egoistischAltruistisch": 0.1,
           "systemEinflussGewicht": 0.6
         },
         {
           "id": "jugend_005_b",
           "text": "Du lehnst ab und lernst bis tief in die Nacht.",
-          "karma": { "ehrlichkeit": 7, "mut": 5, "weisheit": 6 },
-          "sofortigeKonsequenzen": ["Du bist erschöpft, schreibst aber mit gutem Gewissen"],
-          "verzoegerteKonsequenzen": ["jugend_leistung_verdient"],
+          "karma": {
+            "ehrlichkeit": 7,
+            "mut": 5,
+            "weisheit": 6
+          },
+          "sofortigeKonsequenzen": [
+            "Du bist erschöpft, schreibst aber mit gutem Gewissen"
+          ],
+          "verzoegerteKonsequenzen": [
+            "jugend_leistung_verdient"
+          ],
           "egoistischAltruistisch": 0.6,
           "systemEinflussGewicht": 0.15
         },
         {
           "id": "jugend_005_c",
           "text": "Du meldest es dem Lehrer.",
-          "karma": { "ehrlichkeit": 9, "mut": 8 },
-          "sofortigeKonsequenzen": ["Großes Aufheben, der Mitschüler verliert den Anschluss"],
-          "verzoegerteKonsequenzen": ["jugend_schuld_gemeldet", "jugend_soziale_konsequenzen"],
+          "karma": {
+            "ehrlichkeit": 9,
+            "mut": 8
+          },
+          "sofortigeKonsequenzen": [
+            "Großes Aufheben, der Mitschüler verliert den Anschluss"
+          ],
+          "verzoegerteKonsequenzen": [
+            "jugend_schuld_gemeldet",
+            "jugend_soziale_konsequenzen"
+          ],
           "egoistischAltruistisch": 0.5,
           "systemEinflussGewicht": 0.1
         }
@@ -191,32 +322,57 @@
       "kontext": "Deine Eltern haben bestimmte Erwartungen an dein Berufsleben. Dein Herz schlägt aber für etwas ganz anderes.",
       "frage": "Was entscheidest du für deine Zukunft?",
       "typ": "identitaet",
-      "systemEinfluesse": ["eltern_erwartungen", "gesellschaftliche_normen"],
+      "systemEinfluesse": [
+        "eltern_erwartungen",
+        "gesellschaftliche_normen"
+      ],
       "optionen": [
         {
           "id": "jugend_006_a",
           "text": "Du folgst deinem Herzen, auch wenn es Konflikt bedeutet.",
-          "karma": { "mut": 9, "ehrlichkeit": 7 },
-          "sofortigeKonsequenzen": ["Eltern sind enttäuscht, du fühlst dich erstmals frei"],
-          "verzoegerteKonsequenzen": ["jugend_eigener_weg_mutig"],
+          "karma": {
+            "mut": 9,
+            "ehrlichkeit": 7
+          },
+          "sofortigeKonsequenzen": [
+            "Eltern sind enttäuscht, du fühlst dich erstmals frei"
+          ],
+          "verzoegerteKonsequenzen": [
+            "jugend_eigener_weg_mutig"
+          ],
           "egoistischAltruistisch": 0.65,
           "systemEinflussGewicht": 0.1
         },
         {
           "id": "jugend_006_b",
           "text": "Du folgst dem Plan der Eltern, hoffst aber heimlich auf eine Wende.",
-          "karma": { "mut": -5, "ehrlichkeit": -4 },
-          "sofortigeKonsequenzen": ["Eltern sind zufrieden, du nimmst eine Maske an"],
-          "verzoegerteKonsequenzen": ["jugend_ungelebtes_leben_beginn"],
+          "karma": {
+            "mut": -5,
+            "ehrlichkeit": -4
+          },
+          "sofortigeKonsequenzen": [
+            "Eltern sind zufrieden, du nimmst eine Maske an"
+          ],
+          "verzoegerteKonsequenzen": [
+            "jugend_ungelebtes_leben_beginn"
+          ],
           "egoistischAltruistisch": 0.3,
           "systemEinflussGewicht": 0.7
         },
         {
           "id": "jugend_006_c",
           "text": "Du suchst einen Kompromiss und redest offen mit deinen Eltern.",
-          "karma": { "weisheit": 8, "mut": 6, "ehrlichkeit": 7 },
-          "sofortigeKonsequenzen": ["Schwieriges Gespräch, aber echtes Verständnis wächst"],
-          "verzoegerteKonsequenzen": ["jugend_familiaerer_kompromiss"],
+          "karma": {
+            "weisheit": 8,
+            "mut": 6,
+            "ehrlichkeit": 7
+          },
+          "sofortigeKonsequenzen": [
+            "Schwieriges Gespräch, aber echtes Verständnis wächst"
+          ],
+          "verzoegerteKonsequenzen": [
+            "jugend_familiaerer_kompromiss"
+          ],
           "egoistischAltruistisch": 0.6,
           "systemEinflussGewicht": 0.3
         }
@@ -228,32 +384,58 @@
       "kontext": "Du beobachtest, wie ein Lehrer einen Mitschüler ungerecht und mit sichtlichem Sarkasmus behandelt.",
       "frage": "Was unternimmst du?",
       "typ": "rebellion",
-      "systemEinfluesse": ["autoritaet", "angst_vor_konsequenzen"],
+      "systemEinfluesse": [
+        "autoritaet",
+        "angst_vor_konsequenzen"
+      ],
       "optionen": [
         {
           "id": "jugend_007_a",
           "text": "Du sprichst den Lehrer danach direkt und respektvoll darauf an.",
-          "karma": { "mut": 8, "ehrlichkeit": 7, "mitgefuehl": 6 },
-          "sofortigeKonsequenzen": ["Lehrer ist defensiv, aber denkt über deine Worte nach"],
-          "verzoegerteKonsequenzen": ["jugend_autoritaet_hinterfragt"],
+          "karma": {
+            "mut": 8,
+            "ehrlichkeit": 7,
+            "mitgefuehl": 6
+          },
+          "sofortigeKonsequenzen": [
+            "Lehrer ist defensiv, aber denkt über deine Worte nach"
+          ],
+          "verzoegerteKonsequenzen": [
+            "jugend_autoritaet_hinterfragt"
+          ],
           "egoistischAltruistisch": 0.8,
           "systemEinflussGewicht": 0.25
         },
         {
           "id": "jugend_007_b",
           "text": "Du meldest es der Schulleitung.",
-          "karma": { "mut": 5, "ehrlichkeit": 6, "mitgefuehl": 5 },
-          "sofortigeKonsequenzen": ["Formelle Untersuchung, du wirst als 'Petze' gesehen"],
-          "verzoegerteKonsequenzen": ["jugend_system_weg_gewaehlt"],
+          "karma": {
+            "mut": 5,
+            "ehrlichkeit": 6,
+            "mitgefuehl": 5
+          },
+          "sofortigeKonsequenzen": [
+            "Formelle Untersuchung, du wirst als 'Petze' gesehen"
+          ],
+          "verzoegerteKonsequenzen": [
+            "jugend_system_weg_gewaehlt"
+          ],
           "egoistischAltruistisch": 0.65,
           "systemEinflussGewicht": 0.2
         },
         {
           "id": "jugend_007_c",
           "text": "Du sagst nichts – Lehrer sind Autoritäten.",
-          "karma": { "mut": -5, "mitgefuehl": -3 },
-          "sofortigeKonsequenzen": ["Der Mitschüler leidet weiter"],
-          "verzoegerteKonsequenzen": ["jugend_autoritaet_akzeptiert"],
+          "karma": {
+            "mut": -5,
+            "mitgefuehl": -3
+          },
+          "sofortigeKonsequenzen": [
+            "Der Mitschüler leidet weiter"
+          ],
+          "verzoegerteKonsequenzen": [
+            "jugend_autoritaet_akzeptiert"
+          ],
           "egoistischAltruistisch": 0.15,
           "systemEinflussGewicht": 0.7
         }
@@ -265,32 +447,57 @@
       "kontext": "Eine wichtige Prüfung fällt auf den Todestag eines geliebten Familienmitglieds. Deine Klassenlehrerin weiß davon.",
       "frage": "Was tust du?",
       "typ": "schulstress",
-      "systemEinfluesse": ["trauer", "pflichtgefuehl"],
+      "systemEinfluesse": [
+        "trauer",
+        "pflichtgefuehl"
+      ],
       "optionen": [
         {
           "id": "jugend_008_a",
           "text": "Du schreibst die Prüfung trotzdem – die Pflicht ruft.",
-          "karma": { "weisheit": 4, "mut": 5 },
-          "sofortigeKonsequenzen": ["Du schreibst konzentriert, aber es blutet innerlich"],
-          "verzoegerteKonsequenzen": ["jugend_pflicht_ueber_gefuehl"],
+          "karma": {
+            "weisheit": 4,
+            "mut": 5
+          },
+          "sofortigeKonsequenzen": [
+            "Du schreibst konzentriert, aber es blutet innerlich"
+          ],
+          "verzoegerteKonsequenzen": [
+            "jugend_pflicht_ueber_gefuehl"
+          ],
           "egoistischAltruistisch": 0.5,
           "systemEinflussGewicht": 0.5
         },
         {
           "id": "jugend_008_b",
           "text": "Du bittest die Lehrerin um Aufschub und erklärst die Situation.",
-          "karma": { "mut": 6, "ehrlichkeit": 6, "weisheit": 5 },
-          "sofortigeKonsequenzen": ["Lehrerin gewährt Aufschub, du kannst trauern"],
-          "verzoegerteKonsequenzen": ["jugend_grenzen_kommunizieren"],
+          "karma": {
+            "mut": 6,
+            "ehrlichkeit": 6,
+            "weisheit": 5
+          },
+          "sofortigeKonsequenzen": [
+            "Lehrerin gewährt Aufschub, du kannst trauern"
+          ],
+          "verzoegerteKonsequenzen": [
+            "jugend_grenzen_kommunizieren"
+          ],
           "egoistischAltruistisch": 0.55,
           "systemEinflussGewicht": 0.2
         },
         {
           "id": "jugend_008_c",
           "text": "Du schwänzt einfach und erscheinst nicht.",
-          "karma": { "mut": -3, "ehrlichkeit": -4 },
-          "sofortigeKonsequenzen": ["Kurzfristige Erleichterung, schlechte Note vorprogrammiert"],
-          "verzoegerteKonsequenzen": ["jugend_flucht_als_strategie"],
+          "karma": {
+            "mut": -3,
+            "ehrlichkeit": -4
+          },
+          "sofortigeKonsequenzen": [
+            "Kurzfristige Erleichterung, schlechte Note vorprogrammiert"
+          ],
+          "verzoegerteKonsequenzen": [
+            "jugend_flucht_als_strategie"
+          ],
           "egoistischAltruistisch": 0.25,
           "systemEinflussGewicht": 0.6
         }
@@ -302,32 +509,57 @@
       "kontext": "Online verbreiten sich Gerüchte über einen Mitschüler. Jemand fragt dich, ob du es weiterteilst.",
       "frage": "Was tust du?",
       "typ": "ehrlichkeit",
-      "systemEinfluesse": ["medien", "soziale_dynamik"],
+      "systemEinfluesse": [
+        "medien",
+        "soziale_dynamik"
+      ],
       "optionen": [
         {
           "id": "jugend_009_a",
           "text": "Du teilst es – du weißt ja nicht ob es stimmt oder nicht.",
-          "karma": { "ehrlichkeit": -7, "mitgefuehl": -6 },
-          "sofortigeKonsequenzen": ["Das Gerücht verbreitet sich explosionsartig"],
-          "verzoegerteKonsequenzen": ["jugend_online_mobbing_teilnahme"],
+          "karma": {
+            "ehrlichkeit": -7,
+            "mitgefuehl": -6
+          },
+          "sofortigeKonsequenzen": [
+            "Das Gerücht verbreitet sich explosionsartig"
+          ],
+          "verzoegerteKonsequenzen": [
+            "jugend_online_mobbing_teilnahme"
+          ],
           "egoistischAltruistisch": 0.1,
           "systemEinflussGewicht": 0.7
         },
         {
           "id": "jugend_009_b",
           "text": "Du teilst es nicht und schweigst.",
-          "karma": { "ehrlichkeit": 3, "mitgefuehl": 2 },
-          "sofortigeKonsequenzen": ["Du stoppst zumindest deine eigene Verbreitung"],
-          "verzoegerteKonsequenzen": ["jugend_passiv_korrekt"],
+          "karma": {
+            "ehrlichkeit": 3,
+            "mitgefuehl": 2
+          },
+          "sofortigeKonsequenzen": [
+            "Du stoppst zumindest deine eigene Verbreitung"
+          ],
+          "verzoegerteKonsequenzen": [
+            "jugend_passiv_korrekt"
+          ],
           "egoistischAltruistisch": 0.5,
           "systemEinflussGewicht": 0.4
         },
         {
           "id": "jugend_009_c",
           "text": "Du schreibst öffentlich, dass das Gerücht falsch ist.",
-          "karma": { "mut": 8, "ehrlichkeit": 9, "mitgefuehl": 7 },
-          "sofortigeKonsequenzen": ["Einige Kommentare gegen dich, aber andere danken dir"],
-          "verzoegerteKonsequenzen": ["jugend_online_mut"],
+          "karma": {
+            "mut": 8,
+            "ehrlichkeit": 9,
+            "mitgefuehl": 7
+          },
+          "sofortigeKonsequenzen": [
+            "Einige Kommentare gegen dich, aber andere danken dir"
+          ],
+          "verzoegerteKonsequenzen": [
+            "jugend_online_mut"
+          ],
           "egoistischAltruistisch": 0.9,
           "systemEinflussGewicht": 0.1
         }
@@ -339,32 +571,55 @@
       "kontext": "Du hast die Wahl: ein sicherer, gut bezahlter Job oder ein Studium in einer Sache, die dir wirklich am Herzen liegt.",
       "frage": "Was wählst du?",
       "typ": "identitaet",
-      "systemEinfluesse": ["gesellschaft", "materieller_druck"],
+      "systemEinfluesse": [
+        "gesellschaft",
+        "materieller_druck"
+      ],
       "optionen": [
         {
           "id": "jugend_010_a",
           "text": "Du wählst den sicheren Weg.",
-          "karma": { "weisheit": 3 },
-          "sofortigeKonsequenzen": ["Finanzielle Stabilität, aber ein leises Bedauern"],
-          "verzoegerteKonsequenzen": ["jugend_sicherheit_ueber_leidenschaft"],
+          "karma": {
+            "weisheit": 3
+          },
+          "sofortigeKonsequenzen": [
+            "Finanzielle Stabilität, aber ein leises Bedauern"
+          ],
+          "verzoegerteKonsequenzen": [
+            "jugend_sicherheit_ueber_leidenschaft"
+          ],
           "egoistischAltruistisch": 0.4,
           "systemEinflussGewicht": 0.65
         },
         {
           "id": "jugend_010_b",
           "text": "Du folgst deiner Leidenschaft.",
-          "karma": { "mut": 8, "weisheit": 5 },
-          "sofortigeKonsequenzen": ["Aufregung und Angst zugleich – du bist dir unsicher"],
-          "verzoegerteKonsequenzen": ["jugend_leidenschaft_gewählt"],
+          "karma": {
+            "mut": 8,
+            "weisheit": 5
+          },
+          "sofortigeKonsequenzen": [
+            "Aufregung und Angst zugleich – du bist dir unsicher"
+          ],
+          "verzoegerteKonsequenzen": [
+            "jugend_leidenschaft_gewählt"
+          ],
           "egoistischAltruistisch": 0.7,
           "systemEinflussGewicht": 0.2
         },
         {
           "id": "jugend_010_c",
           "text": "Du nimmst den Job und studierst nebenbei das, was dich wirklich interessiert.",
-          "karma": { "weisheit": 7, "mut": 5 },
-          "sofortigeKonsequenzen": ["Erschöpfend aber du gibst nichts auf"],
-          "verzoegerteKonsequenzen": ["jugend_beides_versucht"],
+          "karma": {
+            "weisheit": 7,
+            "mut": 5
+          },
+          "sofortigeKonsequenzen": [
+            "Erschöpfend aber du gibst nichts auf"
+          ],
+          "verzoegerteKonsequenzen": [
+            "jugend_beides_versucht"
+          ],
           "egoistischAltruistisch": 0.6,
           "systemEinflussGewicht": 0.3
         }
@@ -376,32 +631,57 @@
       "kontext": "In deiner Klasse wird ein Schüler aus einem anderen Land wegen seiner Herkunft diskriminiert.",
       "frage": "Wie reagierst du?",
       "typ": "mut",
-      "systemEinfluesse": ["gruppendynamik", "vorurteile"],
+      "systemEinfluesse": [
+        "gruppendynamik",
+        "vorurteile"
+      ],
       "optionen": [
         {
           "id": "jugend_011_a",
           "text": "Du setzt dich aktiv gegen die Diskriminierung ein.",
-          "karma": { "mitgefuehl": 9, "mut": 9, "ehrlichkeit": 7 },
-          "sofortigeKonsequenzen": ["Einige Mitschüler stehen hinter dir, andere nicht"],
-          "verzoegerteKonsequenzen": ["jugend_antirassismus_stark"],
+          "karma": {
+            "mitgefuehl": 9,
+            "mut": 9,
+            "ehrlichkeit": 7
+          },
+          "sofortigeKonsequenzen": [
+            "Einige Mitschüler stehen hinter dir, andere nicht"
+          ],
+          "verzoegerteKonsequenzen": [
+            "jugend_antirassismus_stark"
+          ],
           "egoistischAltruistisch": 1.0,
           "systemEinflussGewicht": 0.1
         },
         {
           "id": "jugend_011_b",
           "text": "Du sagst dem Lehrer Bescheid.",
-          "karma": { "mitgefuehl": 6, "mut": 5 },
-          "sofortigeKonsequenzen": ["Lehrer handelt, Situation verbessert sich formell"],
-          "verzoegerteKonsequenzen": ["jugend_systemloesung_diskriminierung"],
+          "karma": {
+            "mitgefuehl": 6,
+            "mut": 5
+          },
+          "sofortigeKonsequenzen": [
+            "Lehrer handelt, Situation verbessert sich formell"
+          ],
+          "verzoegerteKonsequenzen": [
+            "jugend_systemloesung_diskriminierung"
+          ],
           "egoistischAltruistisch": 0.75,
           "systemEinflussGewicht": 0.2
         },
         {
           "id": "jugend_011_c",
           "text": "Du lachst mit, um nicht aufzufallen.",
-          "karma": { "mitgefuehl": -10, "ehrlichkeit": -8 },
-          "sofortigeKonsequenzen": ["Du wirst in der Gruppe akzeptiert, innerlich schämst du dich"],
-          "verzoegerteKonsequenzen": ["jugend_scham_tiefe"],
+          "karma": {
+            "mitgefuehl": -10,
+            "ehrlichkeit": -8
+          },
+          "sofortigeKonsequenzen": [
+            "Du wirst in der Gruppe akzeptiert, innerlich schämst du dich"
+          ],
+          "verzoegerteKonsequenzen": [
+            "jugend_scham_tiefe"
+          ],
           "egoistischAltruistisch": 0.0,
           "systemEinflussGewicht": 0.75
         }
@@ -413,32 +693,58 @@
       "kontext": "Du entdeckst, dass dein bester Freund regelmäßig lügt und andere betrügt – auch dich. Aber er ist dein bester Freund.",
       "frage": "Was tust du?",
       "typ": "dilemma",
-      "systemEinfluesse": ["loyalitaet", "selbstschutz"],
+      "systemEinfluesse": [
+        "loyalitaet",
+        "selbstschutz"
+      ],
       "optionen": [
         {
           "id": "jugend_012_a",
           "text": "Du konfrontierst ihn direkt und gibst ihm eine letzte Chance.",
-          "karma": { "ehrlichkeit": 8, "mut": 7, "liebe": 6 },
-          "sofortigeKonsequenzen": ["Er ist schockiert, verspricht Besserung"],
-          "verzoegerteKonsequenzen": ["jugend_freund_konfrontiert"],
+          "karma": {
+            "ehrlichkeit": 8,
+            "mut": 7,
+            "liebe": 6
+          },
+          "sofortigeKonsequenzen": [
+            "Er ist schockiert, verspricht Besserung"
+          ],
+          "verzoegerteKonsequenzen": [
+            "jugend_freund_konfrontiert"
+          ],
           "egoistischAltruistisch": 0.7,
           "systemEinflussGewicht": 0.25
         },
         {
           "id": "jugend_012_b",
           "text": "Du beendest die Freundschaft schweigend.",
-          "karma": { "ehrlichkeit": -2, "mut": 3, "liebe": -3 },
-          "sofortigeKonsequenzen": ["Distanz wächst, du verlierst einen Freund ohne Erklärung"],
-          "verzoegerteKonsequenzen": ["jugend_freundschaft_stille_ende"],
+          "karma": {
+            "ehrlichkeit": -2,
+            "mut": 3,
+            "liebe": -3
+          },
+          "sofortigeKonsequenzen": [
+            "Distanz wächst, du verlierst einen Freund ohne Erklärung"
+          ],
+          "verzoegerteKonsequenzen": [
+            "jugend_freundschaft_stille_ende"
+          ],
           "egoistischAltruistisch": 0.45,
           "systemEinflussGewicht": 0.4
         },
         {
           "id": "jugend_012_c",
           "text": "Du ignorierst es und machst weiter wie bisher.",
-          "karma": { "ehrlichkeit": -6, "weisheit": -4 },
-          "sofortigeKonsequenzen": ["Kurzfristiger Friede, die Lügen häufen sich"],
-          "verzoegerteKonsequenzen": ["jugend_freundschaft_giftig_weiter"],
+          "karma": {
+            "ehrlichkeit": -6,
+            "weisheit": -4
+          },
+          "sofortigeKonsequenzen": [
+            "Kurzfristiger Friede, die Lügen häufen sich"
+          ],
+          "verzoegerteKonsequenzen": [
+            "jugend_freundschaft_giftig_weiter"
+          ],
           "egoistischAltruistisch": 0.2,
           "systemEinflussGewicht": 0.65
         }
@@ -450,32 +756,58 @@
       "kontext": "Du könntest bei einer wichtigen Sportveranstaltung durch Doping bessere Chancen haben. Alle anderen tun es angeblich.",
       "frage": "Was entscheidest du?",
       "typ": "ehrlichkeit",
-      "systemEinfluesse": ["leistungsdruck", "fehlinformation"],
+      "systemEinfluesse": [
+        "leistungsdruck",
+        "fehlinformation"
+      ],
       "optionen": [
         {
           "id": "jugend_013_a",
           "text": "Du dopst und gewinnst.",
-          "karma": { "ehrlichkeit": -10, "mut": -4 },
-          "sofortigeKonsequenzen": ["Du stehst ganz oben auf dem Treppchen, aber innerlich leer"],
-          "verzoegerteKonsequenzen": ["jugend_falscher_sieg", "jugend_betrug_fundament"],
+          "karma": {
+            "ehrlichkeit": -10,
+            "mut": -4
+          },
+          "sofortigeKonsequenzen": [
+            "Du stehst ganz oben auf dem Treppchen, aber innerlich leer"
+          ],
+          "verzoegerteKonsequenzen": [
+            "jugend_falscher_sieg",
+            "jugend_betrug_fundament"
+          ],
           "egoistischAltruistisch": 0.05,
           "systemEinflussGewicht": 0.7
         },
         {
           "id": "jugend_013_b",
           "text": "Du lehnst kategorisch ab – fair oder gar nicht.",
-          "karma": { "ehrlichkeit": 9, "mut": 7 },
-          "sofortigeKonsequenzen": ["Du verlierst, aber behältst deine Würde"],
-          "verzoegerteKonsequenzen": ["jugend_integritaet_sport"],
+          "karma": {
+            "ehrlichkeit": 9,
+            "mut": 7
+          },
+          "sofortigeKonsequenzen": [
+            "Du verlierst, aber behältst deine Würde"
+          ],
+          "verzoegerteKonsequenzen": [
+            "jugend_integritaet_sport"
+          ],
           "egoistischAltruistisch": 0.75,
           "systemEinflussGewicht": 0.1
         },
         {
           "id": "jugend_013_c",
           "text": "Du recherchierst, ob es wirklich alle tun, und meldest es den Verantwortlichen.",
-          "karma": { "ehrlichkeit": 8, "mut": 8, "weisheit": 7 },
-          "sofortigeKonsequenzen": ["Große Aufregung, du wirst zum Whistleblower"],
-          "verzoegerteKonsequenzen": ["jugend_whistleblower"],
+          "karma": {
+            "ehrlichkeit": 8,
+            "mut": 8,
+            "weisheit": 7
+          },
+          "sofortigeKonsequenzen": [
+            "Große Aufregung, du wirst zum Whistleblower"
+          ],
+          "verzoegerteKonsequenzen": [
+            "jugend_whistleblower"
+          ],
           "egoistischAltruistisch": 0.7,
           "systemEinflussGewicht": 0.05
         }
@@ -487,32 +819,58 @@
       "kontext": "Du erfährst, dass deine Eltern sich scheiden lassen werden. Du bist wütend auf beide.",
       "frage": "Wie gehst du damit um?",
       "typ": "identitaet",
-      "systemEinfluesse": ["familientradition", "emotionaler_stress"],
+      "systemEinfluesse": [
+        "familientradition",
+        "emotionaler_stress"
+      ],
       "optionen": [
         {
           "id": "jugend_014_a",
           "text": "Du redest offen mit beiden Elternteilen über deine Gefühle.",
-          "karma": { "mut": 7, "ehrlichkeit": 7, "weisheit": 6 },
-          "sofortigeKonsequenzen": ["Schwierige Gespräche, aber du fühlst dich danach leichter"],
-          "verzoegerteKonsequenzen": ["jugend_familiaere_kommunikation"],
+          "karma": {
+            "mut": 7,
+            "ehrlichkeit": 7,
+            "weisheit": 6
+          },
+          "sofortigeKonsequenzen": [
+            "Schwierige Gespräche, aber du fühlst dich danach leichter"
+          ],
+          "verzoegerteKonsequenzen": [
+            "jugend_familiaere_kommunikation"
+          ],
           "egoistischAltruistisch": 0.65,
           "systemEinflussGewicht": 0.2
         },
         {
           "id": "jugend_014_b",
           "text": "Du rebellierst – verhältst dich destruktiv in der Schule.",
-          "karma": { "mut": -2, "ehrlichkeit": -3, "weisheit": -5 },
-          "sofortigeKonsequenzen": ["Kurzfristige Erleichterung, langfristige Folgen"],
-          "verzoegerteKonsequenzen": ["jugend_rebellion_destruktiv"],
+          "karma": {
+            "mut": -2,
+            "ehrlichkeit": -3,
+            "weisheit": -5
+          },
+          "sofortigeKonsequenzen": [
+            "Kurzfristige Erleichterung, langfristige Folgen"
+          ],
+          "verzoegerteKonsequenzen": [
+            "jugend_rebellion_destruktiv"
+          ],
           "egoistischAltruistisch": 0.2,
           "systemEinflussGewicht": 0.65
         },
         {
           "id": "jugend_014_c",
           "text": "Du verlässt dich auf Freunde und suchst dir eine Gesprächsgruppe.",
-          "karma": { "weisheit": 7, "liebe": 5 },
-          "sofortigeKonsequenzen": ["Du lernst andere mit ähnlichen Erfahrungen kennen"],
-          "verzoegerteKonsequenzen": ["jugend_hilfe_angenommen"],
+          "karma": {
+            "weisheit": 7,
+            "liebe": 5
+          },
+          "sofortigeKonsequenzen": [
+            "Du lernst andere mit ähnlichen Erfahrungen kennen"
+          ],
+          "verzoegerteKonsequenzen": [
+            "jugend_hilfe_angenommen"
+          ],
           "egoistischAltruistisch": 0.6,
           "systemEinflussGewicht": 0.25
         }
@@ -524,34 +882,528 @@
       "kontext": "Ein Lehrer, den du sehr respektierst, vertritt plötzlich eine politische Meinung, die du für falsch hältst.",
       "frage": "Wie verhältst du dich?",
       "typ": "rebellion",
-      "systemEinfluesse": ["autoritaet", "politische_indoktrination", "respekt"],
+      "systemEinfluesse": [
+        "autoritaet",
+        "politische_indoktrination",
+        "respekt"
+      ],
       "optionen": [
         {
           "id": "jugend_015_a",
           "text": "Du widersprichst ihm respektvoll und argumentierst sachlich.",
-          "karma": { "mut": 9, "ehrlichkeit": 8, "weisheit": 7 },
-          "sofortigeKonsequenzen": ["Lebhafte Diskussion, einige Mitschüler schweigen anerkennend"],
-          "verzoegerteKonsequenzen": ["jugend_kritisches_denken_stark"],
+          "karma": {
+            "mut": 9,
+            "ehrlichkeit": 8,
+            "weisheit": 7
+          },
+          "sofortigeKonsequenzen": [
+            "Lebhafte Diskussion, einige Mitschüler schweigen anerkennend"
+          ],
+          "verzoegerteKonsequenzen": [
+            "jugend_kritisches_denken_stark"
+          ],
           "egoistischAltruistisch": 0.65,
           "systemEinflussGewicht": 0.15
         },
         {
           "id": "jugend_015_b",
           "text": "Du übernimmst seine Meinung – er ist schließlich der Experte.",
-          "karma": { "weisheit": -5, "mut": -4 },
-          "sofortigeKonsequenzen": ["Du verlierst einen Teil deiner eigenen Perspektive"],
-          "verzoegerteKonsequenzen": ["jugend_autoritaet_indoktriniert"],
+          "karma": {
+            "weisheit": -5,
+            "mut": -4
+          },
+          "sofortigeKonsequenzen": [
+            "Du verlierst einen Teil deiner eigenen Perspektive"
+          ],
+          "verzoegerteKonsequenzen": [
+            "jugend_autoritaet_indoktriniert"
+          ],
           "egoistischAltruistisch": 0.35,
           "systemEinflussGewicht": 0.8
         },
         {
           "id": "jugend_015_c",
           "text": "Du hörst zu, hinterfragst aber zuhause selbst und bildest dir dann eine Meinung.",
-          "karma": { "weisheit": 8, "ehrlichkeit": 5 },
-          "sofortigeKonsequenzen": ["Du bleibst im Unterricht neutral, forschst aber aktiv"],
-          "verzoegerteKonsequenzen": ["jugend_eigenstaendiges_denken"],
+          "karma": {
+            "weisheit": 8,
+            "ehrlichkeit": 5
+          },
+          "sofortigeKonsequenzen": [
+            "Du bleibst im Unterricht neutral, forschst aber aktiv"
+          ],
+          "verzoegerteKonsequenzen": [
+            "jugend_eigenstaendiges_denken"
+          ],
           "egoistischAltruistisch": 0.6,
           "systemEinflussGewicht": 0.3
+        }
+      ]
+    },
+    {
+      "id": "jugend_016",
+      "alter": 14,
+      "kontext": "Mittelalter: Der Schmied bietet dir eine Lehre an – sieben Jahre harte, ehrliche Arbeit. Am selben Tag wirbt der Hauptmann des Grafen Knappen für den kommenden Feldzug: Ehre, Sold und vielleicht der Ritterschlag.",
+      "frage": "Welchen Weg schlägst du ein?",
+      "typ": "identitaet",
+      "zeitalter": [
+        "mittelalter"
+      ],
+      "systemEinfluesse": [
+        "staendegesellschaft",
+        "kriegspropaganda",
+        "familientradition"
+      ],
+      "optionen": [
+        {
+          "id": "jugend_016_a",
+          "text": "Die Schmiedelehre – etwas mit den eigenen Händen erschaffen.",
+          "karma": {
+            "weisheit": 6,
+            "ehrlichkeit": 4
+          },
+          "sofortigeKonsequenzen": [
+            "Der erste Hammerschlag verbrennt dir fast die Hand. Der Schmied lacht: 'In sieben Jahren dankst du mir.'"
+          ],
+          "verzoegerteKonsequenzen": [
+            "jugend_ma_handwerk_fundament"
+          ],
+          "egoistischAltruistisch": 0.55,
+          "systemEinflussGewicht": 0.3
+        },
+        {
+          "id": "jugend_016_b",
+          "text": "Der Kriegsdienst – Ruhm wartet nicht auf Zögernde.",
+          "karma": {
+            "mut": 7,
+            "mitgefuehl": -4
+          },
+          "sofortigeKonsequenzen": [
+            "Der Hauptmann drückt dir einen Speer in die Hand. Deine Mutter weint, dein Vater schweigt."
+          ],
+          "verzoegerteKonsequenzen": [
+            "jugend_ma_kriegsdienst_gewaehlt"
+          ],
+          "egoistischAltruistisch": 0.3,
+          "systemEinflussGewicht": 0.65
+        },
+        {
+          "id": "jugend_016_c",
+          "text": "Du bittest den Schmied um Bedenkzeit und befragst den alten Veteranen am Dorfrand.",
+          "karma": {
+            "weisheit": 8,
+            "mut": 3
+          },
+          "sofortigeKonsequenzen": [
+            "Der Veteran zeigt dir seinen Beinstumpf und seine Medaille. 'Beides ist echt', sagt er. 'Wähl selbst, was du tragen willst.'"
+          ],
+          "verzoegerteKonsequenzen": [
+            "jugend_ma_weise_beratung"
+          ],
+          "egoistischAltruistisch": 0.6,
+          "systemEinflussGewicht": 0.15
+        }
+      ]
+    },
+    {
+      "id": "jugend_017",
+      "alter": 16,
+      "kontext": "Mittelalter: Die alte Kräuterfrau, die deine kleine Schwester vom Fieber heilte, wird der Hexerei beschuldigt. Morgen tagt das Dorfgericht. Wer für sie spricht, macht sich verdächtig.",
+      "frage": "Was tust du?",
+      "typ": "mut",
+      "zeitalter": [
+        "mittelalter"
+      ],
+      "systemEinfluesse": [
+        "aberglaube",
+        "massenhysterie",
+        "kirchliche_autoritaet"
+      ],
+      "optionen": [
+        {
+          "id": "jugend_017_a",
+          "text": "Du trittst vor das Gericht und bezeugst ihre Heilkunst.",
+          "karma": {
+            "mut": 10,
+            "ehrlichkeit": 8,
+            "mitgefuehl": 7
+          },
+          "sofortigeKonsequenzen": [
+            "Die Menge murrt, der Pfarrer mustert dich lange. Doch dein Zeugnis sät Zweifel – das Urteil wird vertagt."
+          ],
+          "verzoegerteKonsequenzen": [
+            "jugend_ma_zeugnis_mutig",
+            "jugend_ma_verdacht_auf_dir"
+          ],
+          "egoistischAltruistisch": 0.95,
+          "systemEinflussGewicht": 0.1
+        },
+        {
+          "id": "jugend_017_b",
+          "text": "Du schweigst – gegen die Angst des Dorfes kommt niemand an.",
+          "karma": {
+            "mut": -7,
+            "mitgefuehl": -5
+          },
+          "sofortigeKonsequenzen": [
+            "Die Kräuterfrau wird verbannt. Ihr Blick streift dich, als man sie fortführt – sie erkennt dich."
+          ],
+          "verzoegerteKonsequenzen": [
+            "jugend_ma_schweigen_last"
+          ],
+          "egoistischAltruistisch": 0.2,
+          "systemEinflussGewicht": 0.8
+        },
+        {
+          "id": "jugend_017_c",
+          "text": "Du warnst sie in der Nacht und hilfst ihr zu fliehen.",
+          "karma": {
+            "mut": 8,
+            "mitgefuehl": 8,
+            "ehrlichkeit": -3
+          },
+          "sofortigeKonsequenzen": [
+            "Im Morgengrauen ist ihre Hütte leer. Das Dorf tobt – und du trägst ein Geheimnis, das dich den Kopf kosten kann."
+          ],
+          "verzoegerteKonsequenzen": [
+            "jugend_ma_fluchthilfe"
+          ],
+          "egoistischAltruistisch": 0.85,
+          "systemEinflussGewicht": 0.2
+        }
+      ]
+    },
+    {
+      "id": "jugend_018",
+      "alter": 15,
+      "kontext": "Renaissance: Ein Meister der Malerei hat deine heimlichen Skizzen gesehen und bietet dir einen Platz in seiner Bottega an. Dein Vater erwartet, dass du seine Tuchhandlung übernimmst – sie ernährt die ganze Familie.",
+      "frage": "Wofür entscheidest du dich?",
+      "typ": "identitaet",
+      "zeitalter": [
+        "renaissance"
+      ],
+      "voraussetzungAttribute": {
+        "kreativitaet": 40
+      },
+      "systemEinfluesse": [
+        "familienpflicht",
+        "zunftordnung"
+      ],
+      "optionen": [
+        {
+          "id": "jugend_018_a",
+          "text": "Du folgst der Kunst – ein solches Angebot kommt nie wieder.",
+          "karma": {
+            "mut": 8,
+            "liebe": -3
+          },
+          "sofortigeKonsequenzen": [
+            "Dein Vater spricht wochenlang kein Wort mit dir. In der Bottega riechst du zum ersten Mal Leinöl und Freiheit."
+          ],
+          "verzoegerteKonsequenzen": [
+            "jugend_ren_kunstweg"
+          ],
+          "egoistischAltruistisch": 0.4,
+          "systemEinflussGewicht": 0.2
+        },
+        {
+          "id": "jugend_018_b",
+          "text": "Du übernimmst die Tuchhandlung – Pflicht ist auch eine Form von Liebe.",
+          "karma": {
+            "grosszuegigkeit": 6,
+            "liebe": 5,
+            "mut": -4
+          },
+          "sofortigeKonsequenzen": [
+            "Dein Vater umarmt dich zum ersten Mal seit Jahren. Nachts zeichnest du heimlich auf die Rückseiten der Rechnungsbücher."
+          ],
+          "verzoegerteKonsequenzen": [
+            "jugend_ren_pflicht_gewaehlt"
+          ],
+          "egoistischAltruistisch": 0.75,
+          "systemEinflussGewicht": 0.6
+        },
+        {
+          "id": "jugend_018_c",
+          "text": "Du handelst einen Kompromiss aus: drei Jahre Bottega, dann Entscheidung.",
+          "karma": {
+            "weisheit": 8,
+            "mut": 5,
+            "ehrlichkeit": 5
+          },
+          "sofortigeKonsequenzen": [
+            "Vater und Meister feilschen wie auf dem Markt – und schlagen ein. Drei Jahre, keine Stunde mehr."
+          ],
+          "verzoegerteKonsequenzen": [
+            "jugend_ren_kompromiss"
+          ],
+          "egoistischAltruistisch": 0.6,
+          "systemEinflussGewicht": 0.3
+        }
+      ]
+    },
+    {
+      "id": "jugend_019",
+      "alter": 14,
+      "kontext": "Industriezeitalter: In der Weberei, in der du seit zwei Jahren arbeitest, flüstern die Älteren von einem Streik für kürzere Schichten. Wer mitmacht, riskiert die Entlassung – wer die Namen verrät, bekommt eine Prämie.",
+      "frage": "Auf welche Seite stellst du dich?",
+      "typ": "dilemma",
+      "zeitalter": [
+        "industriezeitalter"
+      ],
+      "systemEinfluesse": [
+        "ausbeutung",
+        "existenzangst",
+        "solidaritaet"
+      ],
+      "optionen": [
+        {
+          "id": "jugend_019_a",
+          "text": "Du schließt dich dem Streik an.",
+          "karma": {
+            "mut": 9,
+            "grosszuegigkeit": 6,
+            "mitgefuehl": 5
+          },
+          "sofortigeKonsequenzen": [
+            "Die Maschinen stehen still – zum ersten Mal hörst du in der Halle deine eigene Stimme. Der Lohn fällt aus, die Angst isst mit."
+          ],
+          "verzoegerteKonsequenzen": [
+            "jugend_ind_streik_teilgenommen"
+          ],
+          "egoistischAltruistisch": 0.8,
+          "systemEinflussGewicht": 0.25
+        },
+        {
+          "id": "jugend_019_b",
+          "text": "Du arbeitest weiter – deine Familie braucht jeden Pfennig.",
+          "karma": {
+            "mut": -3,
+            "grosszuegigkeit": 2
+          },
+          "sofortigeKonsequenzen": [
+            "Du gehst durch die Streikpostenkette, den Blick am Boden. Zuhause liegt Brot auf dem Tisch – es schmeckt nach nichts."
+          ],
+          "verzoegerteKonsequenzen": [
+            "jugend_ind_weitergearbeitet"
+          ],
+          "egoistischAltruistisch": 0.45,
+          "systemEinflussGewicht": 0.7
+        },
+        {
+          "id": "jugend_019_c",
+          "text": "Du verrätst die Rädelsführer für die Prämie.",
+          "karma": {
+            "ehrlichkeit": -9,
+            "mitgefuehl": -8,
+            "grosszuegigkeit": -5
+          },
+          "sofortigeKonsequenzen": [
+            "Drei Familien verlieren ihr Einkommen. Die Münzen in deiner Tasche klimpern bei jedem Schritt wie ein Vorwurf."
+          ],
+          "verzoegerteKonsequenzen": [
+            "jugend_ind_verrat_praemie"
+          ],
+          "egoistischAltruistisch": 0.0,
+          "systemEinflussGewicht": 0.6
+        }
+      ]
+    },
+    {
+      "id": "jugend_020",
+      "alter": 15,
+      "kontext": "Moderne: Ein Video von dir – ungeschickt, aber harmlos – geht in der Schule viral. Ein Account bietet dir an, mit gezielten Bloßstellungen anderer 'zurückzuschlagen' und dabei selbst berühmt zu werden.",
+      "frage": "Wie reagierst du auf den Shitstorm?",
+      "typ": "identitaet",
+      "zeitalter": [
+        "moderne"
+      ],
+      "systemEinfluesse": [
+        "social_media_algorithmus",
+        "oeffentliche_meinung",
+        "aufmerksamkeitsoekonomie"
+      ],
+      "optionen": [
+        {
+          "id": "jugend_020_a",
+          "text": "Du schlägst zurück und stellst andere bloß – Aufmerksamkeit ist Macht.",
+          "karma": {
+            "mitgefuehl": -8,
+            "ehrlichkeit": -6,
+            "weisheit": -4
+          },
+          "sofortigeKonsequenzen": [
+            "Deine Follower-Zahl explodiert. Ein Mädchen aus der Parallelklasse kommt drei Tage nicht zur Schule – wegen deines Posts."
+          ],
+          "verzoegerteKonsequenzen": [
+            "jugend_mod_hass_spirale"
+          ],
+          "egoistischAltruistisch": 0.05,
+          "systemEinflussGewicht": 0.8
+        },
+        {
+          "id": "jugend_020_b",
+          "text": "Du legst das Handy weg und lässt den Sturm vorüberziehen.",
+          "karma": {
+            "weisheit": 8,
+            "mut": 5
+          },
+          "sofortigeKonsequenzen": [
+            "Zwei Wochen fühlen sich an wie zwei Jahre. Dann lacht die Schule über das nächste Video – und du hast gelernt, wie schnell Stürme vergehen."
+          ],
+          "verzoegerteKonsequenzen": [
+            "jugend_mod_digital_gelassenheit"
+          ],
+          "egoistischAltruistisch": 0.55,
+          "systemEinflussGewicht": 0.15
+        },
+        {
+          "id": "jugend_020_c",
+          "text": "Du machst selbst ein Video, in dem du offen über das Gefühl sprichst, bloßgestellt zu werden.",
+          "karma": {
+            "mut": 9,
+            "ehrlichkeit": 8,
+            "mitgefuehl": 5
+          },
+          "sofortigeKonsequenzen": [
+            "Einige spotten weiter. Aber dein Postfach füllt sich mit Nachrichten von Fremden: 'Mir ging es genauso.'"
+          ],
+          "verzoegerteKonsequenzen": [
+            "jugend_mod_verletzlichkeit_staerke"
+          ],
+          "egoistischAltruistisch": 0.7,
+          "systemEinflussGewicht": 0.3
+        }
+      ]
+    },
+    {
+      "id": "jugend_021",
+      "alter": 16,
+      "kontext": "Zukunft: Vor den Abschlussprüfungen bieten deine Eltern dir ein Neuro-Implantat an: perfekte Konzentration, lückenlose Erinnerung. Die Hälfte deines Jahrgangs trägt es schon. Es verändert nachweislich auch, wie man fühlt.",
+      "frage": "Lässt du dir das Implantat einsetzen?",
+      "typ": "identitaet",
+      "zeitalter": [
+        "zukunft"
+      ],
+      "systemEinfluesse": [
+        "technologie_druck",
+        "leistungsgesellschaft",
+        "eltern_erwartungen"
+      ],
+      "optionen": [
+        {
+          "id": "jugend_021_a",
+          "text": "Ja – wer nicht optimiert, fällt zurück.",
+          "karma": {
+            "weisheit": -3,
+            "mut": -2
+          },
+          "sofortigeKonsequenzen": [
+            "Die Formeln sitzen, die Prüfungen fliegen dir zu. Nur das Lied, das dich früher zu Tränen rührte, klingt jetzt einfach nur ... korrekt."
+          ],
+          "verzoegerteKonsequenzen": [
+            "jugend_zuk_implantat_angenommen"
+          ],
+          "egoistischAltruistisch": 0.3,
+          "systemEinflussGewicht": 0.75
+        },
+        {
+          "id": "jugend_021_b",
+          "text": "Nein – dein Kopf gehört dir, mit allen Fehlern.",
+          "karma": {
+            "mut": 8,
+            "ehrlichkeit": 6,
+            "weisheit": 5
+          },
+          "sofortigeKonsequenzen": [
+            "Deine Noten bleiben durchschnittlich, deine Träume chaotisch und deine Gefühle echt. Deine Eltern verstehen es nicht."
+          ],
+          "verzoegerteKonsequenzen": [
+            "jugend_zuk_implantat_verweigert"
+          ],
+          "egoistischAltruistisch": 0.6,
+          "systemEinflussGewicht": 0.1
+        },
+        {
+          "id": "jugend_021_c",
+          "text": "Du forderst zuerst unabhängige Langzeitstudien und sprichst mit Trägern des Implantats.",
+          "karma": {
+            "weisheit": 9,
+            "ehrlichkeit": 4
+          },
+          "sofortigeKonsequenzen": [
+            "Ein älterer Träger sagt dir: 'Ich vermisse nichts. Aber vielleicht ist genau das das Problem.' Du vertagst die Entscheidung."
+          ],
+          "verzoegerteKonsequenzen": [
+            "jugend_zuk_informierte_entscheidung"
+          ],
+          "egoistischAltruistisch": 0.55,
+          "systemEinflussGewicht": 0.2
+        }
+      ]
+    },
+    {
+      "id": "jugend_022",
+      "alter": 13,
+      "kontext": "Renaissance: Auf dem Marktplatz predigt ein Gelehrter, die Erde kreise um die Sonne. Die Menge johlt, einige werfen Unrat. Dein Lehrer verbietet dir, auch nur zuzuhören.",
+      "frage": "Was tust du?",
+      "typ": "rebellion",
+      "zeitalter": [
+        "renaissance"
+      ],
+      "systemEinfluesse": [
+        "kirchliche_lehre",
+        "autoritaet",
+        "wissensdurst"
+      ],
+      "optionen": [
+        {
+          "id": "jugend_022_a",
+          "text": "Du hörst trotzdem zu und stellst dem Gelehrten danach Fragen.",
+          "karma": {
+            "weisheit": 8,
+            "mut": 6
+          },
+          "sofortigeKonsequenzen": [
+            "Der Gelehrte leiht dir ein verbotenes Buch. Nachts liest du es unter der Decke – die Sterne sehen plötzlich anders aus."
+          ],
+          "verzoegerteKonsequenzen": [
+            "jugend_ren_verbotenes_wissen"
+          ],
+          "egoistischAltruistisch": 0.5,
+          "systemEinflussGewicht": 0.15
+        },
+        {
+          "id": "jugend_022_b",
+          "text": "Du gehorchst deinem Lehrer und gehst weiter.",
+          "karma": {
+            "weisheit": -4,
+            "mut": -4
+          },
+          "sofortigeKonsequenzen": [
+            "Der Lehrer lobt deinen Gehorsam. Die Fragen aber bleiben – ungefragt und unbeantwortet."
+          ],
+          "verzoegerteKonsequenzen": [
+            "jugend_ren_gehorsam_gewaehlt"
+          ],
+          "egoistischAltruistisch": 0.35,
+          "systemEinflussGewicht": 0.75
+        },
+        {
+          "id": "jugend_022_c",
+          "text": "Du verteidigst den Gelehrten laut gegen die Menge.",
+          "karma": {
+            "mut": 9,
+            "ehrlichkeit": 5,
+            "weisheit": 3
+          },
+          "sofortigeKonsequenzen": [
+            "Ein fauliger Apfel trifft deine Schulter. Doch ein Mädchen aus der Menge nickt dir zu – du bist nicht allein."
+          ],
+          "verzoegerteKonsequenzen": [
+            "jugend_ren_oeffentlich_verteidigt"
+          ],
+          "egoistischAltruistisch": 0.8,
+          "systemEinflussGewicht": 0.2
         }
       ]
     }

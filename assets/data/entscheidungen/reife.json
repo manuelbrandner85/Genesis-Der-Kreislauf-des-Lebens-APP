@@ -10,25 +10,49 @@
         {
           "id": "reife_001_a",
           "text": "Pflegeheim – professionelle Pflege ist besser.",
-          "karma": { "weisheit": 3, "liebe": -5 },
-          "sofortigeKonsequenzen": ["Professionelle Betreuung, aber der Elternteil fühlt sich verlassen"],
-          "verzoegerteKonsequenzen": ["reife_schuldgefuehl_elternteil"],
+          "karma": {
+            "weisheit": 3,
+            "liebe": -5
+          },
+          "sofortigeKonsequenzen": [
+            "Professionelle Betreuung, aber der Elternteil fühlt sich verlassen"
+          ],
+          "verzoegerteKonsequenzen": [
+            "reife_schuldgefuehl_elternteil"
+          ],
           "egoistischAltruistisch": 0.3
         },
         {
           "id": "reife_001_b",
           "text": "Selbst pflegen – Familie steht über allem.",
-          "karma": { "mitgefuehl": 12, "liebe": 10, "grosszuegigkeit": 8 },
-          "sofortigeKonsequenzen": ["Intensive Zeit, persönliche Entbehrungen, aber tiefe Verbindung"],
-          "verzoegerteKonsequenzen": ["reife_familiennaehe", "reife_erschoepfung"],
+          "karma": {
+            "mitgefuehl": 12,
+            "liebe": 10,
+            "grosszuegigkeit": 8
+          },
+          "sofortigeKonsequenzen": [
+            "Intensive Zeit, persönliche Entbehrungen, aber tiefe Verbindung"
+          ],
+          "verzoegerteKonsequenzen": [
+            "reife_familiennaehe",
+            "reife_erschoepfung"
+          ],
           "egoistischAltruistisch": 0.9
         },
         {
           "id": "reife_001_c",
           "text": "Gemischte Lösung: Pflegeheim, aber täglich besuchen.",
-          "karma": { "weisheit": 7, "liebe": 5, "mitgefuehl": 6 },
-          "sofortigeKonsequenzen": ["Balance zwischen professioneller Pflege und emotionaler Nähe"],
-          "verzoegerteKonsequenzen": ["reife_ausgewogene_loesung"],
+          "karma": {
+            "weisheit": 7,
+            "liebe": 5,
+            "mitgefuehl": 6
+          },
+          "sofortigeKonsequenzen": [
+            "Balance zwischen professioneller Pflege und emotionaler Nähe"
+          ],
+          "verzoegerteKonsequenzen": [
+            "reife_ausgewogene_loesung"
+          ],
           "egoistischAltruistisch": 0.7
         }
       ]
@@ -43,17 +67,33 @@
         {
           "id": "reife_002_a",
           "text": "Du lehnst höflich ab. Du hast selbst genug Herausforderungen.",
-          "karma": { "grosszuegigkeit": -6, "weisheit": -3 },
-          "sofortigeKonsequenzen": ["Mehr Zeit für dich, aber eine verpasste Chance zur Weitergabe"],
-          "verzoegerteKonsequenzen": ["reife_einsamkeit_spaeter"],
+          "karma": {
+            "grosszuegigkeit": -6,
+            "weisheit": -3
+          },
+          "sofortigeKonsequenzen": [
+            "Mehr Zeit für dich, aber eine verpasste Chance zur Weitergabe"
+          ],
+          "verzoegerteKonsequenzen": [
+            "reife_einsamkeit_spaeter"
+          ],
           "egoistischAltruistisch": 0.1
         },
         {
           "id": "reife_002_b",
           "text": "Du nimmst ihn an und gibst dein Wissen weiter.",
-          "karma": { "grosszuegigkeit": 10, "weisheit": 8, "liebe": 5 },
-          "sofortigeKonsequenzen": ["Zeitintensiv, aber du siehst jemanden wachsen"],
-          "verzoegerteKonsequenzen": ["reife_erbe_lebend", "reife_dankbarkeit_zurueck"],
+          "karma": {
+            "grosszuegigkeit": 10,
+            "weisheit": 8,
+            "liebe": 5
+          },
+          "sofortigeKonsequenzen": [
+            "Zeitintensiv, aber du siehst jemanden wachsen"
+          ],
+          "verzoegerteKonsequenzen": [
+            "reife_erbe_lebend",
+            "reife_dankbarkeit_zurueck"
+          ],
           "egoistischAltruistisch": 1.0
         }
       ]
@@ -68,18 +108,370 @@
         {
           "id": "reife_003_a",
           "text": "Rente – du hast genug gearbeitet. Zeit zu leben.",
-          "karma": { "weisheit": 8, "mut": 5 },
-          "sofortigeKonsequenzen": ["Freiheit und Zeit, aber finanzielle Einschränkungen"],
-          "verzoegerteKonsequenzen": ["reife_reisen_erleben", "reife_lebensfreude_spaet"],
+          "karma": {
+            "weisheit": 8,
+            "mut": 5
+          },
+          "sofortigeKonsequenzen": [
+            "Freiheit und Zeit, aber finanzielle Einschränkungen"
+          ],
+          "verzoegerteKonsequenzen": [
+            "reife_reisen_erleben",
+            "reife_lebensfreude_spaet"
+          ],
           "egoistischAltruistisch": 0.6
         },
         {
           "id": "reife_003_b",
           "text": "Weiterarbeiten – Sicherheit für die Familie.",
-          "karma": { "grosszuegigkeit": 6, "mut": -3, "liebe": 4 },
-          "sofortigeKonsequenzen": ["Finanzielle Sicherheit, aber du verpasst wertvolle Zeit"],
-          "verzoegerteKonsequenzen": ["reife_spaete_erkenntnis_zeit"],
+          "karma": {
+            "grosszuegigkeit": 6,
+            "mut": -3,
+            "liebe": 4
+          },
+          "sofortigeKonsequenzen": [
+            "Finanzielle Sicherheit, aber du verpasst wertvolle Zeit"
+          ],
+          "verzoegerteKonsequenzen": [
+            "reife_spaete_erkenntnis_zeit"
+          ],
           "egoistischAltruistisch": 0.7
+        }
+      ]
+    },
+    {
+      "id": "reife_004",
+      "alter": 62,
+      "kontext": "Deine Tochter bittet dich, drei Tage pro Woche die Enkel zu betreuen – sie kann sich die Betreuung sonst nicht leisten. Du hattest dir das Alter anders vorgestellt: Reisen, Ruhe, eigene Pläne.",
+      "frage": "Was antwortest du?",
+      "typ": "familie",
+      "optionen": [
+        {
+          "id": "reife_004_a",
+          "text": "Du sagst zu – Familie ist jetzt deine wichtigste Aufgabe.",
+          "karma": {
+            "liebe": 9,
+            "grosszuegigkeit": 8,
+            "mitgefuehl": 5
+          },
+          "sofortigeKonsequenzen": [
+            "Die Enkel nennen deinen Garten bald 'unseren'. Deine Reisepläne wandern in eine Schublade – aber das Kinderlachen füllt Räume, die lange still waren."
+          ],
+          "verzoegerteKonsequenzen": [
+            "reife_enkel_verbindung_tief"
+          ],
+          "egoistischAltruistisch": 0.85
+        },
+        {
+          "id": "reife_004_b",
+          "text": "Du bietest einen Tag pro Woche an – und hilfst bei der Suche nach einer Betreuung.",
+          "karma": {
+            "weisheit": 7,
+            "grosszuegigkeit": 4,
+            "ehrlichkeit": 5
+          },
+          "sofortigeKonsequenzen": [
+            "Deine Tochter ist zunächst enttäuscht. Doch der eine Tag wird heilig – für dich und die Enkel."
+          ],
+          "verzoegerteKonsequenzen": [
+            "reife_grenzen_und_naehe"
+          ],
+          "egoistischAltruistisch": 0.55
+        },
+        {
+          "id": "reife_004_c",
+          "text": "Du lehnst ab – du hast dein Leben lang gegeben, jetzt bist du dran.",
+          "karma": {
+            "grosszuegigkeit": -5,
+            "ehrlichkeit": 4,
+            "liebe": -4
+          },
+          "sofortigeKonsequenzen": [
+            "Deine Tochter sagt 'schon okay', aber ihre Anrufe werden seltener. Die Reisen sind schön. Die Fotos zeigst du fast niemandem."
+          ],
+          "verzoegerteKonsequenzen": [
+            "reife_eigenes_leben_distanz"
+          ],
+          "egoistischAltruistisch": 0.2
+        }
+      ]
+    },
+    {
+      "id": "reife_005",
+      "alter": 66,
+      "kontext": "Dein Bruder und du habt seit fünfzehn Jahren kein Wort gewechselt – ein Erbstreit, längst bedeutungslos, aber der Stolz blieb. Nun erfährst du, dass er schwer krank ist.",
+      "frage": "Was tust du?",
+      "typ": "versoehnung",
+      "optionen": [
+        {
+          "id": "reife_005_a",
+          "text": "Du fährst noch am selben Tag zu ihm.",
+          "karma": {
+            "liebe": 10,
+            "mut": 8,
+            "mitgefuehl": 8
+          },
+          "sofortigeKonsequenzen": [
+            "Er öffnet die Tür und sagt nur: 'Du bist alt geworden.' Ihr lacht beide, und fünfzehn Jahre fallen in sich zusammen wie ein Kartenhaus."
+          ],
+          "verzoegerteKonsequenzen": [
+            "reife_bruder_versoehnt"
+          ],
+          "egoistischAltruistisch": 0.85
+        },
+        {
+          "id": "reife_005_b",
+          "text": "Du schreibst ihm einen Brief – manche Worte brauchen Papier.",
+          "karma": {
+            "mut": 5,
+            "ehrlichkeit": 6,
+            "liebe": 5
+          },
+          "sofortigeKonsequenzen": [
+            "Drei Entwürfe landen im Papierkorb. Der vierte kommt an – und seine Antwort beginnt mit: 'Ich wollte dir seit Jahren schreiben.'"
+          ],
+          "verzoegerteKonsequenzen": [
+            "reife_briefwechsel_begonnen"
+          ],
+          "egoistischAltruistisch": 0.7
+        },
+        {
+          "id": "reife_005_c",
+          "text": "Du wartest ab – er hat sich schließlich auch nie gemeldet.",
+          "karma": {
+            "mut": -6,
+            "liebe": -5,
+            "weisheit": -4
+          },
+          "sofortigeKonsequenzen": [
+            "Der Stolz gewinnt noch einmal. Ein halbes Jahr später stehst du auf seiner Beerdigung und hältst eine Rede, die er nie hören wird."
+          ],
+          "verzoegerteKonsequenzen": [
+            "reife_versoehnung_verpasst"
+          ],
+          "egoistischAltruistisch": 0.25
+        }
+      ]
+    },
+    {
+      "id": "reife_006",
+      "alter": 68,
+      "kontext": "Ein Leben voller Erfahrungen – und die Frage, was davon bleibt. Der örtliche Verein sucht Vorlesepaten, deine alte Firma fragt nach Beratung, und in deiner Schublade liegt ein halbfertiges Manuskript.",
+      "frage": "Welches Vermächtnis baust du?",
+      "typ": "weitergabe",
+      "optionen": [
+        {
+          "id": "reife_006_a",
+          "text": "Du gehst zu den Kindern – Geschichten wirken am längsten in jungen Köpfen.",
+          "karma": {
+            "grosszuegigkeit": 8,
+            "liebe": 7,
+            "weisheit": 5
+          },
+          "sofortigeKonsequenzen": [
+            "Zwanzig Augenpaare hängen an deinen Lippen. Ein Junge sagt beim Gehen: 'Kommst du wirklich wieder?' – Du kommst wieder. Jede Woche."
+          ],
+          "verzoegerteKonsequenzen": [
+            "reife_vorlesepate_wirkung"
+          ],
+          "egoistischAltruistisch": 0.9
+        },
+        {
+          "id": "reife_006_b",
+          "text": "Du schreibst dein Buch fertig – deine Geschichte soll bleiben.",
+          "karma": {
+            "weisheit": 7,
+            "mut": 5,
+            "ehrlichkeit": 5
+          },
+          "sofortigeKonsequenzen": [
+            "Die leeren Seiten wehren sich monatelang. Aber Kapitel für Kapitel ordnet sich nicht nur das Buch – auch dein Blick auf das eigene Leben."
+          ],
+          "verzoegerteKonsequenzen": [
+            "reife_memoiren_geschrieben"
+          ],
+          "egoistischAltruistisch": 0.45
+        },
+        {
+          "id": "reife_006_c",
+          "text": "Du berätst die Firma – dein Wissen ist dort am meisten wert.",
+          "karma": {
+            "weisheit": 6,
+            "grosszuegigkeit": 4
+          },
+          "sofortigeKonsequenzen": [
+            "Die Jungen hören dir höflich zu, dann immer aufmerksamer. Du merkst: Erfahrung veraltet nicht – sie wartet nur auf die richtigen Fragen."
+          ],
+          "verzoegerteKonsequenzen": [
+            "reife_wissen_weitergegeben"
+          ],
+          "egoistischAltruistisch": 0.6
+        }
+      ]
+    },
+    {
+      "id": "reife_007",
+      "alter": 70,
+      "kontext": "Der Notar wartet auf deinen Entwurf. Dein Sohn ist wohlhabend, deine Tochter kämpft sich als Alleinerziehende durch – und da ist noch das Hospiz, das dich einst durch die schwerste Zeit trug.",
+      "frage": "Wie teilst du dein Erbe auf?",
+      "typ": "testament",
+      "optionen": [
+        {
+          "id": "reife_007_a",
+          "text": "Beide Kinder erben exakt gleich – Gerechtigkeit heißt Gleichheit.",
+          "karma": {
+            "ehrlichkeit": 5,
+            "weisheit": 3
+          },
+          "sofortigeKonsequenzen": [
+            "Niemand kann dir Bevorzugung vorwerfen. Ob Gleichheit auch Gerechtigkeit war, wird sich erst zeigen, wenn du nicht mehr fragen kannst."
+          ],
+          "verzoegerteKonsequenzen": [
+            "reife_erbe_gleichteilung"
+          ],
+          "egoistischAltruistisch": 0.5
+        },
+        {
+          "id": "reife_007_b",
+          "text": "Deine Tochter bekommt mehr – Bedürftigkeit zählt mehr als Symmetrie. Du sagst es beiden offen.",
+          "karma": {
+            "mitgefuehl": 7,
+            "mut": 7,
+            "ehrlichkeit": 8
+          },
+          "sofortigeKonsequenzen": [
+            "Dein Sohn schweigt lange am Telefon. Dann sagt er: 'Du hast recht. Ich hätte nur nie gefragt.' Das Gespräch dauert bis Mitternacht."
+          ],
+          "verzoegerteKonsequenzen": [
+            "reife_erbe_nach_beduerfnis"
+          ],
+          "egoistischAltruistisch": 0.7
+        },
+        {
+          "id": "reife_007_c",
+          "text": "Ein Teil geht an das Hospiz – Dankbarkeit gehört ins Testament.",
+          "karma": {
+            "grosszuegigkeit": 9,
+            "weisheit": 6,
+            "liebe": 4
+          },
+          "sofortigeKonsequenzen": [
+            "Die Kinder erben etwas weniger und verstehen etwas mehr: dass ein Leben auch denen gehört, die es in dunklen Stunden hielten."
+          ],
+          "verzoegerteKonsequenzen": [
+            "reife_erbe_mit_stiftung"
+          ],
+          "egoistischAltruistisch": 0.8
+        }
+      ]
+    },
+    {
+      "id": "reife_008",
+      "alter": 72,
+      "kontext": "Das Haus ist zu groß geworden. Die Treppe zu steil, der Garten zu viel, die Zimmer zu leer. Deine Kinder schlagen behutsam eine kleine Wohnung vor – in der Nähe, hell, ebenerdig.",
+      "frage": "Kannst du loslassen?",
+      "typ": "loslassen",
+      "optionen": [
+        {
+          "id": "reife_008_a",
+          "text": "Du verkaufst und gehst bewusst – ein Abschied in Würde.",
+          "karma": {
+            "weisheit": 9,
+            "mut": 7
+          },
+          "sofortigeKonsequenzen": [
+            "Beim letzten Rundgang berührst du jede Türklinke. Dann schließt du ab und drehst dich nicht mehr um. Die neue Wohnung ist klein – und zum ersten Mal seit Jahren fühlst du dich nicht mehr vom Haus bewohnt."
+          ],
+          "verzoegerteKonsequenzen": [
+            "reife_loslassen_gelungen"
+          ],
+          "egoistischAltruistisch": 0.6
+        },
+        {
+          "id": "reife_008_b",
+          "text": "Du bleibst – dieses Haus ist dein Leben, und hier wirst du auch gehen.",
+          "karma": {
+            "mut": 4,
+            "weisheit": -2
+          },
+          "sofortigeKonsequenzen": [
+            "Die Kinder installieren Haltegriffe und sorgen sich lauter. Du lebst zwischen Erinnerungen – sie tragen dich und halten dich zugleich fest."
+          ],
+          "verzoegerteKonsequenzen": [
+            "reife_im_haus_geblieben"
+          ],
+          "egoistischAltruistisch": 0.35
+        },
+        {
+          "id": "reife_008_c",
+          "text": "Du übergibst das Haus deiner Enkelin, die dort mit ihrer jungen Familie einzieht – und behältst ein Zimmer.",
+          "karma": {
+            "grosszuegigkeit": 9,
+            "liebe": 8,
+            "weisheit": 6
+          },
+          "sofortigeKonsequenzen": [
+            "Wieder Kinderschritte auf der alten Treppe. Dein Zimmer ist klein, aber das Haus lebt weiter – und du mittendrin."
+          ],
+          "verzoegerteKonsequenzen": [
+            "reife_haus_weitergegeben"
+          ],
+          "egoistischAltruistisch": 0.8
+        }
+      ]
+    },
+    {
+      "id": "reife_009",
+      "alter": 75,
+      "kontext": "Ein Umschlag mit Ersparnissen, ein alter Atlas, ein Versprechen von früher: die eine Reise, die ihr nie gemacht habt. Dein Körper wird nicht stärker werden – und deine Ärztin hebt die Augenbraue, verbietet es aber nicht.",
+      "frage": "Trittst du die letzte große Reise an?",
+      "typ": "lebensabend",
+      "optionen": [
+        {
+          "id": "reife_009_a",
+          "text": "Ja – jetzt oder nie.",
+          "karma": {
+            "mut": 10,
+            "weisheit": 6,
+            "liebe": 4
+          },
+          "sofortigeKonsequenzen": [
+            "Der Zug rollt an, und du bist wieder zwanzig. Die Knie schmerzen auf jeder Etappe – und jedes Foto zeigt ein Lächeln, das jünger ist als du."
+          ],
+          "verzoegerteKonsequenzen": [
+            "reife_letzte_reise_angetreten"
+          ],
+          "egoistischAltruistisch": 0.5
+        },
+        {
+          "id": "reife_009_b",
+          "text": "Du schenkst die Reise deiner Enkelin – sie soll sehen, was du nie sahst.",
+          "karma": {
+            "grosszuegigkeit": 10,
+            "liebe": 8
+          },
+          "sofortigeKonsequenzen": [
+            "Sie schickt dir jeden Abend Bilder und Sprachnachrichten. Du reist mit – in einem Sessel, mit geschlossenen Augen und offenem Herzen."
+          ],
+          "verzoegerteKonsequenzen": [
+            "reife_reise_verschenkt"
+          ],
+          "egoistischAltruistisch": 0.95
+        },
+        {
+          "id": "reife_009_c",
+          "text": "Du bleibst – das Risiko ist zu groß, das Geld sicherer auf dem Konto.",
+          "karma": {
+            "mut": -6,
+            "weisheit": -3
+          },
+          "sofortigeKonsequenzen": [
+            "Der Atlas wandert zurück ins Regal. Die Vernunft hat gesiegt – sie feiert ihre Siege immer so still, dass sie sich wie Niederlagen anfühlen."
+          ],
+          "verzoegerteKonsequenzen": [
+            "reife_reise_verzichtet"
+          ],
+          "egoistischAltruistisch": 0.3
         }
       ]
     }

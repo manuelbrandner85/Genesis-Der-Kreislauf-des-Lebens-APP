@@ -88,7 +88,11 @@ class SpielNotifier extends StateNotifier<SpielZustand> {
         emotionsWetter: emotionsWetter,
         istLadend: false,
         spielLaeuft: zyklus != null && !zyklus.abgeschlossen,
-        aktuellesAlter: zyklus?.aktuellePhase.minAlter ?? 0,
+        // Alter aus dem persistierten Zyklus übernehmen;
+        // Fallback auf das Mindest-Alter der Phase, wenn noch nichts gespeichert wurde.
+        aktuellesAlter: (zyklus != null && zyklus.aktuellesAlter > 0)
+            ? zyklus.aktuellesAlter
+            : (zyklus?.aktuellePhase.minAlter ?? 0),
       );
     } catch (fehler) {
       // Fehler protokollieren und im Zustand speichern
@@ -151,6 +155,85 @@ class SpielNotifier extends StateNotifier<SpielZustand> {
     }
   }
 
+  /// Schließt den aktuellen Lebenszyklus ab und startet die nächste
+  /// Inkarnation derselben Seele (Reinkarnation).
+  /// [karmaErbeFaktor]: Anteil des Karmas, der ins neue Leben übergeht (0.0–1.0).
+  Future<void> zyklusAbschliessenUndNeuStarten({
+    double karmaErbeFaktor = 0.3,
+  }) async {
+    final profil = state.spielerProfil;
+    final alterZyklus = state.aktuellerZyklus;
+
+    // Guard: Ohne Profil und aktiven Zyklus keine Reinkarnation möglich
+    if (profil == null || alterZyklus == null) {
+      state = state.copyWith(
+        fehlerMeldung: 'Kein aktives Profil oder Zyklus für die Reinkarnation.',
+      );
+      return;
+    }
+
+    try {
+      _spielstandBox ??= await Hive.openBox<Map>(_kSpielstandBox);
+
+      // 1. Alten Zyklus als abgeschlossen markieren und persistieren
+      final abgeschlossenerZyklus = alterZyklus.copyWith(
+        abgeschlossen: true,
+        sterbealter: state.aktuellesAlter,
+        karmaAmEnde: profil.kumulativesKarma,
+      );
+      await _spielstandBox!.put(
+        'zyklus_${abgeschlossenerZyklus.id}',
+        abgeschlossenerZyklus.toJson(),
+      );
+
+      // 2. Karma-Erbe berechnen: jede Dimension × karmaErbeFaktor
+      final faktor = karmaErbeFaktor.clamp(0.0, 1.0);
+      final altesKarma = profil.kumulativesKarma;
+      final erbeKarma = KarmaProfilModel(
+        mitgefuehl: altesKarma.mitgefuehl * faktor,
+        ehrlichkeit: altesKarma.ehrlichkeit * faktor,
+        mut: altesKarma.mut * faktor,
+        grosszuegigkeit: altesKarma.grosszuegigkeit * faktor,
+        weisheit: altesKarma.weisheit * faktor,
+        liebe: altesKarma.liebe * faktor,
+      );
+
+      // 3. Neuen Zyklus (nächste Inkarnation) mit Erbe-Karma erzeugen
+      final neuerZyklus = ZyklusModel.starten(
+        profilId: profil.id,
+        zeitalter: alterZyklus.zeitalter,
+        zyklusNummer: profil.aktuellerZyklusNummer + 1,
+      ).copyWith(karmaAmEnde: erbeKarma);
+
+      // 4. Seelenprofil auf die neue Inkarnation umstellen
+      final aktualisiertProfil = profil.copyWith(
+        aktuellerZyklusId: neuerZyklus.id,
+        zyklusIds: [...profil.zyklusIds, neuerZyklus.id],
+        aktuellerZyklusNummer: profil.aktuellerZyklusNummer + 1,
+        kumulativesKarma: erbeKarma,
+        letzterSpieltag: DateTime.now(),
+      );
+
+      // 5. Spielzustand auf den Anfang des neuen Lebens setzen
+      state = state.copyWith(
+        spielerProfil: aktualisiertProfil,
+        aktuellerZyklus: neuerZyklus,
+        aktuellePhase: GamePhase.entstehung,
+        emotionsWetter: _wetterAusKarma(erbeKarma),
+        aktuellesAlter: 0,
+        spielLaeuft: true,
+        fehlerLoeschen: true,
+      );
+
+      // 6. Neuen Stand (Profil + neuer Zyklus) persistieren
+      await spielSpeichern();
+    } catch (fehler) {
+      state = state.copyWith(
+        fehlerMeldung: 'Fehler bei der Reinkarnation: ${fehler.toString()}',
+      );
+    }
+  }
+
   /// Wechselt die Spielphase mit Validierungs-Guard-Logik.
   ///
   /// Prüft, ob der Phasenwechsel gültig ist (chronologisch, kein Rückschritt).
@@ -175,15 +258,16 @@ class SpielNotifier extends StateNotifier<SpielZustand> {
       return;
     }
 
-    // Zyklus mit neuer Phase aktualisieren
-    final aktualisiertZyklus = state.aktuellerZyklus!.copyWith(
-      aktuellePhase: neuPhase,
-    );
-
     // Alter auf Mindest-Alter der neuen Phase setzen (falls aktuelles Alter darunter)
     final neuesAlter = state.aktuellesAlter < neuPhase.minAlter
         ? neuPhase.minAlter
         : state.aktuellesAlter;
+
+    // Zyklus mit neuer Phase und aktuellem Alter aktualisieren
+    final aktualisiertZyklus = state.aktuellerZyklus!.copyWith(
+      aktuellePhase: neuPhase,
+      aktuellesAlter: neuesAlter,
+    );
 
     // Emissions-Wetter bei Todphase dramatisch anpassen
     EmotionsWetterModel neuesWetter = state.emotionsWetter;
@@ -336,10 +420,14 @@ class SpielNotifier extends StateNotifier<SpielZustand> {
   /// Wenn das neue Alter das Maximum der aktuellen Phase überschreitet,
   /// wird automatisch zur nächsten Phase gewechselt.
   Future<void> alterErhoehen() async {
-    if (state.aktuellerZyklus == null) return;
+    final zyklus = state.aktuellerZyklus;
+    if (zyklus == null) return;
 
     final neuesAlter = state.aktuellesAlter + 1;
     final aktuellePhase = state.aktuellePhase;
+
+    // Neues Alter auch im Zyklus ablegen, damit es persistiert wird
+    final zyklusMitAlter = zyklus.copyWith(aktuellesAlter: neuesAlter);
 
     // Automatischer Phasenwechsel wenn Altersgrenze überschritten
     GamePhase zielPhase = aktuellePhase;
@@ -351,13 +439,40 @@ class SpielNotifier extends StateNotifier<SpielZustand> {
     }
 
     // Wenn Phase gewechselt werden muss, phasWechseln aufrufen
+    // (phasWechseln speichert den Zyklus selbst)
     if (zielPhase != aktuellePhase) {
-      state = state.copyWith(aktuellesAlter: neuesAlter);
+      state = state.copyWith(
+        aktuellesAlter: neuesAlter,
+        aktuellerZyklus: zyklusMitAlter,
+      );
       await phasWechseln(zielPhase);
       return;
     }
 
-    state = state.copyWith(aktuellesAlter: neuesAlter, fehlerLoeschen: true);
+    state = state.copyWith(
+      aktuellesAlter: neuesAlter,
+      aktuellerZyklus: zyklusMitAlter,
+      fehlerLoeschen: true,
+    );
+    await spielSpeichern();
+  }
+
+  /// Setzt das Alter des Charakters direkt auf [neuesAlter] und persistiert.
+  ///
+  /// Anders als [alterErhoehen] wird KEIN automatischer Phasenwechsel
+  /// ausgelöst – gedacht für den Jahres-Loop der Phase 5 (Alter > Phasen-
+  /// Maximum ohne vorzeitigen Übergang) und das dynamische Sterbealter
+  /// in Phase 6.
+  Future<void> alterSetzen(int neuesAlter) async {
+    final zyklus = state.aktuellerZyklus;
+    if (zyklus == null) return;
+
+    state = state.copyWith(
+      aktuellesAlter: neuesAlter,
+      aktuellerZyklus: zyklus.copyWith(aktuellesAlter: neuesAlter),
+      fehlerLoeschen: true,
+    );
+    await spielSpeichern();
   }
 
   /// Setzt die aktuelle Fehlermeldung zurück.

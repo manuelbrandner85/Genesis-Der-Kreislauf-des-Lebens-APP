@@ -147,6 +147,9 @@ class ZyklusModel {
   /// Gedanken, die aus dem Karma-Gericht ins nächste Leben mitgenommen werden
   final List<GedankeModel> mitgenommeneGedanken;
 
+  /// Das aktuelle Alter des Charakters in diesem Zyklus (in Jahren)
+  final int aktuellesAlter;
+
   const ZyklusModel({
     required this.id,
     required this.zyklusNummer,
@@ -166,6 +169,7 @@ class ZyklusModel {
     required this.aktuellePhase,
     required this.abgeschlossen,
     required this.mitgenommeneGedanken,
+    this.aktuellesAlter = 0,
   });
 
   // ───────────────────────────────────────────────────────────────────────────
@@ -256,6 +260,7 @@ class ZyklusModel {
     GamePhase? aktuellePhase,
     bool? abgeschlossen,
     List<GedankeModel>? mitgenommeneGedanken,
+    int? aktuellesAlter,
   }) {
     return ZyklusModel(
       id: id ?? this.id,
@@ -278,6 +283,7 @@ class ZyklusModel {
       abgeschlossen: abgeschlossen ?? this.abgeschlossen,
       mitgenommeneGedanken:
           mitgenommeneGedanken ?? this.mitgenommeneGedanken,
+      aktuellesAlter: aktuellesAlter ?? this.aktuellesAlter,
     );
   }
 
@@ -317,6 +323,7 @@ class ZyklusModel {
       mitgenommeneGedanken: (json['mitgenommeneGedanken'] as List)
           .map((g) => GedankeModel.fromJson(g as Map<String, dynamic>))
           .toList(),
+      aktuellesAlter: json['aktuellesAlter'] as int? ?? 0,
     );
   }
 
@@ -341,6 +348,7 @@ class ZyklusModel {
         'abgeschlossen': abgeschlossen,
         'mitgenommeneGedanken':
             mitgenommeneGedanken.map((g) => g.toJson()).toList(),
+        'aktuellesAlter': aktuellesAlter,
       };
 
   // ───────────────────────────────────────────────────────────────────────────

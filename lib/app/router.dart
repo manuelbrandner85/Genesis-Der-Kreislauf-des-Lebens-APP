@@ -17,6 +17,7 @@ import 'package:genesis_kreislauf_des_lebens/presentation/screens/phasen/entsteh
 import 'package:genesis_kreislauf_des_lebens/presentation/screens/phasen/phase2_formung_screen.dart';
 import 'package:genesis_kreislauf_des_lebens/presentation/screens/phasen/phase2_geburt_cinematic.dart';
 import 'package:genesis_kreislauf_des_lebens/presentation/screens/phasen/phase3_kindheit_screen.dart';
+import 'package:genesis_kreislauf_des_lebens/presentation/screens/phasen/phase3_erster_verlust_screen.dart';
 import 'package:genesis_kreislauf_des_lebens/presentation/screens/phasen/phase4_jugend_screen.dart';
 import 'package:genesis_kreislauf_des_lebens/presentation/screens/jenseits/jenseits_reich_screen.dart';
 import 'package:genesis_kreislauf_des_lebens/presentation/screens/jenseits/reinkarnations_screen.dart';
@@ -24,11 +25,11 @@ import 'package:genesis_kreislauf_des_lebens/presentation/screens/phasen/tod_seq
 import 'package:genesis_kreislauf_des_lebens/presentation/screens/jenseits/karma_gericht_screen.dart';
 import 'package:genesis_kreislauf_des_lebens/presentation/screens/jenseits/jenseits_ankunft_screen.dart';
 import 'package:genesis_kreislauf_des_lebens/presentation/screens/phasen/phase5_erwachsen_screen.dart';
+import 'package:genesis_kreislauf_des_lebens/presentation/screens/phasen/phase5_zufallsereignis_screen.dart';
 import 'package:genesis_kreislauf_des_lebens/presentation/screens/phasen/phase6_reife_screen.dart';
 import 'package:genesis_kreislauf_des_lebens/presentation/screens/phasen/phase7_jenseits_vorbereitung_screen.dart';
 import 'package:genesis_kreislauf_des_lebens/presentation/screens/phasen/phase8_kosmisch_screen.dart';
 import 'package:genesis_kreislauf_des_lebens/presentation/screens/phasen/phase9_schoepfung_screen.dart';
-import 'package:genesis_kreislauf_des_lebens/data/models/zyklus_model.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Routen-Pfade als Konstanten
@@ -766,6 +767,13 @@ final routerProvider = Provider<GoRouter>((ref) {
         builder: (context, state) => const Phase3KindheitScreen(),
       ),
 
+      /// Phase 3 Prüfung – "Der erste Verlust": unvermeidbare Trauer-Erfahrung
+      GoRoute(
+        path: '/phase/3/verlust',
+        name: 'phase3Verlust',
+        builder: (context, state) => const Phase3ErsterVerlustScreen(),
+      ),
+
       /// Phase 4 – Jugend: Alter 13–18, Cliquen, Identitätskrise
       GoRoute(
         path: AppRouten.phase4,
@@ -780,6 +788,18 @@ final routerProvider = Provider<GoRouter>((ref) {
         name: 'phase5',
         redirect: _phasenGuard(5),
         builder: (context, state) => const Phase5ErwachsenScreen(),
+      ),
+
+      /// Phase 5 Zufallsereignis – Ereignis-Karte mit Reaktions-Optionen.
+      /// Optional kann ein Ereignis-Index über state.extra (int) gewählt werden.
+      GoRoute(
+        path: '/phase/5/ereignis',
+        name: 'phase5Ereignis',
+        builder: (context, state) {
+          final extra = state.extra;
+          final ereignisIndex = extra is int ? extra : null;
+          return Phase5ZufallsereignisScreen(ereignisIndex: ereignisIndex);
+        },
       ),
 
       /// Phase 6 – Reife: Alter 41–65, Weisheit und gesellschaftlicher Einfluss
@@ -816,15 +836,13 @@ final routerProvider = Provider<GoRouter>((ref) {
 
       // ── Spezial-Screens ───────────────────────────────────────────────
 
-      /// Sterbe-Sequenz – cinematischer Übergang nach dem Tod
+      /// Sterbe-Sequenz – cinematischer Übergang nach dem Tod.
+      /// Todesart, Karma und Sterbealter werden dynamisch aus den
+      /// Providern gelesen (siehe TodSequenzScreen).
       GoRoute(
         path: AppRouten.sterbeSequenz,
         name: 'sterbeSequenz',
-        builder: (context, state) => const TodSequenzScreen(
-          todesArt: TodesArt.natuerlich,
-          karmaDurchschnitt: 0.0,
-          sterbealter: 75,
-        ),
+        builder: (context, state) => const TodSequenzScreen(),
       ),
 
       /// Karma-Gericht – Lebensauswertung (vollautomatisch)
@@ -834,15 +852,12 @@ final routerProvider = Provider<GoRouter>((ref) {
         builder: (context, state) => const KarmaGerichtScreen(),
       ),
 
-      /// Tod-Sequenz Alias (/tod-sequenz) – von Phase 6 Sterbebett aus aufgerufen
+      /// Tod-Sequenz Alias (/tod-sequenz) – von Phase 6 Sterbebett aus aufgerufen.
+      /// Werte kommen dynamisch aus den Providern (siehe TodSequenzScreen).
       GoRoute(
         path: AppRouten.todSequenz,
         name: 'todSequenz',
-        builder: (context, state) => const TodSequenzScreen(
-          todesArt: TodesArt.natuerlich,
-          karmaDurchschnitt: 0.0,
-          sterbealter: 75,
-        ),
+        builder: (context, state) => const TodSequenzScreen(),
       ),
 
       /// Jenseits-Ankunft – cineastischer Übergang zum Jenseitsreich

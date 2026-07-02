@@ -3,9 +3,11 @@
 // Der Spieler trifft seine letzten drei Entscheidungen, bevor er den
 // letzten Atemzug tut und in die Tod-Sequenz übergeht.
 
+import 'dart:convert';
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -15,8 +17,76 @@ import 'package:genesis_kreislauf_des_lebens/core/theme/app_farben.dart';
 import 'package:genesis_kreislauf_des_lebens/core/theme/app_text_styles.dart';
 import 'package:genesis_kreislauf_des_lebens/data/models/karma_profil_model.dart';
 import 'package:genesis_kreislauf_des_lebens/presentation/providers/karma_provider.dart';
+import 'package:genesis_kreislauf_des_lebens/presentation/providers/koerper_provider.dart';
 import 'package:genesis_kreislauf_des_lebens/presentation/providers/spiel_provider.dart';
 import 'package:genesis_kreislauf_des_lebens/presentation/widgets/phasen_hintergrund.dart';
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Interne Modelle für die Reife-Jahre (aus reife.json)
+// ─────────────────────────────────────────────────────────────────────────────
+
+/// Eine Entscheidung der Reife-Jahre (Alter 61+, vor dem Sterbebett).
+class _ReifeEntscheidung {
+  final String id;
+  final int alter;
+  final String kontext;
+  final String frage;
+  final List<_ReifeOption> optionen;
+
+  const _ReifeEntscheidung({
+    required this.id,
+    required this.alter,
+    required this.kontext,
+    required this.frage,
+    required this.optionen,
+  });
+
+  factory _ReifeEntscheidung.fromJson(Map<String, dynamic> json) {
+    final optionenRoh = json['optionen'] as List<dynamic>? ?? [];
+    return _ReifeEntscheidung(
+      id: json['id'] as String,
+      alter: (json['alter'] as num?)?.toInt() ?? 62,
+      kontext: json['kontext'] as String? ?? '',
+      frage: json['frage'] as String? ?? '',
+      optionen: optionenRoh
+          .map((o) => _ReifeOption.fromJson(o as Map<String, dynamic>))
+          .toList(),
+    );
+  }
+}
+
+/// Eine Antwortoption mit Karma-Wirkung und erzählter Konsequenz.
+class _ReifeOption {
+  final String text;
+  final Map<KarmaDimension, double> karma;
+  final String konsequenz;
+
+  const _ReifeOption({
+    required this.text,
+    required this.karma,
+    required this.konsequenz,
+  });
+
+  factory _ReifeOption.fromJson(Map<String, dynamic> json) {
+    final karmaRoh = json['karma'] as Map<String, dynamic>? ?? {};
+    final karma = <KarmaDimension, double>{};
+    karmaRoh.forEach((schluessel, wert) {
+      for (final dim in KarmaDimension.values) {
+        if (dim.name == schluessel) {
+          karma[dim] = (wert as num).toDouble();
+          break;
+        }
+      }
+    });
+    final konsequenzen =
+        (json['sofortigeKonsequenzen'] as List<dynamic>? ?? []).cast<String>();
+    return _ReifeOption(
+      text: json['text'] as String? ?? '',
+      karma: karma,
+      konsequenz: konsequenzen.isNotEmpty ? konsequenzen.first : '',
+    );
+  }
+}
 
 /// Phase 6 – Reife: Das Sterbebett.
 ///
@@ -52,6 +122,20 @@ class _Phase6ReifeScreenState extends ConsumerState<Phase6ReifeScreen>
   /// Steuert das Flackern der Kerzen.
   late final AnimationController _kerzenController;
 
+  // ── Reife-Jahre (Alter 61+, aus reife.json) ───────────────────────────────
+
+  /// Alle geladenen Reife-Entscheidungen.
+  List<_ReifeEntscheidung> _reifeEntscheidungen = const [];
+
+  /// Index der aktuell präsentierten Reife-Entscheidung.
+  int _reifeIndex = 0;
+
+  /// Erzählte Konsequenz der letzten Wahl (kurz eingeblendet).
+  String? _reifeFeedback;
+
+  /// Ob die Reife-Jahre durchlebt sind und das Sterbebett beginnt.
+  bool _sterbebettErreicht = false;
+
   @override
   void initState() {
     super.initState();
@@ -60,8 +144,63 @@ class _Phase6ReifeScreenState extends ConsumerState<Phase6ReifeScreen>
       duration: const Duration(milliseconds: 2200),
     )..repeat(reverse: true);
 
-    // Anzahl bisheriger Entscheidungen aus dem Karma-Profil ableiten.
-    _entscheidungenGesamt = 12 + (ref.read(karmaProvider).durchschnitt.abs().toInt() % 40);
+    // Anzahl bisheriger Entscheidungen aus dem echten Zyklus ableiten.
+    _entscheidungenGesamt = ref
+            .read(spielProvider)
+            .aktuellerZyklus
+            ?.getroffeneEntscheidungen
+            .length ??
+        0;
+
+    _reifeEntscheidungenLaden();
+  }
+
+  /// Lädt die Reife-Jahre-Entscheidungen aus reife.json.
+  Future<void> _reifeEntscheidungenLaden() async {
+    try {
+      final roh = await rootBundle
+          .loadString('assets/data/entscheidungen/reife.json');
+      final json = jsonDecode(roh) as Map<String, dynamic>;
+      final liste = (json['entscheidungen'] as List<dynamic>? ?? [])
+          .map((e) => _ReifeEntscheidung.fromJson(e as Map<String, dynamic>))
+          .toList()
+        ..sort((a, b) => a.alter.compareTo(b.alter));
+
+      if (!mounted) return;
+      setState(() => _reifeEntscheidungen = liste);
+    } catch (_) {
+      // Ladefehler: direkt zum Sterbebett – das Spiel bleibt spielbar.
+      if (!mounted) return;
+      setState(() => _sterbebettErreicht = true);
+    }
+  }
+
+  /// Verarbeitet die Wahl einer Reife-Option und schreitet im Leben voran.
+  void _reifeWaehlen(_ReifeEntscheidung entscheidung, int optionIndex) {
+    final option = entscheidung.optionen[optionIndex];
+    HapticFeedback.lightImpact();
+
+    // Karma anwenden (persistiert automatisch über die Karma-Brücke)
+    final karmaNotifier = ref.read(karmaProvider.notifier);
+    option.karma.forEach(karmaNotifier.dimensionAendern);
+
+    // Entscheidung protokollieren + Lebensalter voranschreiten
+    final spielNotifier = ref.read(spielProvider.notifier);
+    spielNotifier.entscheidungTreffen(entscheidung.id, optionIndex);
+    final aktuellesAlter = ref.read(spielProvider).aktuellesAlter;
+    if (entscheidung.alter > aktuellesAlter) {
+      spielNotifier.alterSetzen(entscheidung.alter);
+    }
+
+    setState(() {
+      _reifeFeedback = option.konsequenz;
+      _entscheidungenGesamt++;
+      if (_reifeIndex + 1 < _reifeEntscheidungen.length) {
+        _reifeIndex++;
+      } else {
+        _sterbebettErreicht = true;
+      }
+    });
   }
 
   @override
@@ -129,18 +268,24 @@ class _Phase6ReifeScreenState extends ConsumerState<Phase6ReifeScreen>
                     const SizedBox(height: 16),
                     _baueKopf(durchschnitt),
                     const SizedBox(height: 28),
-                    _baueEntscheidung1(),
-                    if (_aktuelleEntscheidung >= 1) ...[
-                      const SizedBox(height: 24),
-                      _baueEntscheidung2(),
-                    ],
-                    if (_aktuelleEntscheidung >= 2) ...[
-                      const SizedBox(height: 24),
-                      _baueEntscheidung3(),
-                    ],
-                    if (_aktuelleEntscheidung >= 3) ...[
-                      const SizedBox(height: 36),
-                      _baueLetzterAtemzug(),
+                    // Erst die Reife-Jahre (61+) durchleben,
+                    // dann beginnt die Sterbebett-Szene.
+                    if (!_sterbebettErreicht)
+                      _baueReifeJahre()
+                    else ...[
+                      _baueEntscheidung1(),
+                      if (_aktuelleEntscheidung >= 1) ...[
+                        const SizedBox(height: 24),
+                        _baueEntscheidung2(),
+                      ],
+                      if (_aktuelleEntscheidung >= 2) ...[
+                        const SizedBox(height: 24),
+                        _baueEntscheidung3(),
+                      ],
+                      if (_aktuelleEntscheidung >= 3) ...[
+                        const SizedBox(height: 36),
+                        _baueLetzterAtemzug(),
+                      ],
                     ],
                     const SizedBox(height: 32),
                   ],
@@ -460,14 +605,140 @@ class _Phase6ReifeScreenState extends ConsumerState<Phase6ReifeScreen>
     );
   }
 
+  // ── Reife-Jahre (Entscheidungen aus reife.json) ───────────────────────────
+
+  Widget _baueReifeJahre() {
+    // Noch am Laden → dezente Warteanzeige im Kerzenlicht
+    if (_reifeEntscheidungen.isEmpty) {
+      return const Padding(
+        padding: EdgeInsets.symmetric(vertical: 48),
+        child: Center(
+          child: CircularProgressIndicator(
+            color: _tiefgolden,
+            strokeWidth: 2,
+          ),
+        ),
+      );
+    }
+
+    final entscheidung = _reifeEntscheidungen[_reifeIndex];
+
+    return Column(
+      key: ValueKey('reife_${entscheidung.id}'),
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        // Alters- und Fortschrittszeile
+        Text(
+          'ALTER ${entscheidung.alter} · '
+          '${_reifeIndex + 1}/${_reifeEntscheidungen.length}',
+          textAlign: TextAlign.center,
+          style: AppTextStyles.beschriftung.copyWith(
+            color: _tiefgolden,
+            letterSpacing: 3,
+          ),
+        ),
+        const SizedBox(height: 20),
+
+        // Nachhall der letzten Wahl
+        if (_reifeFeedback != null && _reifeFeedback!.isNotEmpty) ...[
+          Container(
+            padding: const EdgeInsets.all(14),
+            decoration: BoxDecoration(
+              color: _sepiaHell.withValues(alpha: 0.4),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Text(
+              _reifeFeedback!,
+              style: AppTextStyles.koerperKlein.copyWith(
+                color: _kerzenlicht.withValues(alpha: 0.85),
+                fontStyle: FontStyle.italic,
+                height: 1.5,
+              ),
+            ),
+          ).animate().fadeIn(duration: 500.ms),
+          const SizedBox(height: 20),
+        ],
+
+        // Situation
+        Container(
+          padding: const EdgeInsets.all(18),
+          decoration: _blockDeko(aktiv: true),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                entscheidung.kontext,
+                style: AppTextStyles.koerper.copyWith(
+                  color: AppFarben.text,
+                  height: 1.55,
+                ),
+              ),
+              const SizedBox(height: 14),
+              Text(
+                entscheidung.frage,
+                style: AppTextStyles.ueberschrift3.copyWith(
+                  color: _kerzenlicht,
+                  fontSize: 19,
+                ),
+              ),
+            ],
+          ),
+        ).animate().fadeIn(duration: 400.ms),
+
+        const SizedBox(height: 18),
+
+        // Optionen
+        ...List.generate(entscheidung.optionen.length, (i) {
+          final option = entscheidung.optionen[i];
+          return Padding(
+            padding: const EdgeInsets.only(bottom: 12),
+            child: Material(
+              color: Colors.transparent,
+              child: InkWell(
+                borderRadius: BorderRadius.circular(12),
+                onTap: () => _reifeWaehlen(entscheidung, i),
+                child: Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: _warmSepia.withValues(alpha: 0.6),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
+                      color: _tiefgolden.withValues(alpha: 0.35),
+                    ),
+                  ),
+                  child: Text(
+                    option.text,
+                    style: AppTextStyles.koerper.copyWith(
+                      color: AppFarben.text,
+                      height: 1.4,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ).animate().fadeIn(duration: 350.ms, delay: (80 * i).ms);
+        }),
+      ],
+    );
+  }
+
   // ── Abschluss-Button ──────────────────────────────────────────────────────
 
   Widget _baueLetzterAtemzug() {
     return Center(
       child: ElevatedButton(
-        onPressed: () {
+        onPressed: () async {
+          // Dynamisches Sterbealter: hängt an der gelebten Gesundheit
+          // (45–99) statt an einem fixen Wert.
+          final spiel = ref.read(spielProvider);
+          final sterbealter = ref
+              .read(koerperProvider.notifier)
+              .sterbealterSchaetzen(spiel.aktuellesAlter);
+          final spielNotifier = ref.read(spielProvider.notifier);
+          await spielNotifier.alterSetzen(sterbealter);
           // Das Leben endet: Phase auf Jenseits setzen und speichern
-          ref.read(spielProvider.notifier).phasWechseln(GamePhase.jenseits);
+          await spielNotifier.phasWechseln(GamePhase.jenseits);
+          if (!mounted) return;
           context.go('/tod-sequenz');
         },
         style: ElevatedButton.styleFrom(
