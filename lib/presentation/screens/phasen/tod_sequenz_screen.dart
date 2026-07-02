@@ -116,8 +116,10 @@ class _TodSequenzScreenState extends ConsumerState<TodSequenzScreen>
 
   @override
   Widget build(BuildContext context) {
-    // Dynamische Werte auflösen – explizite Konstruktor-Werte haben Vorrang
-    final karmaDurchschnitt =
+    // Dynamische Werte auflösen – explizite Konstruktor-Werte haben Vorrang.
+    // Explizite Typannotation nötig: Ohne sie inferiert Dart den generischen
+    // watch-Aufruf im ??-Kontext als double? und der Release-Build scheitert.
+    final double karmaDurchschnitt =
         widget.karmaDurchschnitt ?? ref.watch(karmaDurchschnittProvider);
     final alterImSpiel = ref.watch(spielProvider).aktuellesAlter;
     final sterbealter =
