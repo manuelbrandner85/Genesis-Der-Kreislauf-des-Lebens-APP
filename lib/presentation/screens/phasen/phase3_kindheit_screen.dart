@@ -165,6 +165,9 @@ class _Phase3KindheitScreenState extends ConsumerState<Phase3KindheitScreen>
   bool _laufenAbgeschlossen = false;
   bool _sprachAbgeschlossen = false;
 
+  // Prüfung "Der erste Verlust" – darf nur einmal pro Kindheit ausgelöst werden
+  bool _verlustErlebt = false;
+
   // Scroll-Controller für Jahres-Navigation
   final PageController _jahresController = PageController();
 
@@ -242,6 +245,37 @@ class _Phase3KindheitScreenState extends ConsumerState<Phase3KindheitScreen>
       curve: Curves.easeInOut,
     );
     ref.read(spielProvider.notifier).alterErhoehen();
+
+    // Unvermeidbare Prüfung "Der erste Verlust" beim Erreichen des 8. Lebensjahres.
+    if (jahr == 8 && !_verlustErlebt) {
+      _verlustErlebt = true;
+      _ersterVerlustStarten();
+    }
+  }
+
+  /// Startet die Verlust-Sequenz (Route '/phase/3/verlust').
+  ///
+  /// WICHTIG: Der Verlust-Screen endet selbst mit
+  /// `context.go(AppRouten.phase4)` ("Das Leben geht weiter") – er kehrt also
+  /// nach Abschluss NICHT hierher zurück, sondern beendet die Kindheit.
+  /// Deshalb wird hier trotzdem `context.push` verwendet: Bricht der Spieler
+  /// die Sequenz per Zurück-Geste ab, landet er wieder in der Kindheit
+  /// (Jahr 8) und der Verlust wird dank [_verlustErlebt] nicht erneut gestartet.
+  ///
+  /// Der Verlust-Screen wendet sein Karma selbst nicht an (seine
+  /// `_karmaAnwenden`-Methode ist ein Stub) und protokolliert keine
+  /// Entscheidung. Beides wird daher hier ergänzt: eine gemittelte
+  /// Basis-Karma-Wirkung (die konkrete Reaktions-Wahl ist von außen nicht
+  /// beobachtbar) und ein Protokoll-Eintrag für die Lebens-Bilanz.
+  void _ersterVerlustStarten() {
+    final karmaNotifier = ref.read(karmaProvider.notifier);
+    karmaNotifier.dimensionAendern(KarmaDimension.mitgefuehl, 4.0);
+    karmaNotifier.dimensionAendern(KarmaDimension.weisheit, 3.0);
+    ref
+        .read(spielProvider.notifier)
+        .entscheidungTreffen('kindheit_08_erster_verlust', 0);
+
+    context.push('/phase/3/verlust');
   }
 
   // ─────────────────────────────────────────────────────────────────────────

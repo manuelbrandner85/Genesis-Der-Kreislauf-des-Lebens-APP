@@ -18,6 +18,8 @@ import 'package:genesis_kreislauf_des_lebens/core/theme/app_text_styles.dart';
 import 'package:genesis_kreislauf_des_lebens/data/models/karma_profil_model.dart';
 import 'package:genesis_kreislauf_des_lebens/data/models/zyklus_model.dart';
 import 'package:genesis_kreislauf_des_lebens/presentation/providers/karma_provider.dart';
+import 'package:genesis_kreislauf_des_lebens/presentation/providers/koerper_provider.dart';
+import 'package:genesis_kreislauf_des_lebens/presentation/providers/spiel_provider.dart';
 import 'package:genesis_kreislauf_des_lebens/presentation/widgets/genesis_button.dart';
 import 'package:genesis_kreislauf_des_lebens/presentation/widgets/phasen_hintergrund.dart';
 
@@ -36,7 +38,8 @@ import 'package:genesis_kreislauf_des_lebens/presentation/widgets/phasen_hinterg
 /// Zeigt außerdem den Seelen-Code und die Karma-Zusammenfassung des letzten Lebens.
 ///
 /// Navigationsziel:
-/// - "Neu geboren werden" → [HauptMenueScreen] (`/hauptmenue`)
+/// - "Neu geboren werden" → Phase 1 (`/phase/1`) – das neue Leben beginnt
+///   direkt mit dem Rennen der nächsten Inkarnation.
 class ReinkarnationsScreen extends ConsumerStatefulWidget {
   const ReinkarnationsScreen({super.key});
 
@@ -87,31 +90,46 @@ class _ReinkarnationsScreenState extends ConsumerState<ReinkarnationsScreen>
 
   // ── Navigation ────────────────────────────────────────────────────────────
 
-  /// Verarbeitet die Pfadwahl und navigiert zum Hauptmenü.
-  void _neuGeborenWerden() {
-    if (_gewaehlterPfad == null) return;
+  /// Verarbeitet die Pfadwahl: schließt den Zyklus im SpielProvider wirklich
+  /// ab (Persistenz + neuer Zyklus mit Erbe-Karma), synchronisiert Karma- und
+  /// Körper-Provider und startet das neue Leben in Phase 1.
+  ///
+  /// Die Karma-Skalierung übernimmt vollständig
+  /// [SpielNotifier.zyklusAbschliessenUndNeuStarten] über den
+  /// [karmaErbeFaktor] – hier wird nichts mehr doppelt skaliert.
+  Future<void> _neuGeborenWerden() async {
+    final pfad = _gewaehlterPfad;
+    if (pfad == null) return;
 
-    // Neue Seele: Karma vollständig zurücksetzen
-    if (_gewaehlterPfad == _ReinkarnationsPfad.neueSeele) {
-      ref.read(karmaProvider.notifier).karmaZuruecksetzen();
-    }
-    // Karma-Erbe: 30 % des Karma-Werts in die neue Seele vererben
-    else {
-      final aktuell = ref.read(karmaProvider);
-      ref.read(karmaProvider.notifier).karmaSetzen(
-        aktuell.copyWith(
-          mitgefuehl:      aktuell.mitgefuehl      * 0.3,
-          ehrlichkeit:     aktuell.ehrlichkeit     * 0.3,
-          mut:             aktuell.mut              * 0.3,
-          grosszuegigkeit: aktuell.grosszuegigkeit * 0.3,
-          weisheit:        aktuell.weisheit         * 0.3,
-          liebe:           aktuell.liebe            * 0.3,
-        ),
+    // Neue Seele: 0 % Erbe (Karma-Reset). Karma-Erbe: 30 % werden vererbt.
+    final erbeFaktor = pfad == _ReinkarnationsPfad.karmaErbe ? 0.3 : 0.0;
+
+    await ref
+        .read(spielProvider.notifier)
+        .zyklusAbschliessenUndNeuStarten(karmaErbeFaktor: erbeFaktor);
+
+    if (!mounted) return;
+
+    // Fehlerfall: Meldung anzeigen, keine Navigation
+    final spiel = ref.read(spielProvider);
+    final fehler = spiel.fehlerMeldung;
+    if (fehler != null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(fehler)),
       );
+      return;
     }
 
-    // Neues Spiel beginnen – zum Hauptmenü
-    context.go(AppRouten.hauptMenue);
+    // Karma-Provider auf das Erbe-Karma des neuen Zyklus setzen
+    final profil = spiel.spielerProfil;
+    if (profil != null) {
+      ref.read(karmaProvider.notifier).karmaSetzen(profil.kumulativesKarma);
+    }
+    // Körper-Simulation auf den Geburtszustand zurücksetzen
+    ref.read(koerperProvider.notifier).zuruecksetzen();
+
+    // Das neue Leben beginnt mit dem Rennen in Phase 1
+    context.go(AppRouten.phase1);
   }
 
   // ── Build ─────────────────────────────────────────────────────────────────

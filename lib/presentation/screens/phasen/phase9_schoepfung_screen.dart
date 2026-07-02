@@ -16,6 +16,8 @@ import 'package:genesis_kreislauf_des_lebens/core/theme/app_farben.dart';
 import 'package:genesis_kreislauf_des_lebens/core/theme/app_text_styles.dart';
 import 'package:genesis_kreislauf_des_lebens/data/models/karma_profil_model.dart';
 import 'package:genesis_kreislauf_des_lebens/presentation/providers/karma_provider.dart';
+import 'package:genesis_kreislauf_des_lebens/presentation/providers/koerper_provider.dart';
+import 'package:genesis_kreislauf_des_lebens/presentation/providers/spiel_provider.dart';
 import 'package:genesis_kreislauf_des_lebens/presentation/widgets/phasen_hintergrund.dart';
 
 /// Phase 9 – Die Schöpfung.
@@ -101,13 +103,45 @@ class _Phase9SchoepfungScreenState extends ConsumerState<Phase9SchoepfungScreen>
     }
   }
 
-  void _weiter() {
+  /// Nächster Schritt bzw. Abschluss der Schöpfung.
+  ///
+  /// Am Ende schließt sich der Kreislauf wirklich: Der Zyklus wird im
+  /// SpielProvider abgeschlossen und die nächste Inkarnation gestartet
+  /// (Schöpfer-Bonus: 40 % Karma-Erbe). Der Karma-Bonus aus [_gesetzAnwenden]
+  /// wirkt dabei bereits VOR dem Abschluss auf das kumulative Karma.
+  Future<void> _weiter() async {
     if (_schritt < 2) {
       setState(() => _schritt++);
-    } else {
-      // Der Kreislauf schließt sich.
-      context.go('/hauptmenue');
+      return;
     }
+
+    // Der Kreislauf schließt sich: Zyklus abschließen, neues Leben erzeugen.
+    await ref
+        .read(spielProvider.notifier)
+        .zyklusAbschliessenUndNeuStarten(karmaErbeFaktor: 0.4);
+
+    if (!mounted) return;
+
+    // Fehlerfall: Meldung anzeigen, keine Navigation
+    final spiel = ref.read(spielProvider);
+    final fehler = spiel.fehlerMeldung;
+    if (fehler != null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(fehler)),
+      );
+      return;
+    }
+
+    // Karma-Provider auf das Erbe-Karma des neuen Zyklus setzen
+    final profil = spiel.spielerProfil;
+    if (profil != null) {
+      ref.read(karmaProvider.notifier).karmaSetzen(profil.kumulativesKarma);
+    }
+    // Körper-Simulation auf den Geburtszustand zurücksetzen
+    ref.read(koerperProvider.notifier).zuruecksetzen();
+
+    // Das neue Leben beginnt in Phase 1.
+    context.go('/phase/1');
   }
 
   @override

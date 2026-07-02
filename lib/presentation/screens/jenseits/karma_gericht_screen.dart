@@ -10,9 +10,47 @@ import 'package:go_router/go_router.dart';
 
 import 'package:genesis_kreislauf_des_lebens/core/theme/app_farben.dart';
 import 'package:genesis_kreislauf_des_lebens/core/theme/app_text_styles.dart';
-import 'package:genesis_kreislauf_des_lebens/data/models/erinnerung_model.dart';
-import 'package:genesis_kreislauf_des_lebens/data/models/gedanke_model.dart';
+import 'package:genesis_kreislauf_des_lebens/data/models/karma_profil_model.dart';
+import 'package:genesis_kreislauf_des_lebens/data/models/zyklus_model.dart';
+import 'package:genesis_kreislauf_des_lebens/presentation/providers/karma_provider.dart';
+import 'package:genesis_kreislauf_des_lebens/presentation/providers/spiel_provider.dart';
 import 'package:genesis_kreislauf_des_lebens/presentation/widgets/phasen_hintergrund.dart';
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Anzeige-Namen für Karma-Dimensionen und Jenseitsreiche
+// ─────────────────────────────────────────────────────────────────────────────
+
+String _dimensionsName(KarmaDimension dim) {
+  switch (dim) {
+    case KarmaDimension.mitgefuehl:
+      return 'Mitgefühl';
+    case KarmaDimension.ehrlichkeit:
+      return 'Ehrlichkeit';
+    case KarmaDimension.mut:
+      return 'Mut';
+    case KarmaDimension.grosszuegigkeit:
+      return 'Großzügigkeit';
+    case KarmaDimension.weisheit:
+      return 'Weisheit';
+    case KarmaDimension.liebe:
+      return 'Liebe';
+  }
+}
+
+String _reichName(JenseitsReich reich) {
+  switch (reich) {
+    case JenseitsReich.elysium:
+      return 'Elysium';
+    case JenseitsReich.harmonia:
+      return 'Harmonia';
+    case JenseitsReich.limbus:
+      return 'Limbus';
+    case JenseitsReich.shadowlands:
+      return 'Shadowlands';
+    case JenseitsReich.abyssus:
+      return 'Abyssus';
+  }
+}
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Karma-Gericht Screen
@@ -34,9 +72,12 @@ class _KarmaGerichtScreenState extends ConsumerState<KarmaGerichtScreen>
   int _phase = 0;
   // 0: Ankunft, 1: Sortierung läuft, 2: Ergebnisse, 3: Übergang ins Jenseits
 
-  // Simulierte Erinnerungen für die Demo
-  // In der Produktion: aus dem ZyklusModel laden
+  // Echte Lebens-Bilanz (aus karmaProvider / spielProvider berechnet)
   final List<_GerichtErinnerung> _ausgewaehlteErinnerungen = [];
+
+  // Karma-Werte, Durchschnitt und zugewiesenes Reich für die Ergebnis-Szene
+  KarmaProfilModel _karma = KarmaProfilModel.neutral();
+  JenseitsReich _reich = JenseitsReich.limbus;
 
   late final AnimationController _lichterController;
 
@@ -62,22 +103,9 @@ class _KarmaGerichtScreenState extends ConsumerState<KarmaGerichtScreen>
     await Future.delayed(const Duration(seconds: 4));
     if (!mounted) return;
 
-    // Erinnerungen auswählen (wird automatisch berechnet)
+    // Echte Lebens-Bilanz aus den Providern berechnen
     setState(() {
-      _ausgewaehlteErinnerungen.addAll([
-        _GerichtErinnerung(
-          titel: 'Der Moment der Entscheidung',
-          istAbgeschlossen: true,
-          wirdZuStaerke: true,
-          beschreibung: 'Du hast damals entschieden und damit Frieden gefunden.',
-        ),
-        _GerichtErinnerung(
-          titel: 'Das unausgesprochene Wort',
-          istAbgeschlossen: false,
-          wirdZuStaerke: false,
-          beschreibung: 'Es hat dich nie losgelassen. Dieses Wort. Du nimmst es mit.',
-        ),
-      ]);
+      _bilanzBerechnen();
       _phase = 1;
     });
 
@@ -97,6 +125,66 @@ class _KarmaGerichtScreenState extends ConsumerState<KarmaGerichtScreen>
     context.go('/phase/7/reich'); // Zum Jenseitsreich
   }
 
+  /// Berechnet die echte Lebens-Bilanz aus karmaProvider und spielProvider.
+  ///
+  /// Muss innerhalb von setState aufgerufen werden (mutiert Felder).
+  void _bilanzBerechnen() {
+    _karma = ref.read(karmaProvider);
+    _reich = ref.read(jenseitsReichProvider);
+    final dominant = ref.read(dominanteKarmaDimensionProvider);
+
+    final spiel = ref.read(spielProvider);
+    final anzahlEntscheidungen =
+        spiel.aktuellerZyklus?.getroffeneEntscheidungen.length ?? 0;
+    final erreichtesAlter = spiel.aktuellesAlter;
+
+    // Wert der dominanten Dimension bestimmt das Urteil
+    final dominantWert = switch (dominant) {
+      KarmaDimension.mitgefuehl => _karma.mitgefuehl,
+      KarmaDimension.ehrlichkeit => _karma.ehrlichkeit,
+      KarmaDimension.mut => _karma.mut,
+      KarmaDimension.grosszuegigkeit => _karma.grosszuegigkeit,
+      KarmaDimension.weisheit => _karma.weisheit,
+      KarmaDimension.liebe => _karma.liebe,
+    };
+    final dominantPositiv = dominantWert >= 0;
+
+    _ausgewaehlteErinnerungen
+      ..clear()
+      ..addAll([
+        _GerichtErinnerung(
+          titel: '$erreichtesAlter gelebte Jahre',
+          istAbgeschlossen: true,
+          wirdZuStaerke: true,
+          beschreibung: erreichtesAlter > 0
+              ? 'Jedes Jahr hat Spuren hinterlassen. Sie gehören jetzt dir.'
+              : 'Ein Leben, kaum begonnen. Auch das wird gewogen.',
+        ),
+        _GerichtErinnerung(
+          titel: anzahlEntscheidungen == 1
+              ? '1 getroffene Entscheidung'
+              : '$anzahlEntscheidungen getroffene Entscheidungen',
+          istAbgeschlossen: true,
+          wirdZuStaerke: anzahlEntscheidungen > 0,
+          beschreibung: anzahlEntscheidungen > 0
+              ? 'Jede Wahl hat deinen Weg geformt. Keine davon war umsonst.'
+              : 'Du hast dich treiben lassen. Auch Nicht-Wählen ist eine Wahl.',
+        ),
+        _GerichtErinnerung(
+          titel: 'Deine Prägung: ${_dimensionsName(dominant)}',
+          istAbgeschlossen: dominantPositiv,
+          wirdZuStaerke: dominantPositiv,
+          beschreibung: dominantPositiv
+              ? '${_dimensionsName(dominant)} hat dein Leben getragen '
+                  '(${dominantWert >= 0 ? '+' : ''}${dominantWert.toStringAsFixed(0)}). '
+                  'Sie wird zur Stärke.'
+              : '${_dimensionsName(dominant)} wurde zu deinem Schatten '
+                  '(${dominantWert.toStringAsFixed(0)}). '
+                  'Er wird zur Narbe, die du mitnimmst.',
+        ),
+      ]);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -114,8 +202,12 @@ class _KarmaGerichtScreenState extends ConsumerState<KarmaGerichtScreen>
             child: switch (_phase) {
               0 => _AnkunftScene(lichterController: _lichterController),
               1 => _SortierungsScene(lichterController: _lichterController),
-              2 => _ErgebnisScene(erinnerungen: _ausgewaehlteErinnerungen),
-              _ => _UebergangScene(),
+              2 => _ErgebnisScene(
+                  erinnerungen: _ausgewaehlteErinnerungen,
+                  karma: _karma,
+                  reich: _reich,
+                ),
+              _ => _UebergangScene(reichName: _reichName(_reich)),
             },
           ),
         ],
@@ -274,19 +366,29 @@ class _SortierungsScene extends StatelessWidget {
 
 class _ErgebnisScene extends StatelessWidget {
   final List<_GerichtErinnerung> erinnerungen;
+  final KarmaProfilModel karma;
+  final JenseitsReich reich;
 
-  const _ErgebnisScene({required this.erinnerungen});
+  const _ErgebnisScene({
+    required this.erinnerungen,
+    required this.karma,
+    required this.reich,
+  });
 
   @override
   Widget build(BuildContext context) {
+    final durchschnitt = karma.durchschnitt;
+    final durchschnittFarbe =
+        durchschnitt >= 0 ? AppFarben.goldGlanz : AppFarben.mystischLila;
+
     return Container(
       key: const ValueKey('ergebnis'),
       color: const Color(0xFF0A0A1F),
       child: Center(
-        child: Padding(
+        child: SingleChildScrollView(
           padding: const EdgeInsets.all(32),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
             children: [
               Text(
                 'Du nimmst mit:',
@@ -295,9 +397,9 @@ class _ErgebnisScene extends StatelessWidget {
                   letterSpacing: 2,
                 ),
               ).animate().fadeIn(),
-              const SizedBox(height: 48),
+              const SizedBox(height: 32),
 
-              // Ausgewählte Erinnerungen anzeigen
+              // Echte Lebens-Bilanz anzeigen
               ...erinnerungen.asMap().entries.map(
                     (e) => _ErinnerungsKarte(
                   erinnerung: e.value,
@@ -305,7 +407,70 @@ class _ErgebnisScene extends StatelessWidget {
                 ),
               ),
 
-              const SizedBox(height: 48),
+              const SizedBox(height: 8),
+
+              // Karma-Waage: alle sechs Dimensionen + Durchschnitt + Reich
+              Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    color: AppFarben.goldGlanz.withValues(alpha: 0.3),
+                  ),
+                  borderRadius: BorderRadius.circular(8),
+                  color: Colors.white.withValues(alpha: 0.03),
+                ),
+                child: Column(
+                  children: [
+                    Text(
+                      'DIE WAAGE DEINER SEELE',
+                      style: AppTextStyles.beschriftung.copyWith(
+                        color: AppFarben.textSekundaer,
+                        letterSpacing: 2,
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    Wrap(
+                      spacing: 12,
+                      runSpacing: 8,
+                      alignment: WrapAlignment.center,
+                      children: KarmaDimension.values.map((dim) {
+                        final wert = switch (dim) {
+                          KarmaDimension.mitgefuehl => karma.mitgefuehl,
+                          KarmaDimension.ehrlichkeit => karma.ehrlichkeit,
+                          KarmaDimension.mut => karma.mut,
+                          KarmaDimension.grosszuegigkeit =>
+                            karma.grosszuegigkeit,
+                          KarmaDimension.weisheit => karma.weisheit,
+                          KarmaDimension.liebe => karma.liebe,
+                        };
+                        final farbe = wert >= 0
+                            ? AppFarben.goldGlanz
+                            : AppFarben.mystischLila;
+                        return Text(
+                          '${_dimensionsName(dim)} '
+                          '${wert >= 0 ? '+' : ''}${wert.toStringAsFixed(0)}',
+                          style: AppTextStyles.koerperKlein.copyWith(
+                            color: farbe.withValues(alpha: 0.9),
+                          ),
+                        );
+                      }).toList(),
+                    ),
+                    const SizedBox(height: 12),
+                    Text(
+                      'Bilanz: '
+                      '${durchschnitt >= 0 ? '+' : ''}${durchschnitt.toStringAsFixed(1)}'
+                      '  ·  ${_reichName(reich)}',
+                      style: AppTextStyles.koerperGross.copyWith(
+                        color: durchschnittFarbe,
+                        fontWeight: FontWeight.w700,
+                        letterSpacing: 1.5,
+                      ),
+                    ),
+                  ],
+                ),
+              ).animate().fadeIn(delay: (erinnerungen.length * 800).ms),
+
+              const SizedBox(height: 32),
               Text(
                 'Weil es dich nicht losgelassen hat.',
                 style: AppTextStyles.koerperGross.copyWith(
@@ -386,7 +551,9 @@ class _ErinnerungsKarte extends StatelessWidget {
 // ─────────────────────────────────────────────────────────────────────────────
 
 class _UebergangScene extends StatelessWidget {
-  const _UebergangScene();
+  final String reichName;
+
+  const _UebergangScene({required this.reichName});
 
   @override
   Widget build(BuildContext context) {
@@ -401,7 +568,7 @@ class _UebergangScene extends StatelessWidget {
       ),
       child: Center(
         child: Text(
-          'Das nächste Reich erwartet dich.',
+          '$reichName erwartet dich.',
           style: AppTextStyles.ueberschrift3.copyWith(
             color: Colors.black87,
             fontStyle: FontStyle.italic,
