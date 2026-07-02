@@ -10,6 +10,9 @@ import 'package:go_router/go_router.dart';
 import 'package:genesis_kreislauf_des_lebens/core/theme/app_farben.dart';
 import 'package:genesis_kreislauf_des_lebens/core/theme/app_text_styles.dart';
 import 'package:genesis_kreislauf_des_lebens/data/models/zyklus_model.dart';
+import 'package:genesis_kreislauf_des_lebens/presentation/providers/karma_provider.dart';
+import 'package:genesis_kreislauf_des_lebens/presentation/providers/koerper_provider.dart';
+import 'package:genesis_kreislauf_des_lebens/presentation/providers/spiel_provider.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Tod-Sequenz Screen
@@ -20,20 +23,22 @@ import 'package:genesis_kreislauf_des_lebens/data/models/zyklus_model.dart';
 /// 2. Tunnel-Sequenz (abhängig von Todesart und Karma)
 /// 3. Letzter Atemzug → Übergang zum Karma-Gericht
 class TodSequenzScreen extends ConsumerStatefulWidget {
-  /// Die Art des Todes – bestimmt den visuellen Stil
-  final TodesArt todesArt;
+  /// Die Art des Todes – bestimmt den visuellen Stil.
+  /// Null = wird dynamisch aus der Körper-Simulation abgeleitet.
+  final TodesArt? todesArt;
 
-  /// Der Karma-Durchschnitt – bestimmt Farbe und Stimmung des Tunnels
-  final double karmaDurchschnitt;
+  /// Der Karma-Durchschnitt – bestimmt Farbe und Stimmung des Tunnels.
+  /// Null = wird aus dem [karmaProvider] gelesen.
+  final double? karmaDurchschnitt;
 
-  /// Das Sterbealter
-  final int sterbealter;
+  /// Das Sterbealter. Null = wird aus dem [spielProvider] gelesen.
+  final int? sterbealter;
 
   const TodSequenzScreen({
     super.key,
-    required this.todesArt,
-    required this.karmaDurchschnitt,
-    required this.sterbealter,
+    this.todesArt,
+    this.karmaDurchschnitt,
+    this.sterbealter,
   });
 
   @override
@@ -85,8 +90,43 @@ class _TodSequenzScreenState extends ConsumerState<TodSequenzScreen>
     context.go('/phase/7'); // Karma-Gericht / Jenseits
   }
 
+  /// Leitet eine [TodesArt] aus dem Todesursachen-Text der
+  /// Körper-Simulation ab (Fallback: natürlicher Tod).
+  TodesArt _todesArtAusUrsache(String ursache) {
+    final u = ursache.toLowerCase();
+    if (u.contains('natürlich') || u.contains('alter')) {
+      return TodesArt.natuerlich;
+    }
+    if (u.contains('unfall')) return TodesArt.unfall;
+    if (u.contains('versagen') ||
+        u.contains('infarkt') ||
+        u.contains('schlaganfall') ||
+        u.contains('krebs') ||
+        u.contains('infektion') ||
+        u.contains('depression') ||
+        u.contains('demenz') ||
+        u.contains('burnout') ||
+        u.contains('sucht') ||
+        u.contains('diabetes') ||
+        u.contains('arthritis')) {
+      return TodesArt.krankheit;
+    }
+    return TodesArt.natuerlich;
+  }
+
   @override
   Widget build(BuildContext context) {
+    // Dynamische Werte auflösen – explizite Konstruktor-Werte haben Vorrang
+    final karmaDurchschnitt =
+        widget.karmaDurchschnitt ?? ref.watch(karmaDurchschnittProvider);
+    final alterImSpiel = ref.watch(spielProvider).aktuellesAlter;
+    final sterbealter =
+        widget.sterbealter ?? (alterImSpiel < 60 ? 60 : alterImSpiel);
+    final todesArt = widget.todesArt ??
+        _todesArtAusUrsache(
+          ref.read(koerperProvider.notifier).todesUrsache(sterbealter),
+        );
+
     return Scaffold(
       backgroundColor: Colors.black,
       body: Stack(
@@ -97,7 +137,7 @@ class _TodSequenzScreenState extends ConsumerState<TodSequenzScreen>
             child: switch (_akt) {
               0 => _dunkleFadeIn(),
               1 => _rueckblickHintergrund(),
-              2 => _tunnelHintergrund(),
+              2 => _tunnelHintergrund(karmaDurchschnitt),
               _ => _weissesLicht(),
             },
           ),
@@ -105,13 +145,13 @@ class _TodSequenzScreenState extends ConsumerState<TodSequenzScreen>
           // Inhalt je nach Akt
           switch (_akt) {
             0 => _EinleitungsText(
-                todesArt: widget.todesArt,
-                sterbealter: widget.sterbealter,
+                todesArt: todesArt,
+                sterbealter: sterbealter,
               ),
-            1 => _LebensRueckblick(karmaDurchschnitt: widget.karmaDurchschnitt),
+            1 => _LebensRueckblick(karmaDurchschnitt: karmaDurchschnitt),
             2 => _TunnelSequenz(
                 controller: _tunnelController,
-                karmaDurchschnitt: widget.karmaDurchschnitt,
+                karmaDurchschnitt: karmaDurchschnitt,
               ),
             _ => _UebergangText(),
           },
@@ -140,11 +180,11 @@ class _TodSequenzScreenState extends ConsumerState<TodSequenzScreen>
     );
   }
 
-  Widget _tunnelHintergrund() {
+  Widget _tunnelHintergrund(double karmaDurchschnitt) {
     // Tunnel-Farbe basierend auf Karma
-    final tunnelFarbe = widget.karmaDurchschnitt > 30
+    final tunnelFarbe = karmaDurchschnitt > 30
         ? AppFarben.goldGlanz.withValues(alpha: 0.3)
-        : widget.karmaDurchschnitt > -30
+        : karmaDurchschnitt > -30
             ? Colors.white.withValues(alpha: 0.2)
             : Colors.red.withValues(alpha: 0.2);
 
