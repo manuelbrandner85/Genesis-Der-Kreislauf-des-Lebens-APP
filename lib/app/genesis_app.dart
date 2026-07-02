@@ -5,6 +5,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:genesis_kreislauf_des_lebens/app/router.dart';
@@ -359,7 +360,15 @@ class GenesisApp extends ConsumerWidget {
       routerConfig: router,
 
       // ── Lokalisierung ──────────────────────────────────────────────────
-      // Primärsprache: Deutsch – alle UI-Texte sind auf Deutsch verfasst
+      // Primärsprache: Deutsch – alle UI-Texte sind auf Deutsch verfasst.
+      // WICHTIG: Ohne diese Delegates schlagen Material-Widgets (TextField,
+      // Dialoge usw.) unter locale 'de' beim Bauen fehl und rendern im
+      // Release-Build als graue Kästen.
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
       locale: const Locale('de', 'DE'),
       supportedLocales: const [
         Locale('de', 'DE'), // Deutsch (Deutschland) – Primärsprache
