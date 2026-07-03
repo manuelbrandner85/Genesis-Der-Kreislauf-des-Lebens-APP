@@ -4,9 +4,11 @@
 // Lesbarkeits-Gradient und schwebenden Licht-Partikeln.
 // Fällt elegant auf einen Farbverlauf zurück, wenn kein Artwork existiert.
 
+import 'dart:async';
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:sensors_plus/sensors_plus.dart';
 
 import 'package:genesis_kreislauf_des_lebens/core/constants/app_konstanten.dart';
 import 'package:genesis_kreislauf_des_lebens/core/theme/app_farben.dart';
@@ -73,6 +75,11 @@ class PhasenHintergrund extends StatefulWidget {
   /// Ob der langsame Ken-Burns-Zoom aktiv ist.
   final bool mitKenBurns;
 
+  /// Ob die Handy-Neigung eine echte 3D-Parallaxe erzeugt
+  /// (Artwork und Partikel verschieben sich gegenläufig + perspektivische
+  /// Kippung – das Display wirkt wie ein Fenster in die Szene).
+  final bool mitGyroParallax;
+
   const PhasenHintergrund({
     super.key,
     this.assetPfad,
@@ -80,6 +87,7 @@ class PhasenHintergrund extends StatefulWidget {
     this.abdunkelung = 0.45,
     this.mitPartikeln = true,
     this.mitKenBurns = true,
+    this.mitGyroParallax = true,
   }) : assert(assetPfad != null || phase != null,
             'Entweder assetPfad oder phase angeben');
 
@@ -91,6 +99,18 @@ class _PhasenHintergrundState extends State<PhasenHintergrund>
     with SingleTickerProviderStateMixin {
   late final AnimationController _controller;
 
+  // ── Gyro-Parallax-Zustand ──────────────────────────────────────────────────
+
+  /// Tiefpass-gefilterte Neigung (-1..1 je Achse, 0 = Ruhelage).
+  double _neigungX = 0.0;
+  double _neigungY = 0.0;
+
+  /// Ruhelage der Y-Achse (Gravitation bei typischer Haltehaltung);
+  /// wird beim ersten Sensor-Ereignis kalibriert.
+  double? _ruheY;
+
+  StreamSubscription<AccelerometerEvent>? _sensorAbo;
+
   @override
   void initState() {
     super.initState();
@@ -99,10 +119,44 @@ class _PhasenHintergrundState extends State<PhasenHintergrund>
       vsync: this,
       duration: const Duration(seconds: 24),
     )..repeat(reverse: true);
+
+    if (widget.mitGyroParallax) {
+      _sensorStarten();
+    }
+  }
+
+  /// Startet den Lagesensor. Fehlende Sensoren (Emulator, Desktop)
+  /// werden still ignoriert – der Hintergrund bleibt dann statisch.
+  void _sensorStarten() {
+    try {
+      _sensorAbo = accelerometerEventStream(
+        samplingPeriod: SensorInterval.uiInterval,
+      ).listen(
+        (ereignis) {
+          // Ruhelage einmalig aus der ersten Messung kalibrieren
+          _ruheY ??= ereignis.y;
+
+          // Rohwerte auf -1..1 normieren (±4 m/s² Auslenkung = Vollausschlag)
+          final zielX = (-ereignis.x / 4.0).clamp(-1.0, 1.0);
+          final zielY = ((ereignis.y - _ruheY!) / 4.0).clamp(-1.0, 1.0);
+
+          // Tiefpass: weiche, träge Kamerabewegung statt Zitterei
+          _neigungX += (zielX - _neigungX) * 0.12;
+          _neigungY += (zielY - _neigungY) * 0.12;
+          // Kein setState nötig – der AnimationController-Ticker
+          // (AnimatedBuilder) zeichnet ohnehin jeden Frame neu.
+        },
+        onError: (_) {},
+        cancelOnError: true,
+      );
+    } catch (_) {
+      // Sensor nicht verfügbar – Parallaxe bleibt aus.
+    }
   }
 
   @override
   void dispose() {
+    _sensorAbo?.cancel();
     _controller.dispose();
     super.dispose();
   }
@@ -116,8 +170,19 @@ class _PhasenHintergrundState extends State<PhasenHintergrund>
       animation: _controller,
       builder: (context, _) {
         final t = _controller.value;
-        // Ken-Burns: sanfter Zoom zwischen 1.0 und 1.08
-        final zoom = widget.mitKenBurns ? 1.0 + 0.08 * t : 1.0;
+        // Ken-Burns: sanfter Zoom zwischen 1.0 und 1.08.
+        // Bei aktiver Parallaxe zusätzlicher Zoom-Puffer, damit beim
+        // Verschieben keine Bildränder sichtbar werden.
+        final parallaxPuffer = widget.mitGyroParallax ? 0.08 : 0.0;
+        final zoom =
+            (widget.mitKenBurns ? 1.0 + 0.08 * t : 1.0) + parallaxPuffer;
+
+        // 3D-Parallaxe: Neigung → Kameraversatz + perspektivische Kippung
+        final versatz = Offset(_neigungX * 20, _neigungY * 14);
+        final kippung = Matrix4.identity()
+          ..setEntry(3, 2, 0.0012) // Perspektiv-Anteil (Fluchtpunkt)
+          ..rotateY(_neigungX * 0.05)
+          ..rotateX(-_neigungY * 0.05);
 
         return Stack(
           fit: StackFit.expand,
@@ -135,10 +200,13 @@ class _PhasenHintergrundState extends State<PhasenHintergrund>
               ),
             ),
 
-            // Artwork mit Ken-Burns-Zoom
+            // Artwork mit Ken-Burns-Zoom und 3D-Parallaxe
             ClipRect(
-              child: Transform.scale(
-                scale: zoom,
+              child: Transform(
+                alignment: Alignment.center,
+                transform: kippung
+                  ..translate(versatz.dx, versatz.dy)
+                  ..scale(zoom),
                 child: Image.asset(
                   pfad,
                   fit: BoxFit.cover,
@@ -186,10 +254,14 @@ class _PhasenHintergrundState extends State<PhasenHintergrund>
               ),
             ),
 
-            // Schwebende Licht-Partikel
+            // Schwebende Licht-Partikel – bewegen sich als Vordergrund-Ebene
+            // GEGENLÄUFIG zum Artwork (stärkerer Versatz = näher am Auge)
             if (widget.mitPartikeln)
               CustomPaint(
-                painter: _LichtPartikelPainter(fortschritt: t),
+                painter: _LichtPartikelPainter(
+                  fortschritt: t,
+                  parallaxVersatz: Offset(-versatz.dx * 1.8, -versatz.dy * 1.8),
+                ),
                 size: Size.infinite,
               ),
           ],
@@ -208,10 +280,18 @@ class _PhasenHintergrundState extends State<PhasenHintergrund>
 class _LichtPartikelPainter extends CustomPainter {
   final double fortschritt;
 
-  _LichtPartikelPainter({required this.fortschritt});
+  /// Parallax-Versatz der Partikel-Ebene (gegenläufig zum Artwork).
+  final Offset parallaxVersatz;
+
+  _LichtPartikelPainter({
+    required this.fortschritt,
+    this.parallaxVersatz = Offset.zero,
+  });
 
   @override
   void paint(Canvas canvas, Size size) {
+    // Gesamte Partikel-Ebene um den Parallax-Versatz verschieben
+    canvas.translate(parallaxVersatz.dx, parallaxVersatz.dy);
     final paint = Paint()..style = PaintingStyle.fill;
     // Fester Seed: Partikel-Positionen bleiben über Frames stabil
     final zufall = math.Random(7);
@@ -252,5 +332,6 @@ class _LichtPartikelPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(_LichtPartikelPainter oldDelegate) =>
-      oldDelegate.fortschritt != fortschritt;
+      oldDelegate.fortschritt != fortschritt ||
+      oldDelegate.parallaxVersatz != parallaxVersatz;
 }

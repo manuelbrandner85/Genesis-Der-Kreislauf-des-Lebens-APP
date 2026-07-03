@@ -43,6 +43,7 @@ dependencies:
   flutter_animate: ^4.5.0           # Deklaratives Animation-API für Widgets
 
   # ── Hilfspakete ───────────────────────────────────────────────────────────
+  sensors_plus: ^6.0.1              # Lagesensor für 3D-Gyro-Parallax
   uuid: ^4.4.0                      # UUID-Generierung für eindeutige IDs
   equatable: ^2.0.5                 # Wertegleichheit ohne Boilerplate
   shared_preferences: ^2.2.3        # Einfache persistente Einstellungen
