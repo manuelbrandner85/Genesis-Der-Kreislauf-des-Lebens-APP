@@ -194,17 +194,30 @@ class _TodSequenzScreenState extends ConsumerState<TodSequenzScreen>
       key: const ValueKey('tunnel'),
       animation: _tunnelController,
       builder: (context, _) {
-        return Container(
-          decoration: BoxDecoration(
-            gradient: RadialGradient(
-              center: Alignment.center,
-              radius: 0.5 + _tunnelController.value * 1.5,
-              colors: [
-                tunnelFarbe,
-                Colors.black,
-              ],
+        return Stack(
+          fit: StackFit.expand,
+          children: [
+            // Fotorealistischer POV-Tunnel (Ich-Perspektive, Blick ins Licht).
+            // Fehlt das Asset, bleibt der prozedurale Verlauf darunter sichtbar.
+            Image.asset(
+              'assets/images/phasen/tod_tunnel.webp',
+              fit: BoxFit.cover,
+              errorBuilder: (_, __, ___) => const SizedBox.expand(),
             ),
-          ),
+            // Karma-Färbung + pulsierender Sog über dem Foto
+            DecoratedBox(
+              decoration: BoxDecoration(
+                gradient: RadialGradient(
+                  center: Alignment.center,
+                  radius: 0.5 + _tunnelController.value * 1.5,
+                  colors: [
+                    tunnelFarbe,
+                    Colors.black.withValues(alpha: 0.55),
+                  ],
+                ),
+              ),
+            ),
+          ],
         );
       },
     );
